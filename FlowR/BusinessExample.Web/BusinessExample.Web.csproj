@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="7.0.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BusinessExample.Core\BusinessExample.Core.csproj" />
+    <ProjectReference Include="..\BusinessExample.Infrastructure\BusinessExample.Infrastructure.csproj" />
+    <ProjectReference Include="..\FlowR.Microsoft.Extensions.Logging\FlowR.Microsoft.Extensions.Logging.csproj" />
+    <ProjectReference Include="..\FlowR\FlowR.csproj" />
+  </ItemGroup>
+
+</Project>
