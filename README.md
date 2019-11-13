@@ -1,3 +1,5 @@
+[![Build Status](https://dev.azure.com/andyblackledge/FlowR/_apis/build/status/FlowR-CI?branchName=master)](https://dev.azure.com/andyblackledge/FlowR/_build/latest?definitionId=5&branchName=master)
+
 # Introduction 
 FlowR is a .NET framework for building process flows based on a series of decoupled exchanges. It leverages the MediatR framework and dependency injection to enable such flows to be defined in a declarative fashion. The result are process flows that can be tested in a straightfoward manner and produce comprehensive logging as standard.
 
