@@ -18,7 +18,7 @@ namespace FlowR.Jint.Tests
         [InlineData("PropertyValue1", 0)]
         [InlineData("PropertyValue2", 1)]
         [InlineData("PropertyValue3", 2)]
-        public async Task Can_switch_on_flow_value(string stringPropertyValue, int expectedIndex)
+        public void Can_switch_on_flow_value(string stringPropertyValue, int expectedIndex)
         {
             var decisionRequest = 
                 new FlowValueScriptDecisionRequest<string> { SwitchValueScript = "value.StringProperty" };
@@ -27,9 +27,7 @@ namespace FlowR.Jint.Tests
             decisionRequest.AddBranch(null, "Dest3", false);
             decisionRequest.FlowValue = new TestClass { StringProperty = stringPropertyValue };
 
-            var decision = new FlowValueScriptDecision<string>();
-
-            var actualIndex = await decision.Handle(decisionRequest, new CancellationToken());
+            var actualIndex = decisionRequest.GetMatchingBranchIndex();
 
             Assert.Equal(expectedIndex, actualIndex);
         }
@@ -38,7 +36,7 @@ namespace FlowR.Jint.Tests
         [InlineData(9, 0)]
         [InlineData(19, 1)]
         [InlineData(20, 2)]
-        public async Task Can_switch_on_branch_evaluation(int intPropertyValue, int expectedIndex)
+        public void Can_switch_on_branch_evaluation(int intPropertyValue, int expectedIndex)
         {
             var decisionRequest = new EvaluateBranchScriptDecisionRequest();
             decisionRequest.AddBranch(new[] { "value.IntProperty < 10" }, "Dest1", false);
@@ -46,9 +44,7 @@ namespace FlowR.Jint.Tests
             decisionRequest.AddBranch(null, "Dest3", false);
             decisionRequest.SwitchValue = new TestClass { IntProperty = intPropertyValue };
 
-            var decision = new EvaluateBranchScriptDecision();
-
-            var actualIndex = await decision.Handle(decisionRequest, new CancellationToken());
+            var actualIndex = decisionRequest.GetMatchingBranchIndex();
 
             Assert.Equal(expectedIndex, actualIndex);
         }

@@ -39,25 +39,25 @@ namespace FlowR
         #region Builder methods
 
         public DecisionFlowStep<TSwitch> Check<TReq, TSwitch>(string stepName, FlowDecisionDefinition<TReq, TSwitch> definition)
-            where TReq : FlowDecisionRequest<TSwitch>
+            where TReq : FlowDecision<TSwitch>
         {
             return Check(stepName, stepText: null, flowOverrideKey: null, definition);
         }
 
         public DecisionFlowStep<TSwitch> Check<TReq, TSwitch>(string stepName, string stepText, 
-            FlowDecisionDefinition<TReq, TSwitch> definition) where TReq : FlowDecisionRequest<TSwitch>
+            FlowDecisionDefinition<TReq, TSwitch> definition) where TReq : FlowDecision<TSwitch>
         {
             return Check(stepName, stepText, flowOverrideKey: null, definition);
         }
 
         public DecisionFlowStep<TSwitch> Check<TReq, TSwitch>(string stepName, FlowOverrideKey flowOverrideKey, 
-            FlowDecisionDefinition<TReq, TSwitch> definition) where TReq : FlowDecisionRequest<TSwitch>
+            FlowDecisionDefinition<TReq, TSwitch> definition) where TReq : FlowDecision<TSwitch>
         {
             return Check(stepName, stepText: null, flowOverrideKey, definition);
         }
 
         public DecisionFlowStep<TSwitch> Check<TReq, TSwitch>(string stepName, string stepText, FlowOverrideKey flowOverrideKey,
-            FlowDecisionDefinition<TReq, TSwitch> definition) where TReq : FlowDecisionRequest<TSwitch>
+            FlowDecisionDefinition<TReq, TSwitch> definition) where TReq : FlowDecision<TSwitch>
         {
             var decisionFlowStep =
                 new DecisionFlowStep<TSwitch>(this)

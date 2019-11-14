@@ -28,7 +28,7 @@ namespace FlowR.Tests.Domain.FlowTests
 
         public override FlowDefinition GetFlowDefinition()
         {
-            var isDecisionValueTrue = new FlowDecisionDefinition<BindingAttributesDecisionRequest, bool>()
+            var isDecisionValueTrue = new FlowDecisionDefinition<BindingAttributesDecision, bool>()
                 .SetValue(r => r.DecisionInput1Name, nameof(DecisionBindingAttributesFlowRequest.FlowInput1))
                 .SetValue(r => r.NamedDecisionInputName, nameof(DecisionBindingAttributesFlowRequest.FlowInput2));
 
@@ -52,7 +52,7 @@ namespace FlowR.Tests.Domain.FlowTests
         }
     }
 
-    public class BindingAttributesDecisionRequest : FlowDecisionRequest<bool>
+    public class BindingAttributesDecision : FlowDecision<bool>
     {
         [InputBindingName]
         public string DecisionInput1Name { get; set; }
@@ -64,15 +64,12 @@ namespace FlowR.Tests.Domain.FlowTests
         public bool DecisionInput1 { get; set; }
         [BoundValue]
         public bool DecisionInput2 { get; set; }
-    }
 
-    public class BindingAttributesDecision : FlowDecisionHandler<BindingAttributesDecisionRequest, bool>
-    {
-        public override Task<int> Handle(BindingAttributesDecisionRequest request, CancellationToken cancellationToken)
+        public override int GetMatchingBranchIndex()
         {
-            var switchValue = request.DecisionInput1 && request.DecisionInput2;
-            var matchingBranchIndex = GetMatchingBranchIndex(switchValue, request.Branches, BranchTargetsContains);
-            return Task.FromResult(matchingBranchIndex);
+            var switchValue = this.DecisionInput1 && this.DecisionInput2;
+            var matchingBranchIndex = GetMatchingBranchIndex(switchValue, this.Branches, BranchTargetsContains);
+            return matchingBranchIndex;
         }
     }
 }

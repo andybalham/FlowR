@@ -8,22 +8,18 @@ using Jint;
 
 namespace FlowR.Jint
 {
-    public class EvaluateBranchScriptDecisionRequest : FlowDecisionRequest<string>
+    public class EvaluateBranchScriptDecisionRequest : FlowDecision<string>
     {
         [BoundValue]
         public object SwitchValue { get; set; }
-    }
 
-    public class EvaluateBranchScriptDecision : FlowDecisionHandler<EvaluateBranchScriptDecisionRequest, string>
-    {
-        public override Task<int> Handle(EvaluateBranchScriptDecisionRequest request, CancellationToken cancellationToken)
+        public override int GetMatchingBranchIndex()
         {
-            var matchingBranchIndex = GetTrueBranchIndex(request.Branches, request.SwitchValue);
-
-            return Task.FromResult(matchingBranchIndex);
+            var matchingBranchIndex = GetTrueBranchIndex(this.Branches, this.SwitchValue);
+            return matchingBranchIndex;
         }
 
-        private static int GetTrueBranchIndex(IEnumerable<FlowDecisionRequest<string>.Branch> branches, object switchValue)
+        private static int GetTrueBranchIndex(IEnumerable<FlowDecision<string>.Branch> branches, object switchValue)
         {
             var branchList = branches.ToList();
 
@@ -60,7 +56,7 @@ namespace FlowR.Jint
             return defaultBranchIndex;
         }
 
-        private static bool IsBranchTrue(FlowDecisionRequest<string>.Branch branch, Engine engine)
+        private static bool IsBranchTrue(FlowDecision<string>.Branch branch, Engine engine)
         {
             var isBranchTrue =
                 branch.Targets?

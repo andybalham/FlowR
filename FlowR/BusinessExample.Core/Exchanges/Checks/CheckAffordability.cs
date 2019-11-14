@@ -9,6 +9,9 @@ namespace BusinessExample.Core.Exchanges.Checks
 {
     public class CheckAffordability : FlowActivityRequest<CheckAffordability.Response>
     {
+        public static FlowActivityDefinition<CheckAffordability, Response> NewDefinition() =>
+            new FlowActivityDefinition<CheckAffordability, Response>();
+
         [BoundValue, NotNullValue]
         public LoanApplication LoanApplication { get; set; }
 
@@ -43,14 +46,6 @@ namespace BusinessExample.Core.Exchanges.Checks
 
             return response;
         }
-    }
-
-    public class AffordabilityRatingDecision : FlowValueDecision<AffordabilityRating?>
-    {
-    }
-
-    public class AffordabilityRatingDecisionHandler : FlowValueDecisionHandler<AffordabilityRatingDecision, AffordabilityRating?>
-    {
     }
 
     public static class CheckAffordabilityMocks

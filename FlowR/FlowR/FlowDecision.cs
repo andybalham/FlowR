@@ -1,20 +1,47 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+using MediatR;
 
 namespace FlowR
 {
-    public abstract class FlowDecisionHandler<TReq, TSwitch> : IFlowDecisionRequestHandler<TReq, TSwitch>
-        where TReq : FlowDecisionRequest<TSwitch>
+    public abstract class FlowDecisionBase : IFlowStepRequest, IRequest<int>
     {
-        public abstract Task<int> Handle(TReq request, CancellationToken cancellationToken);
+        public FlowContext FlowContext { get; set; }
 
-        protected int GetMatchingBranchIndex(TSwitch switchValue, IEnumerable<FlowDecisionRequest<TSwitch>.Branch> branches,
-            Func<FlowDecisionRequest<TSwitch>.Branch, TSwitch, bool> isMatch)
+        public virtual string GetText() => null;
+
+        public abstract void AddBranch(IEnumerable<object> targets, string destination, bool isEnd);
+        
+        public abstract int GetMatchingBranchIndex();
+    }
+
+    public abstract class FlowDecision<TSwitch> : FlowDecisionBase
+    {
+        private readonly IList<Branch> _branches = new List<Branch>();
+
+        public IEnumerable<Branch> Branches => _branches;
+
+        public class Branch
+        {
+            public IEnumerable<TSwitch> Targets { get; internal set; }
+            public string Destination { get; internal set; }
+            public bool IsEnd { get; set; }
+        }
+
+        public override void AddBranch(IEnumerable<object> targets, string destination, bool isEnd)
+        {
+            // TODO: How can we use converters if the definition targets are strings?
+
+            var switchTargets = targets?.ToList().ConvertAll(t => (TSwitch)t);
+
+            var branch = new Branch { Targets = switchTargets, Destination = destination, IsEnd = isEnd };
+
+            _branches.Add(branch);
+        }
+
+        protected int GetMatchingBranchIndex(TSwitch switchValue, IEnumerable<Branch> branches, Func<Branch, TSwitch, bool> isMatch)
         {
             var branchList = branches.ToList();
 
@@ -49,7 +76,7 @@ namespace FlowR
             return defaultBranchIndex;
         }
 
-        protected virtual bool BranchTargetsContains(FlowDecisionRequest<TSwitch>.Branch branch, TSwitch switchValue)
+        protected virtual bool BranchTargetsContains(Branch branch, TSwitch switchValue)
         {
             var isMatch = branch.Targets?.Contains(switchValue);
             return isMatch.GetValueOrDefault();

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using FlowR.Microsoft.Extensions.Logging;
 using FlowR.StepLibrary.Activities;
-using FlowR.StepLibrary.Decisions;
 using FlowR.Tests.Domain.FlowrBasedMockingTests;
 using FlowR.Tests.Domain.FlowTests;
 using MediatR;
@@ -69,52 +68,6 @@ namespace FlowR.Tests
             Assert.Equal(expectedValue1, response.Value1);
             Assert.Equal(expectedValue2, response.Value2);
             Assert.Equal(expectedValue3, response.Value3);
-        }
-
-        [Theory]
-        [InlineData(false, "A")]
-        [InlineData(true, "C")]
-        public async void Can_mock_decision_by_request_type_only(bool isMocked, string expectedValue)
-        {
-            var (mediator, _) = GetMediator<MockDecisionViaFlowRFlowRequest>();
-
-            var flowContext = new FlowContext(null, null);
-
-            if (isMocked)
-            {
-                flowContext
-                    .MockDecision<BoolFlowValueDecision, bool?>(
-                        request => request.Branches.ToList().FindIndex(b => b.Targets.Contains(true)));
-            }
-
-            var response =
-                await mediator.Send(
-                    new MockDecisionViaFlowRFlowRequest { FlowContext = flowContext, SwitchValue = false });
-
-            Assert.Equal(expectedValue, response.Output);
-        }
-
-        [Theory]
-        [InlineData(false, "A")]
-        [InlineData(true, "B")]
-        public async void Can_mock_decision_by_request_type_and_override_key(bool isMocked, string expectedValue)
-        {
-            var (mediator, _) = GetMediator<MockDecisionViaFlowRFlowRequest>();
-
-            var flowContext = new FlowContext(null, null);
-
-            if (isMocked)
-            {
-                flowContext
-                    .MockDecision<BoolFlowValueDecision, bool?>("Decision1",
-                        request => request.Branches.ToList().FindIndex(b => b.Targets.Contains(true)));
-            }
-
-            var response =
-                await mediator.Send(
-                    new MockDecisionViaFlowRFlowRequest { FlowContext = flowContext, SwitchValue = false });
-
-            Assert.Equal(expectedValue, response.Output);
         }
     }
 }

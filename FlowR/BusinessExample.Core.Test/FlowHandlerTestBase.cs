@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using BusinessExample.Core.Exchanges.LoanApplications;
 using BusinessExample.Core.Exchanges.LoanDecisions;
-using FlowR.StepLibrary.Decisions;
+using FlowR.StepLibrary.Activities;
 using Xunit.Abstractions;
 
 namespace BusinessExample.Core.Test
@@ -109,7 +109,7 @@ namespace BusinessExample.Core.Test
             serviceCollection
                 .AddDebugLogging(this)
                 .AddMediatR(typeof(IFlowHandler).Assembly)
-                .AddMediatR(typeof(IntFlowValueDecision).Assembly)
+                .AddMediatR(typeof(SetFlowValueActivity).Assembly)
                 .AddMediatR(typeof(MakeLoanApplicationDecision).Assembly)
                 .AddTransient(typeof(IFlowLogger<>), typeof(CoreFlowLogger<>))
                 .AddMediatR(requestType.Assembly);

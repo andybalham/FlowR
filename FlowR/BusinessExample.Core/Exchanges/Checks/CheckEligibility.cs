@@ -8,6 +8,9 @@ namespace BusinessExample.Core.Exchanges.Checks
 {
     public class CheckEligibility : FlowActivityRequest<CheckEligibility.Response>
     {
+        public static FlowActivityDefinition<CheckEligibility, Response> NewDefinition() =>
+            new FlowActivityDefinition<CheckEligibility, Response>();
+
         [BoundValue, NotNullValue]
         public LoanApplication LoanApplication { get; set; }
 

@@ -55,7 +55,7 @@ namespace BusinessExample.Core.Test
 
         public static IServiceCollection MockDecisionHandler<TRq>(this IServiceCollection serviceCollection,
             Func<TRq, CancellationToken, int> mockHandler)
-            where TRq : FlowDecisionRequestBase
+            where TRq : FlowDecisionBase
         {
             var handlerMock = new Mock<IRequestHandler<TRq, int>>();
 

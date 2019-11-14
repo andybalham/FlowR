@@ -8,6 +8,9 @@ namespace BusinessExample.Core.Exchanges.LoanDecisions
 {
     public class SetLoanDecisionResult : FlowActivityRequest<SetLoanDecisionResult.Response>
     {
+        public static FlowActivityDefinition<SetLoanDecisionResult, Response> NewDefinition() =>
+            new FlowActivityDefinition<SetLoanDecisionResult, Response>();
+
         public LoanDecisionResult Result { get; set; }
 
         [BoundValue, NotNullValue]
@@ -17,14 +20,6 @@ namespace BusinessExample.Core.Exchanges.LoanDecisions
         {
             public LoanDecisionResult Result { get; set; }
         }
-    }
-
-    public class LoanDecisionResultDecision : NullableFlowValueDecision<LoanDecisionResult?>
-    {
-    }
-
-    public class LoanDecisionResultDecisionHandler : FlowValueDecisionHandler<LoanDecisionResultDecision, LoanDecisionResult?>
-    {
     }
 
     public class SetLoanDecisionResultHandler : IRequestHandler<SetLoanDecisionResult, SetLoanDecisionResult.Response>

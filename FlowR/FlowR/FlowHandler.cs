@@ -154,9 +154,9 @@ namespace FlowR
 
                 case DecisionFlowStepBase decisionFlowStep:
                     nextFlowStepIndex =
-                        await CheckDecision(
+                        CheckDecision(
                             flowStepIndex, decisionFlowStep, flowDefinition, stepFlowContext, flowValues,
-                            flowTrace, cancellationToken);
+                            flowTrace);
                     break;
 
                 case GotoFlowStep gotoFlowStep:
@@ -264,38 +264,16 @@ namespace FlowR
             return activityResponse;
         }
 
-        private async Task<int> CheckDecision(int flowStepIndex, DecisionFlowStepBase decisionFlowStep, FlowDefinition flowDefinition, 
-            FlowContext stepFlowContext, FlowValues flowValues, FlowTrace flowTrace, CancellationToken cancellationToken)
+        private int CheckDecision(int flowStepIndex, DecisionFlowStepBase decisionFlowStep, FlowDefinition flowDefinition, 
+            FlowContext stepFlowContext, FlowValues flowValues, FlowTrace flowTrace)
         {
-            var decisionRequest = (FlowDecisionRequestBase)CreateRequest(stepFlowContext, decisionFlowStep, flowValues);
+            var decisionRequest = (FlowDecisionBase)CreateRequest(stepFlowContext, decisionFlowStep, flowValues);
 
             decisionFlowStep.Branches.ForEach(b => decisionRequest.AddBranch(b.Criteria, b.NextStepName, b.IsEnd));
 
             _logger?.LogDecisionRequest(stepFlowContext, decisionRequest);
 
-            var mockHandler =
-                stepFlowContext.GetMockDecisionHandler(
-                    decisionFlowStep.Definition.RequestType, decisionFlowStep.OverrideKey?.Value);
-
-            var stopWatch = new Stopwatch();
-            stopWatch.Start();
-
-            int branchIndex;
-            if (mockHandler == null)
-            {
-                var mediatorSendGeneric = _mediatorSend.MakeGenericMethod(typeof(int));
-
-                branchIndex =
-                    await (dynamic)mediatorSendGeneric.Invoke(_mediator, new object[] { decisionRequest, cancellationToken });
-            }
-            else
-            {
-                _logger?.LogMockRequestHandler(stepFlowContext, decisionFlowStep);
-
-                branchIndex = mockHandler(decisionRequest);
-            }
-
-            stopWatch.Stop();
+            var branchIndex = decisionRequest.GetMatchingBranchIndex();
 
             if (branchIndex < 0 || branchIndex >= decisionFlowStep.Branches.Count)
             {
@@ -309,7 +287,7 @@ namespace FlowR
                 StepType = FlowTraceStepType.Decision, Name = decisionFlowStep.Name, BranchTargets = branch.Criteria
             });
 
-            _logger?.LogDecisionResponse(stepFlowContext, branch, stopWatch.ElapsedMilliseconds);
+            _logger?.LogDecisionResponse(stepFlowContext, branch);
 
             if (branch.IsEnd)
             {

@@ -12,4 +12,8 @@
     <ProjectReference Include="..\FlowR\FlowR.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Decisions\" />
+  </ItemGroup>
+
 </Project>

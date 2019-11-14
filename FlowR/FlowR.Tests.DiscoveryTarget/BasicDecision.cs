@@ -8,8 +8,4 @@ namespace FlowR.Tests.DiscoveryTarget
     public class BasicDecisionRequest : NullableFlowValueDecision<string>
     {
     }
-
-    public class BasicDecision : FlowValueDecisionHandler<BasicDecisionRequest, string>
-    {
-    }
 }

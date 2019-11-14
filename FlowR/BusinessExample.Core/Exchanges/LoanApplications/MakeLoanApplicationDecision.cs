@@ -3,13 +3,11 @@ using BusinessExample.Core.Exchanges.Checks;
 using BusinessExample.Core.Exchanges.Communications;
 using BusinessExample.Core.Exchanges.LoanDecisions;
 using FlowR;
-using FlowR.StepLibrary.Decisions;
 using MediatR;
 
 namespace BusinessExample.Core.Exchanges.LoanApplications
 {
     // TODO: Think about changing the name of this, perhaps to PerformLoanDecisionProcessRequest
-    // TODO: Should this be in the LoanApplication namespace? It is an operation on a LoanApplication after all
     public class MakeLoanApplicationDecision : FlowActivityRequest<MakeLoanApplicationDecision.Response>
     {
         [BoundValue, NotNullValue]
@@ -31,66 +29,54 @@ namespace BusinessExample.Core.Exchanges.LoanApplications
         public override FlowDefinition GetFlowDefinition() =>
             new FlowDefinition()
 
-                .Do("InitialiseNewDecision",
-                    new FlowActivityDefinition<InitialiseNewLoanDecision, InitialiseNewLoanDecision.Response>())
+                .Do("InitialiseNewDecision", InitialiseNewLoanDecision.NewDefinition())
 
                 // ------------------------------------------------------------------------------------------------
 
-                .Do("CheckEligibility",
-                    new FlowActivityDefinition<CheckEligibility, CheckEligibility.Response>())
-                .Check("IsEligible",
-                    new FlowDecisionDefinition<BoolFlowValueDecision, bool?>()
-                        .BindInput(rq => rq.SwitchValue, nameof(CheckEligibility.Response.IsEligible)))
+                .Do("CheckEligibility", CheckEligibility.NewDefinition())
+                .Check("IsEligible", FlowValueDecision<bool?>.NewDefinition()
+                    .BindInput(rq => rq.SwitchValue, nameof(CheckEligibility.Response.IsEligible)))
                 .When(false).Goto("SetResultToDecline")
                 .Else().Continue()
 
                 // ------------------------------------------------------------------------------------------------
 
-                .Do("CheckAffordability",
-                    new FlowActivityDefinition<CheckAffordability, CheckAffordability.Response>())
-                .Check("AffordabilityRating",
-                    new FlowDecisionDefinition<AffordabilityRatingDecision, AffordabilityRating?>()
-                        .BindInput(rq => rq.SwitchValue, nameof(CheckAffordability.Response.AffordabilityRating)))
+                .Do("CheckAffordability", CheckAffordability.NewDefinition())
+                .Check("AffordabilityRating", FlowValueDecision<AffordabilityRating?>.NewDefinition()
+                    .BindInput(rq => rq.SwitchValue, nameof(CheckAffordability.Response.AffordabilityRating)))
                 .When(AffordabilityRating.Fair).Goto("SetResultToRefer")
                 .When(AffordabilityRating.Poor).Goto("SetResultToDecline")
                 .Else().Continue()
 
                 // ------------------------------------------------------------------------------------------------
 
-                .Do("CheckIdentity",
-                    new FlowActivityDefinition<CheckIdentity, CheckIdentity.Response>())
-                .Check("IdentityCheckResult",
-                    new FlowDecisionDefinition<IdentityCheckResultDecision, IdentityCheckResult?>()
-                        .BindInput(rq => rq.SwitchValue, nameof(CheckIdentity.Response.IdentityCheckResult)))
+                .Do("CheckIdentity", CheckIdentity.NewDefinition())
+                .Check("IdentityCheckResult", FlowValueDecision<IdentityCheckResult?>.NewDefinition()
+                    .BindInput(rq => rq.SwitchValue, nameof(CheckIdentity.Response.IdentityCheckResult)))
                 .When(IdentityCheckResult.ServiceUnavailable).Goto("SetResultToRefer")
                 .When(IdentityCheckResult.IdentityNotFound).Goto("SetResultToDecline")
                 .Else().Continue()
 
                 // ------------------------------------------------------------------------------------------------
 
-                .Do("SetResultToAccept", 
-                    new FlowActivityDefinition<SetLoanDecisionResult, SetLoanDecisionResult.Response>()
-                        .SetValue(rq => rq.Result, LoanDecisionResult.Accept))
+                .Do("SetResultToAccept", SetLoanDecisionResult.NewDefinition()
+                    .SetValue(rq => rq.Result, LoanDecisionResult.Accept))
                 .Goto("SaveDecision")
 
-                .Do("SetResultToRefer",
-                    new FlowActivityDefinition<SetLoanDecisionResult, SetLoanDecisionResult.Response>()
-                        .SetValue(rq => rq.Result, LoanDecisionResult.Refer))
+                .Do("SetResultToRefer", SetLoanDecisionResult.NewDefinition()
+                    .SetValue(rq => rq.Result, LoanDecisionResult.Refer))
                 .Goto("SaveDecision")
 
-                .Do("SetResultToDecline",
-                    new FlowActivityDefinition<SetLoanDecisionResult, SetLoanDecisionResult.Response>()
-                        .SetValue(rq => rq.Result, LoanDecisionResult.Decline))
+                .Do("SetResultToDecline", SetLoanDecisionResult.NewDefinition()
+                    .SetValue(rq => rq.Result, LoanDecisionResult.Decline))
                 .Goto("SaveDecision")
 
                 // ------------------------------------------------------------------------------------------------
 
-                .Do("SaveDecision",
-                    new FlowActivityDefinition<CreateLoanDecision, CreateLoanDecision.Response>())
+                .Do("SaveDecision", CreateLoanDecision.NewDefinition())
 
-                .Check("LoanDecisionResult", 
-                    new FlowDecisionDefinition<LoanDecisionResultDecision, LoanDecisionResult?>()
-                        .BindInput(rq => rq.SwitchValue, nameof(SetLoanDecisionResult.Response.Result)))
+                .Check("LoanDecisionResult", FlowValueDecision<LoanDecisionResult?>.NewDefinition()
+                    .BindInput(rq => rq.SwitchValue, nameof(SetLoanDecisionResult.Response.Result)))
                 .When(LoanDecisionResult.Decline).Goto("PostDeclineActions")
                 .When(LoanDecisionResult.Refer).Goto("PostReferActions")
                 .Else().Continue()
@@ -98,45 +84,41 @@ namespace BusinessExample.Core.Exchanges.LoanApplications
                 // ------------------------------------------------------------------------------------------------
 
                 .Label("PostAcceptActions")
-                .Do("SendAcceptConfirmationEmail",
-                    new FlowActivityDefinition<SendEmail, SendEmail.Response>()
-                        .SetValue(rq => rq.TemplateName, "AcceptConfirmation")
-                        .BindInput(rq => rq.EmailAddress, nameof(MakeLoanApplicationDecision.LoanApplication), 
-                            (LoanApplication la) => la.EmailAddress)
-                        .BindInputs(rq => rq.DataObjects,
-                            nameof(MakeLoanApplicationDecision.LoanApplication), nameof(InitialiseNewLoanDecision.Response.LoanDecision))
-                        .BindInput(rq => rq.ParentId, nameof(InitialiseNewLoanDecision.Response.LoanDecision),
-                            (LoanDecision ld) => ld.Id))
+                .Do("SendAcceptConfirmationEmail", SendEmail.NewDefinition()
+                    .SetValue(rq => rq.TemplateName, "AcceptConfirmation")
+                    .BindInput(rq => rq.EmailAddress, 
+                        nameof(MakeLoanApplicationDecision.LoanApplication), (LoanApplication la) => la.EmailAddress)
+                    .BindInputs(rq => rq.DataObjects,
+                        nameof(MakeLoanApplicationDecision.LoanApplication), nameof(InitialiseNewLoanDecision.Response.LoanDecision))
+                    .BindInput(rq => rq.ParentId, 
+                        nameof(InitialiseNewLoanDecision.Response.LoanDecision), (LoanDecision ld) => ld.Id))
                 .End()
 
                 // ------------------------------------------------------------------------------------------------
 
                 .Label("PostReferActions")
-                .Do("SendReferNotificationEmail",
-                    new FlowActivityDefinition<SendEmail, SendEmail.Response>()
-                        .SetValue(rq => rq.TemplateName, "ReferNotification")
-                        .BindInput(rq => rq.EmailAddress, nameof(MakeLoanApplicationDecision.LoanApplication),
-                            (LoanApplication la) => la.EmailAddress)
-                        .BindInputs(rq => rq.DataObjects, 
-                            nameof(MakeLoanApplicationDecision.LoanApplication), nameof(InitialiseNewLoanDecision.Response.LoanDecision))
-                        .BindInput(rq => rq.ParentId, nameof(InitialiseNewLoanDecision.Response.LoanDecision),
-                            (LoanDecision ld) => ld.Id))
-                .Do("RaiseLoanReferredEvent",
-                    new FlowActivityDefinition<RaiseLoanDecisionReferredEvent, RaiseLoanDecisionReferredEvent.Response>())
+                .Do("SendReferNotificationEmail", SendEmail.NewDefinition()
+                    .SetValue(rq => rq.TemplateName, "ReferNotification")
+                    .BindInput(rq => rq.EmailAddress, 
+                        nameof(MakeLoanApplicationDecision.LoanApplication), (LoanApplication la) => la.EmailAddress)
+                    .BindInputs(rq => rq.DataObjects, 
+                        nameof(MakeLoanApplicationDecision.LoanApplication), nameof(InitialiseNewLoanDecision.Response.LoanDecision))
+                    .BindInput(rq => rq.ParentId, 
+                        nameof(InitialiseNewLoanDecision.Response.LoanDecision), (LoanDecision ld) => ld.Id))
+                .Do("RaiseLoanReferredEvent", RaiseLoanDecisionReferredEvent.NewDefinition())
                 .End()
 
                 // ------------------------------------------------------------------------------------------------
 
                 .Label("PostDeclineActions")
-                .Do("SendDeclineConfirmationEmail",
-                    new FlowActivityDefinition<SendEmail, SendEmail.Response>()
-                        .SetValue(rq => rq.TemplateName, "DeclineConfirmation")
-                        .BindInput(rq => rq.EmailAddress, nameof(MakeLoanApplicationDecision.LoanApplication),
-                            (LoanApplication la) => la.EmailAddress)
-                        .BindInputs(rq => rq.DataObjects,
-                            nameof(MakeLoanApplicationDecision.LoanApplication), nameof(InitialiseNewLoanDecision.Response.LoanDecision))
-                        .BindInput(rq => rq.ParentId, nameof(InitialiseNewLoanDecision.Response.LoanDecision),
-                            (LoanDecision ld) => ld.Id))
+                .Do("SendDeclineConfirmationEmail", SendEmail.NewDefinition()
+                    .SetValue(rq => rq.TemplateName, "DeclineConfirmation")
+                    .BindInput(rq => rq.EmailAddress, 
+                        nameof(MakeLoanApplicationDecision.LoanApplication), (LoanApplication la) => la.EmailAddress)
+                    .BindInputs(rq => rq.DataObjects,
+                        nameof(MakeLoanApplicationDecision.LoanApplication), nameof(InitialiseNewLoanDecision.Response.LoanDecision))
+                    .BindInput(rq => rq.ParentId, 
+                        nameof(InitialiseNewLoanDecision.Response.LoanDecision), (LoanDecision ld) => ld.Id))
                 .End();
     }
 }

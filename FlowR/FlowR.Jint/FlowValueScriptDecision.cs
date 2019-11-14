@@ -7,29 +7,26 @@ using Jint;
 
 namespace FlowR.Jint
 {
-    public class FlowValueScriptDecisionRequest<TSwitch> : FlowDecisionRequest<TSwitch>
+    public class FlowValueScriptDecisionRequest<TSwitch> : FlowDecision<TSwitch>
     {
         [NotNullValue]
         public string SwitchValueScript { get; set; }
 
         [BoundValue]
         public object FlowValue { get; set; }
-    }
 
-    public class FlowValueScriptDecision<TSwitch> : FlowDecisionHandler<FlowValueScriptDecisionRequest<TSwitch>, TSwitch>
-    {
-        public override Task<int> Handle(FlowValueScriptDecisionRequest<TSwitch> request, CancellationToken cancellationToken)
+        public override int GetMatchingBranchIndex()
         {
             var switchValue =
                 (TSwitch)new Engine()
-                    .SetValue("value", request.FlowValue)
-                    .Execute(request.SwitchValueScript)
+                    .SetValue("value", this.FlowValue)
+                    .Execute(this.SwitchValueScript)
                     .GetCompletionValue()
                     .ToObject();
 
-            var matchingBranchIndex = GetMatchingBranchIndex(switchValue, request.Branches, BranchTargetsContains);
+            var matchingBranchIndex = GetMatchingBranchIndex(switchValue, this.Branches, BranchTargetsContains);
 
-            return Task.FromResult(matchingBranchIndex);
+            return matchingBranchIndex;
         }
     }
 }

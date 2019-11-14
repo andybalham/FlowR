@@ -41,7 +41,7 @@ namespace FlowR.Tests.Domain.FlowTests
         }
     }
 
-    public class DictionaryBindingDecisionRequest : FlowDecisionRequest<int>
+    public class DictionaryBindingDecisionRequest : FlowDecision<int>
     {
         [BoundValue]
         public FlowValueDictionary<string> NamedStrings { get; set; }
@@ -54,13 +54,22 @@ namespace FlowR.Tests.Domain.FlowTests
 
         [BoundValue]
         public FlowValueDictionary<string> Strings { get; set; }
-    }
 
-    public class DictionaryBindingDecision : FlowDecisionHandler<DictionaryBindingDecisionRequest, int>
-    {
-        public override Task<int> Handle(DictionaryBindingDecisionRequest request, CancellationToken cancellationToken)
+        public override int GetMatchingBranchIndex()
         {
-            return Task.FromResult(0);
+            if (this.Strings.Count != 3) return -1;
+            if (this.Strings["String3"] != "StringValue3") return -1;
+
+            if (this.NamedStrings.Count != 1) return -1;
+            if (this.NamedStrings["String2"] != "StringValue2") return -1;
+
+            if (this.RenamedStrings.Count != 2) return -1;
+            if (this.RenamedStrings["RenamedString1"] != "StringValue1") return -1;
+
+            if (this.StringLengths.Count != 3) return -1;
+            if (this.StringLengths["String1.Length"] != 12) return -1;
+
+            return 0;
         }
     }
 }

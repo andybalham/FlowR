@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using FlowR.StepLibrary.Activities;
-using FlowR.StepLibrary.Decisions;
 using FlowR.Tests.Domain.FlowTests;
 using Xunit;
 
@@ -15,7 +14,7 @@ namespace FlowR.Tests
         public void Can_validate_closed_loops()
         {
             var flowDefinition = new FlowDefinition()
-                .Check("Is_int_444", new FlowDecisionDefinition<IntFlowValueDecision, int?>())
+                .Check("Is_int_444", FlowValueDecision<int?>.NewDefinition())
                 .When(444).Goto("Activity_3")
                 .Else().Continue()
 
@@ -24,11 +23,11 @@ namespace FlowR.Tests
 
                 .Label("Label_1")
 
-                .Check("Is_int_555", new FlowDecisionDefinition<IntFlowValueDecision, int?>())
+                .Check("Is_int_555", FlowValueDecision<int?>.NewDefinition())
                 .When(555).Goto("Activity_1")
                 .Else().Continue()
 
-                .Check("Is_int_666", new FlowDecisionDefinition<IntFlowValueDecision, int?>())
+                .Check("Is_int_666", FlowValueDecision<int?>.NewDefinition())
                 .When(666).Goto("Activity_2")
                 .Else().Goto("Activity_1")
 
@@ -36,7 +35,7 @@ namespace FlowR.Tests
 
                 .Do("Activity_3", new FlowActivityDefinition<SetStringFlowValueRequest, SetStringFlowValueResponse>())
 
-                .Check("Is_int_777", new FlowDecisionDefinition<IntFlowValueDecision, int?>())
+                .Check("Is_int_777", FlowValueDecision<int?>.NewDefinition())
                 .When(666).Goto("Activity_3")
                 .Else().Continue();
 
@@ -62,7 +61,7 @@ namespace FlowR.Tests
                 .Do("Activity_1", new FlowActivityDefinition<SetStringFlowValueRequest, SetStringFlowValueResponse>())
                 .Do("Activity_2", new FlowActivityDefinition<SetStringFlowValueRequest, SetStringFlowValueResponse>())
 
-                .Check("Is_int_666", new FlowDecisionDefinition<IntFlowValueDecision, int?>())
+                .Check("Is_int_666", FlowValueDecision<int?>.NewDefinition())
                 .When(666).Goto("Activity_3")
                 .Else().Continue()
 
@@ -82,13 +81,13 @@ namespace FlowR.Tests
             var flowDefinition = new FlowDefinition()
                 .Do("Activity_1", new FlowActivityDefinition<SetStringFlowValueRequest, SetStringFlowValueResponse>())
 
-                .Check("Is_int_666", new FlowDecisionDefinition<IntFlowValueDecision, int?>())
+                .Check("Is_int_666", FlowValueDecision<int?>.NewDefinition())
                 .When(666).Goto("Activity_3")
                 .Else().Goto("Is_int_555")
 
                 .Do("Orphan_activity_1", new FlowActivityDefinition<SetStringFlowValueRequest, SetStringFlowValueResponse>())
 
-                .Check("Is_int_555", new FlowDecisionDefinition<IntFlowValueDecision, int?>())
+                .Check("Is_int_555", FlowValueDecision<int?>.NewDefinition())
                 .When(555).Goto("End_activity_label")
                 .Else().Continue()
 
@@ -133,7 +132,7 @@ namespace FlowR.Tests
                     .BindOutput(r => r.Output, "Output1")
                     .BindOutput(r => r.Output, "Output2"))
 
-                .Check("Int_decision", new FlowDecisionDefinition<IntFlowValueDecision, int?>()
+                .Check("Int_decision", FlowValueDecision<int?>.NewDefinition()
                     .BindInput(r => r.SwitchValue, "Input1")
                     .BindInput(r => r.SwitchValue, "Input2"))
                 .Else().Continue();
@@ -147,7 +146,7 @@ namespace FlowR.Tests
             Assert.Contains(validationMessages, m => m.Contains("property SwitchValue"));
         }
 
-        [Fact(Skip = "Implement this as part of discovery")]
+        // TODO: Implement Can_validate_all_flow_definitions_in_an_assembly
         public void Can_validate_all_flow_definitions_in_an_assembly()
         {
         }

@@ -52,39 +52,6 @@ namespace FlowR.Tests
             return serviceCollection;
         }
 
-        public static IServiceCollection MockDecisionHandler<TRq>(this IServiceCollection serviceCollection,
-            Func<TRq, CancellationToken, int> mockHandler)
-            where TRq : FlowDecisionRequestBase
-        {
-            var handlerMock = new Mock<IRequestHandler<TRq, int>>();
-
-            handlerMock.Setup(h =>
-                    h.Handle(It.IsAny<TRq>(), It.IsAny<CancellationToken>()))
-                .Returns((TRq req, CancellationToken ct) => Task.FromResult(mockHandler(req, ct)));
-
-            serviceCollection.AddSingleton(typeof(IRequestHandler<TRq, int>), handlerMock.Object);
-
-            return serviceCollection;
-        }
-
-        public static IServiceCollection MockEventHandler<T>(this IServiceCollection serviceCollection,
-            Action<T, CancellationToken> mockHandler) where T : IRequest<Unit>
-        {
-            var handlerMock = new Mock<IRequestHandler<T, Unit>>();
-
-            handlerMock.Setup(h =>
-                    h.Handle(It.IsAny<T>(), It.IsAny<CancellationToken>()))
-                .Returns((T req, CancellationToken ct) =>
-                {
-                    mockHandler(req, ct);
-                    return Unit.Task;
-                });
-
-            serviceCollection.AddSingleton(typeof(IRequestHandler<T, Unit>), handlerMock.Object);
-
-            return serviceCollection;
-        }
-
         public static ServiceProvider BuildServiceProvider(this IServiceCollection serviceCollection, out IMediator mediator)
         {
             var serviceProvider = serviceCollection.BuildServiceProvider();

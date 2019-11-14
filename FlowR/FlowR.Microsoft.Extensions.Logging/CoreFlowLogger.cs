@@ -73,11 +73,11 @@ namespace FlowR.Microsoft.Extensions.Logging
                 _logger.EvalIfDebug(() => GetPublicPropertySummary(decisionRequest)));
         }
 
-        public void LogDecisionResponse(FlowContext flowContext, DecisionFlowStepBase.Branch branch, long elapsedMilliseconds)
+        public void LogDecisionResponse(FlowContext flowContext, DecisionFlowStepBase.Branch branch)
         {
-            _logger.LogDebug(flowContext, "{BranchTargets} => {BranchDestination} in {DecisionMillis}ms",
+            _logger.LogDebug(flowContext, "{BranchTargets} => {BranchDestination}",
                 _logger.EvalIfDebug(() => string.Join("|", branch.Criteria?.ToArray() ?? new object[] { "ELSE" })),
-                (branch.NextStepName ?? (branch.IsEnd ? "END" : "CONTINUE")), elapsedMilliseconds);
+                (branch.NextStepName ?? (branch.IsEnd ? "END" : "CONTINUE")));
         }
 
         public IDisposable BeginFlowScope(FlowContext flowContext)

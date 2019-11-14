@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using FlowR.StepLibrary.Activities;
-using FlowR.StepLibrary.Decisions;
 using MediatR;
 
 namespace FlowR.Tests.Domain.FlowTests
@@ -28,7 +27,7 @@ namespace FlowR.Tests.Domain.FlowTests
 
         public override FlowDefinition GetFlowDefinition()
         {
-            var intValue = new FlowDecisionDefinition<IntFlowValueDecision, int?>()
+            var intValue = FlowValueDecision<int?>.NewDefinition()
                 .BindInput(rq => rq.SwitchValue, nameof(MockedDecisionFlowRequest.IntValue));
 
             var setOutputToX = new FlowActivityDefinition<SetStringFlowValueRequest, SetStringFlowValueResponse>()

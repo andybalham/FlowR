@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using FlowR.StepLibrary.Decisions;
 using MediatR;
 
 namespace FlowR.Tests.Domain.FlowTests
@@ -28,14 +27,13 @@ namespace FlowR.Tests.Domain.FlowTests
         {
             return new FlowDefinition()
 
-                .Check("Decision_1",
-                    new FlowDecisionDefinition<IntFlowValueDecision, int?>()
-                        .BindInput(rq => rq.SwitchValue, "StringValue1", (string s) => s.Length))
+                .Check("Decision_1", FlowValueDecision<int?>.NewDefinition()
+                    .BindInput(rq => rq.SwitchValue, "StringValue1", (string s) => s.Length))
                 .When(0).End()
                 .Else().Continue()
 
                 .Check("Decision_2",
-                    new FlowDecisionDefinition<IntFlowValueDecision, int?>()
+                    FlowValueDecision<int?>.NewDefinition()
                         .BindInput(rq => rq.SwitchValue, "StringValue2", (string s) => s.Length))
                 .When(0).End()
                 .Else().Continue()
