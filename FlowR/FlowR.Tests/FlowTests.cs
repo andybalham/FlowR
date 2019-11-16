@@ -510,5 +510,58 @@ namespace FlowR.Tests
 
             await mediator.Send(request);
         }
+
+        [Theory]
+        [InlineData(null, false)]
+        [InlineData("Any old value", true)]
+        public async void Can_throw_exception_if_no_matching_branch(string input, bool isExceptionExpected)
+        {
+            // Arrange
+
+            var (mediator, _) = GetMediator<TestElseThrowRequest>();
+
+            var request = new TestElseThrowRequest { Input = input };
+
+            try
+            {
+                // Act
+
+                await mediator.Send(request);
+
+                // Assert
+
+                Assert.False(isExceptionExpected, "isExceptionExpected");
+            }
+            catch (FlowUnhandledElseException e)
+            {
+                // Assert
+
+                Assert.True(isExceptionExpected, "isExceptionExpected");
+                Assert.Matches("UnhandledDecisionName", e.Message);
+            }
+        }
+    }
+
+    public class TestElseThrowRequest : FlowActivityRequest<TestElseThrowResponse>
+    {
+        public string Input { get; set; }
+    }
+
+    public class TestElseThrowResponse : FlowResponse
+    {
+    }
+
+    public class TestElseThrowHandler : FlowHandler<TestElseThrowRequest, TestElseThrowResponse>
+    {
+        public TestElseThrowHandler(IMediator mediator) : base(mediator)
+        {
+        }
+
+        public override FlowDefinition GetFlowDefinition() =>
+            new FlowDefinition()
+                .Check("UnhandledDecisionName", NullableFlowValueDecision<string>.NewDefinition()
+                    .BindInput(rq => rq.SwitchValue, nameof(TestElseThrowRequest.Input)))
+                .When((string)null).End()
+                .Else().Exception();
     }
 }

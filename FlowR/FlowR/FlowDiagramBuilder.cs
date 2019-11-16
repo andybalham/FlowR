@@ -145,7 +145,12 @@ namespace FlowR
 
             foreach (var branch in decisionFlowStep.Branches)
             {
-                var linkCriteria = branch.Criteria?.ToList().ConvertAll(c => c?.ToString());
+                if (branch.IsException)
+                {
+                    continue;
+                }
+
+                var linkCriteria = branch.Targets?.ToList().ConvertAll(c => c?.ToString());
 
                 if (branch.IsEnd)
                 {
@@ -159,7 +164,7 @@ namespace FlowR
                 }
                 else
                 {
-                    if (String.IsNullOrEmpty(branch.NextStepName))
+                    if (string.IsNullOrEmpty(branch.NextStepName))
                     {
                         endCount = AddFlowDiagramDefaultLink(decisionNode, stepIndex, flowDefinition, flowDiagram, endCount);
                     }

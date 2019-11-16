@@ -9,7 +9,7 @@ namespace FlowR
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        public bool IsMandatoryValue { get; set; }
+        public bool IsNotNullValue { get; set; }
         public bool IsPrivate { get; set; }
         public bool IsBoundValue { get; set; }
         public bool IsDictionaryBinding { get; set; }

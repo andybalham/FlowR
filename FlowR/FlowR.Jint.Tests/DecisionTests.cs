@@ -22,9 +22,9 @@ namespace FlowR.Jint.Tests
         {
             var decisionRequest = 
                 new FlowValueScriptDecisionRequest<string> { SwitchValueScript = "value.StringProperty" };
-            decisionRequest.AddBranch(new[] { "PropertyValue1" }, "Dest1", false);
-            decisionRequest.AddBranch(new[] { "PropertyValue2" }, "Dest2", false);
-            decisionRequest.AddBranch(null, "Dest3", false);
+            decisionRequest.AddBranch(new[] { "PropertyValue1" });
+            decisionRequest.AddBranch(new[] { "PropertyValue2" });
+            decisionRequest.AddBranch(null);
             decisionRequest.FlowValue = new TestClass { StringProperty = stringPropertyValue };
 
             var actualIndex = decisionRequest.GetMatchingBranchIndex();
@@ -39,9 +39,9 @@ namespace FlowR.Jint.Tests
         public void Can_switch_on_branch_evaluation(int intPropertyValue, int expectedIndex)
         {
             var decisionRequest = new EvaluateBranchScriptDecisionRequest();
-            decisionRequest.AddBranch(new[] { "value.IntProperty < 10" }, "Dest1", false);
-            decisionRequest.AddBranch(new[] { "value.IntProperty >= 10 && value.IntProperty < 20" }, "Dest2", false);
-            decisionRequest.AddBranch(null, "Dest3", false);
+            decisionRequest.AddBranch(new[] { "value.IntProperty < 10" });
+            decisionRequest.AddBranch(new[] { "value.IntProperty >= 10 && value.IntProperty < 20" });
+            decisionRequest.AddBranch(null);
             decisionRequest.SwitchValue = new TestClass { IntProperty = intPropertyValue };
 
             var actualIndex = decisionRequest.GetMatchingBranchIndex();

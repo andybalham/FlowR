@@ -12,7 +12,7 @@ namespace FlowR
 
         public virtual string GetText() => null;
 
-        public abstract void AddBranch(IEnumerable<object> targets, string destination, bool isEnd);
+        public abstract void AddBranch(IEnumerable<object> targets);
         
         public abstract int GetMatchingBranchIndex();
     }
@@ -26,17 +26,15 @@ namespace FlowR
         public class Branch
         {
             public IEnumerable<TSwitch> Targets { get; internal set; }
-            public string Destination { get; internal set; }
-            public bool IsEnd { get; set; }
         }
 
-        public override void AddBranch(IEnumerable<object> targets, string destination, bool isEnd)
+        public override void AddBranch(IEnumerable<object> targets)
         {
             // TODO: How can we use converters if the definition targets are strings?
 
             var switchTargets = targets?.ToList().ConvertAll(t => (TSwitch)t);
 
-            var branch = new Branch { Targets = switchTargets, Destination = destination, IsEnd = isEnd };
+            var branch = new Branch { Targets = switchTargets };
 
             _branches.Add(branch);
         }
@@ -65,15 +63,15 @@ namespace FlowR
                 return matchingBranchIndex;
             }
 
-            var defaultBranchIndexes =
+            var elseBranchIndexes =
                 branchList
                     .Select((value, index) => new { Branch = value, Index = index })
                     .Where(pair => pair.Branch.Targets == null)
                     .Select(pair => pair.Index + 1)
                     .ToList();
 
-            var defaultBranchIndex = defaultBranchIndexes.FirstOrDefault() - 1;
-            return defaultBranchIndex;
+            var elseBranchIndex = elseBranchIndexes.FirstOrDefault() - 1;
+            return elseBranchIndex;
         }
 
         protected virtual bool BranchTargetsContains(Branch branch, TSwitch switchValue)
