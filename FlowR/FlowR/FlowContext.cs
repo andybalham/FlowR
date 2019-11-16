@@ -11,12 +11,6 @@ namespace FlowR
         private IDictionary<(Type, string), Func<IFlowStepRequest, object>> MockActivityHandlers { get; } =
             new Dictionary<(Type, string), Func<IFlowStepRequest, object>>();
 
-        private IDictionary<(Type, string), Action<IFlowStepRequest>> MockEventHandlers { get; } =
-            new Dictionary<(Type, string), Action<IFlowStepRequest>>();
-
-        private IDictionary<(Type, string), Func<IFlowStepRequest, int>> MockDecisionHandlers { get; } =
-            new Dictionary<(Type, string), Func<IFlowStepRequest, int>>();
-
         #endregion
 
         #region Constructors
@@ -42,8 +36,6 @@ namespace FlowR
             RequestId = parentContext?.RequestId ?? Guid.NewGuid().ToString();
             FlowRootInstanceId = parentContext?.FlowRootInstanceId ?? FlowInstanceId;
             MockActivityHandlers = parentContext?.MockActivityHandlers ?? MockActivityHandlers;
-            MockEventHandlers = parentContext?.MockEventHandlers ?? MockEventHandlers;
-            MockDecisionHandlers = parentContext?.MockDecisionHandlers ?? MockDecisionHandlers;
         }
 
         private FlowContext(FlowContext flowContext, string flowStepName)
@@ -58,8 +50,6 @@ namespace FlowR
             FlowInstanceId = flowContext.FlowInstanceId;
             FlowInstanceId = flowContext.FlowInstanceId;
             MockActivityHandlers = flowContext.MockActivityHandlers;
-            MockEventHandlers = flowContext.MockEventHandlers;
-            MockDecisionHandlers = flowContext.MockDecisionHandlers;
         }
 
         #endregion
@@ -98,18 +88,6 @@ namespace FlowR
             return this;
         }
 
-        public FlowContext MockDecision<TReq, TSwitch>(Func<TReq, int> mockHandler) where TReq : FlowDecisionRequest<TSwitch>
-        {
-            return MockDecision<TReq, TSwitch>(null, mockHandler);
-        }
-
-        public FlowContext MockDecision<TReq, TSwitch>(string overrideKey, Func<TReq, int> mockHandler)
-            where TReq : FlowDecisionRequest<TSwitch>
-        {
-            MockDecisionHandlers.Add((typeof(TReq), overrideKey), request => mockHandler((TReq)request));
-            return this;
-        }
-
         #endregion
 
         #region Internal methods
@@ -127,36 +105,6 @@ namespace FlowR
             }
 
             if (MockActivityHandlers.TryGetValue((requestType, null), out var typeMockHandler))
-            {
-                return typeMockHandler;
-            }
-
-            return null;
-        }
-
-        internal Action<IFlowStepRequest> GetMockEventHandler(Type requestType, string overrideKey)
-        {
-            if (MockEventHandlers.TryGetValue((requestType, overrideKey), out var instanceMockHandler))
-            {
-                return instanceMockHandler;
-            }
-
-            if (MockEventHandlers.TryGetValue((requestType, null), out var typeMockHandler))
-            {
-                return typeMockHandler;
-            }
-
-            return null;
-        }
-
-        internal Func<IFlowStepRequest, int> GetMockDecisionHandler(Type requestType, string overrideKey)
-        {
-            if (MockDecisionHandlers.TryGetValue((requestType, overrideKey), out var instanceMockHandler))
-            {
-                return instanceMockHandler;
-            }
-
-            if (MockDecisionHandlers.TryGetValue((requestType, null), out var typeMockHandler))
             {
                 return typeMockHandler;
             }

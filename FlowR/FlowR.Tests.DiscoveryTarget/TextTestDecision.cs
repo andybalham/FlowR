@@ -16,8 +16,4 @@ namespace FlowR.Tests.DiscoveryTarget
             return $"SetValue={this.SetValue}";
         }
     }
-
-    public class TextTestDecision : FlowValueDecisionHandler<TextTestDecisionRequest, string>
-    {
-    }
 }

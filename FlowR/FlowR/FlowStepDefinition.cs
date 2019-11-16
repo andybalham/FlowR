@@ -357,7 +357,7 @@ namespace FlowR
         public abstract Type SwitchType { get; }
     }
 
-    public class FlowDecisionDefinition<TReq, TSwitch> : FlowDecisionDefinitionBase where TReq : FlowDecisionRequest<TSwitch>
+    public class FlowDecisionDefinition<TReq, TSwitch> : FlowDecisionDefinitionBase where TReq : FlowDecision<TSwitch>
     {
         #region Public properties
 

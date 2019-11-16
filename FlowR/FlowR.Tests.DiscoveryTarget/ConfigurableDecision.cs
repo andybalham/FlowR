@@ -14,8 +14,4 @@ namespace FlowR.Tests.DiscoveryTarget
         [BoundValue]
         public string BoundValue { get; set; }
     }
-
-    public class ConfigurableDecision : FlowValueDecisionHandler<ConfigurableDecisionRequest, string>
-    {
-    }
 }

@@ -16,7 +16,7 @@ namespace FlowR
 
         void LogDecisionRequest(FlowContext flowContext, IFlowStepRequest decisionRequest);
 
-        void LogDecisionResponse(FlowContext flowContext, DecisionFlowStepBase.Branch branch, long elapsedMilliseconds);
+        void LogDecisionResponse(FlowContext flowContext, DecisionFlowStepBase.Branch branch);
 
         IDisposable BeginFlowScope(FlowContext flowContext);
 

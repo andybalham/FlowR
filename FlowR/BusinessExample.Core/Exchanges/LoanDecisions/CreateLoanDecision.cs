@@ -10,6 +10,9 @@ namespace BusinessExample.Core.Exchanges.LoanDecisions
 {
     public class CreateLoanDecision : FlowActivityRequest<CreateLoanDecision.Response>
     {
+        public static FlowActivityDefinition<CreateLoanDecision, Response> NewDefinition() =>
+            new FlowActivityDefinition<CreateLoanDecision, Response>();
+
         [BoundValue, NotNullValue]
         public LoanDecision LoanDecision { get; set; }
 

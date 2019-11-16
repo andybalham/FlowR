@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using FlowR.StepLibrary.Activities;
-using FlowR.StepLibrary.Decisions;
 using MediatR;
 
 namespace FlowR.Tests.Domain.FlowTests
@@ -31,11 +30,10 @@ namespace FlowR.Tests.Domain.FlowTests
         {
             #region Definitions
 
-            var intValueDecision = new FlowDecisionDefinition<
-                    IntFlowValueDecision, int?>()
+            var intValueDecision = FlowValueDecision<int?>.NewDefinition()
                 .BindInput(rq => rq.SwitchValue, nameof(MatchDecisionFlowRequest.IntValue));
 
-            var stringValueDecision = new FlowDecisionDefinition<StringFlowValueDecision, string>()
+            var stringValueDecision = FlowValueDecision<string>.NewDefinition()
                 .BindInput(rq => rq.SwitchValue, nameof(MatchDecisionFlowRequest.StringValue));
 
             var setOutputToX = new FlowActivityDefinition<SetStringFlowValueRequest, SetStringFlowValueResponse>()

@@ -11,6 +11,9 @@ namespace BusinessExample.Core.Exchanges.Communications
 {
     public class SendEmail : FlowActivityRequest<SendEmail.Response>
     {
+        public static FlowActivityDefinition<SendEmail, Response> NewDefinition() =>
+            new FlowActivityDefinition<SendEmail, Response>();
+
         [NotNullValue]
         public string TemplateName { get; set; }
 
@@ -66,7 +69,7 @@ namespace BusinessExample.Core.Exchanges.Communications
 
                 postSendStatus = EmailCommunicationStatus.Sent;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // TODO: Log the exception
 

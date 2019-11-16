@@ -11,6 +11,9 @@ namespace BusinessExample.Core.Exchanges.Checks
 {
     public class CheckIdentity : FlowActivityRequest<CheckIdentity.Response>
     {
+        public static FlowActivityDefinition<CheckIdentity, CheckIdentity.Response> NewDefinition() =>
+            new FlowActivityDefinition<CheckIdentity, Response>();
+
         [BoundValue, NotNullValue]
         public LoanApplication LoanApplication { get; set; }
 
@@ -46,14 +49,6 @@ namespace BusinessExample.Core.Exchanges.Checks
 
             return response;
         }
-    }
-
-    public class IdentityCheckResultDecision : NullableFlowValueDecision<IdentityCheckResult?>
-    {
-    }
-
-    public class IdentityCheckResultDecisionHandler : FlowValueDecisionHandler<IdentityCheckResultDecision, IdentityCheckResult?>
-    {
     }
 
     public static class CheckIdentityMocks

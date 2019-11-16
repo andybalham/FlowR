@@ -501,33 +501,14 @@ namespace FlowR.Tests
         {
             var (mediator, _) = GetMediator<TestDecisionDictionaryBindingRequest>();
 
-            var flowContext = new FlowContext(null, null)
-                .MockDecision<DictionaryBindingDecisionRequest, int>(r =>
-                {
-                    Assert.Equal(3, r.Strings.Count);
-                    Assert.Equal("StringValue3", r.Strings["String3"]);
-
-                    Assert.Single(r.NamedStrings);
-                    Assert.Equal("StringValue2", r.NamedStrings["String2"]);
-
-                    Assert.Equal(2, r.RenamedStrings.Count);
-                    Assert.Equal("StringValue1", r.RenamedStrings["RenamedString1"]);
-
-                    Assert.Equal(3, r.StringLengths.Count);
-                    Assert.Equal(12, r.StringLengths["String1.Length"]);
-
-                    return 0;
-                });
-
             var request = new TestDecisionDictionaryBindingRequest
             {
-                FlowContext = flowContext,
                 String1 = "StringValue1",
                 String2 = "StringValue2",
                 String3 = "StringValue3",
             };
 
-            var response = await mediator.Send(request);
+            await mediator.Send(request);
         }
     }
 }

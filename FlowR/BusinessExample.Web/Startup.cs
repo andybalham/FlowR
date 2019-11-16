@@ -8,7 +8,7 @@ using BusinessExample.Core.Interfaces;
 using BusinessExample.Infrastructure;
 using FlowR;
 using FlowR.Microsoft.Extensions.Logging;
-using FlowR.StepLibrary.Decisions;
+using FlowR.StepLibrary.Activities;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -37,7 +37,7 @@ namespace BusinessExample.Web
 
             services
                 .AddMediatR(typeof(LoanApplication).Assembly)
-                .AddMediatR(typeof(BoolFlowValueDecision).Assembly)
+                .AddMediatR(typeof(SetStringFlowValueActivity).Assembly)
 
                 .AddTransient(typeof(IFlowLogger<>), typeof(CoreFlowLogger<>))
 
