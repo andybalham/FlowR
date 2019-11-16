@@ -76,7 +76,7 @@ namespace FlowR.Microsoft.Extensions.Logging
         public void LogDecisionResponse(FlowContext flowContext, DecisionFlowStepBase.Branch branch)
         {
             _logger.LogDebug(flowContext, "{BranchTargets} => {BranchDestination}",
-                _logger.EvalIfDebug(() => string.Join("|", branch.Criteria?.ToArray() ?? new object[] { "ELSE" })),
+                _logger.EvalIfDebug(() => string.Join("|", branch.Targets?.ToArray() ?? new object[] { "ELSE" })),
                 (branch.NextStepName ?? (branch.IsEnd ? "END" : "CONTINUE")));
         }
 

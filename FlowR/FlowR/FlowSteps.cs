@@ -39,9 +39,10 @@ namespace FlowR
     {
         public class Branch
         {
-            public IEnumerable<object> Criteria { get; set; }
+            public IEnumerable<object> Targets { get; set; }
             public string NextStepName { get; set; }
             public bool IsEnd { get; set; }
+            public bool IsException { get; set; }
         }
 
         internal List<Branch> Branches { get; } = new List<Branch>();
@@ -78,13 +79,13 @@ namespace FlowR
 
             public DecisionFlowStep<T> Goto(string nextStepName)
             {
-                _branches.Add(new Branch { Criteria = _criteria, NextStepName = nextStepName });
+                _branches.Add(new Branch { Targets = _criteria, NextStepName = nextStepName });
                 return _flowStep;
             }
 
             public DecisionFlowStep<T> End()
             {
-                _branches.Add(new Branch { Criteria = _criteria, IsEnd = true });
+                _branches.Add(new Branch { Targets = _criteria, IsEnd = true });
                 return _flowStep;
             }
         }
@@ -119,6 +120,12 @@ namespace FlowR
             public FlowDefinition End()
             {
                 _branches.Add(new Branch { IsEnd = true });
+                return _flowDefinition;
+            }
+
+            public FlowDefinition Exception()
+            {
+                _branches.Add(new Branch { IsException = true });
                 return _flowDefinition;
             }
         }

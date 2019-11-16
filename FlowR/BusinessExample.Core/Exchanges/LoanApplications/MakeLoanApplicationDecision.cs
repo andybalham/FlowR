@@ -37,7 +37,8 @@ namespace BusinessExample.Core.Exchanges.LoanApplications
                 .Check("IsEligible", FlowValueDecision<bool?>.NewDefinition()
                     .BindInput(rq => rq.SwitchValue, nameof(CheckEligibility.Response.IsEligible)))
                 .When(false).Goto("SetResultToDecline")
-                .Else().Continue()
+                .When(true).Goto("CheckAffordability")
+                .Else().Exception()
 
                 // ------------------------------------------------------------------------------------------------
 
@@ -46,7 +47,8 @@ namespace BusinessExample.Core.Exchanges.LoanApplications
                     .BindInput(rq => rq.SwitchValue, nameof(CheckAffordability.Response.AffordabilityRating)))
                 .When(AffordabilityRating.Fair).Goto("SetResultToRefer")
                 .When(AffordabilityRating.Poor).Goto("SetResultToDecline")
-                .Else().Continue()
+                .When(AffordabilityRating.Good).Goto("CheckIdentity")
+                .Else().Exception()
 
                 // ------------------------------------------------------------------------------------------------
 
@@ -55,7 +57,8 @@ namespace BusinessExample.Core.Exchanges.LoanApplications
                     .BindInput(rq => rq.SwitchValue, nameof(CheckIdentity.Response.IdentityCheckResult)))
                 .When(IdentityCheckResult.ServiceUnavailable).Goto("SetResultToRefer")
                 .When(IdentityCheckResult.IdentityNotFound).Goto("SetResultToDecline")
-                .Else().Continue()
+                .When(IdentityCheckResult.IdentityFound).Goto("SetResultToAccept")
+                .Else().Exception()
 
                 // ------------------------------------------------------------------------------------------------
 
@@ -79,7 +82,8 @@ namespace BusinessExample.Core.Exchanges.LoanApplications
                     .BindInput(rq => rq.SwitchValue, nameof(SetLoanDecisionResult.Response.Result)))
                 .When(LoanDecisionResult.Decline).Goto("PostDeclineActions")
                 .When(LoanDecisionResult.Refer).Goto("PostReferActions")
-                .Else().Continue()
+                .When(LoanDecisionResult.Accept).Goto("PostAcceptActions")
+                .Else().Exception()
 
                 // ------------------------------------------------------------------------------------------------
 

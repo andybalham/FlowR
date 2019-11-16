@@ -37,7 +37,7 @@ namespace FlowR
                 {
                     Name = externalProperty.Name,
                     PropertyInfo = externalProperty,
-                    IsMandatoryValue = customAttributes.Any(a => a is NotNullValueAttribute),
+                    IsNotNullValue = customAttributes.Any(a => a is NotNullValueAttribute),
                     IsPrivate = customAttributes.Any(a => a is SensitiveValueAttribute),
                     IsBoundValue = customAttributes.Any(a => a is BoundValueAttribute),
                     IsDictionaryBinding =

@@ -269,7 +269,8 @@ namespace FlowR
         {
             var decisionRequest = (FlowDecisionBase)CreateRequest(stepFlowContext, decisionFlowStep, flowValues);
 
-            decisionFlowStep.Branches.ForEach(b => decisionRequest.AddBranch(b.Criteria, b.NextStepName, b.IsEnd));
+            // TODO: Pass the targets directly into GetMatchingBranchIndex
+            decisionFlowStep.Branches.ForEach(b => decisionRequest.AddBranch(b.Targets));
 
             _logger?.LogDecisionRequest(stepFlowContext, decisionRequest);
 
@@ -284,7 +285,7 @@ namespace FlowR
 
             flowTrace.AddStep(new FlowTraceStep
             {
-                StepType = FlowTraceStepType.Decision, Name = decisionFlowStep.Name, BranchTargets = branch.Criteria
+                StepType = FlowTraceStepType.Decision, Name = decisionFlowStep.Name, BranchTargets = branch.Targets
             });
 
             _logger?.LogDecisionResponse(stepFlowContext, branch);
@@ -292,6 +293,11 @@ namespace FlowR
             if (branch.IsEnd)
             {
                 return int.MaxValue;
+            }
+
+            if (branch.IsException)
+            {
+                throw new FlowUnhandledElseException($"Unhandled ELSE for decision '{decisionFlowStep.Name}'");
             }
 
             var isContinue = (branch.NextStepName == null);
@@ -492,7 +498,7 @@ namespace FlowR
         private static void CheckMandatoryFlowObjectProperty(object flowObject, 
             FlowObjectProperty flowObjectProperty, ICollection<string> missingPropertyNames)
         {
-            if (flowObjectProperty.IsMandatoryValue && (flowObjectProperty.PropertyInfo.GetValue(flowObject) == null))
+            if (flowObjectProperty.IsNotNullValue && (flowObjectProperty.PropertyInfo.GetValue(flowObject) == null))
             {
                 missingPropertyNames.Add(flowObjectProperty.PropertyInfo.Name);
             }

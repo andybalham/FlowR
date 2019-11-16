@@ -28,5 +28,10 @@ namespace FlowR
     {
         [BoundValue]
         public override TSwitch SwitchValue { get; set; }
+
+        public new static FlowDecisionDefinition<NullableFlowValueDecision<TSwitch>, TSwitch> NewDefinition()
+        {
+            return new FlowDecisionDefinition<NullableFlowValueDecision<TSwitch>, TSwitch>();
+        }
     }
 }
