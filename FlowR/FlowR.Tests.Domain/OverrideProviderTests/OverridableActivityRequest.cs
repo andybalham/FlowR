@@ -2,12 +2,12 @@
 {
     public class OverridableActivityRequest : FlowActivityRequest<OverridableActivityResponse>, ITestOverrideContext
     {
-        [OverridableValue]
+        [DesignTimeValue, OverridableValue]
         public string OverridableInputValue { get; set; }
 
+        [DesignTimeValue]
         public string NonOverridableInputValue { get; set; }
 
-        [BoundValue]
         public string FlowValue { get; set; }
     }
 }

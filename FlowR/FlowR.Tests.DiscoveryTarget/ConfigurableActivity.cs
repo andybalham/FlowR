@@ -7,9 +7,9 @@ namespace FlowR.Tests.DiscoveryTarget
 {
     public class ConfigurableActivityRequest : FlowActivityRequest<ConfigurableActivityResponse>
     {
+        [DesignTimeValue]
         public string SetValue { get; set; }
 
-        [BoundValue]
         public string BoundValue { get; set; }
     }
 

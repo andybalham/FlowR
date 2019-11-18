@@ -54,15 +54,14 @@ namespace FlowR.Tests.Domain.FlowTests
 
     public class BindingAttributesDecision : FlowDecision<bool>
     {
+        // TODO: Should the follow have DesignTimeValue as well?
         [InputBindingName]
         public string DecisionInput1Name { get; set; }
 
         [InputBindingName("DecisionInput2")]
         public string NamedDecisionInputName { get; set; }
 
-        [BoundValue]
         public bool DecisionInput1 { get; set; }
-        [BoundValue]
         public bool DecisionInput2 { get; set; }
 
         public override int GetMatchingBranchIndex()

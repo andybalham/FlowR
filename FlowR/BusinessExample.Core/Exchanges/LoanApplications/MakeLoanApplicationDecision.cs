@@ -7,10 +7,9 @@ using MediatR;
 
 namespace BusinessExample.Core.Exchanges.LoanApplications
 {
-    // TODO: Think about changing the name of this, perhaps to PerformLoanDecisionProcessRequest
     public class MakeLoanApplicationDecision : FlowActivityRequest<MakeLoanApplicationDecision.Response>
     {
-        [BoundValue, NotNullValue]
+        [NotNullValue]
         public LoanApplication LoanApplication { get; set; }
 
         public class Response : FlowResponse

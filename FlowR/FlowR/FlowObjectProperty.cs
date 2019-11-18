@@ -11,7 +11,7 @@ namespace FlowR
         public string Description { get; set; }
         public bool IsNotNullValue { get; set; }
         public bool IsPrivate { get; set; }
-        public bool IsBoundValue { get; set; }
+        public bool IsDesignTimeValue { get; set; }
         public bool IsDictionaryBinding { get; set; }
         public bool IsOverridableValue { get; set; }
         public PropertyInfo PropertyInfo { get; set; }

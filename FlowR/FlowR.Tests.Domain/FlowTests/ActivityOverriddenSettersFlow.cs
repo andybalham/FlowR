@@ -40,13 +40,10 @@ namespace FlowR.Tests.Domain.FlowTests
 
     public class OverriddenSettersActivityRequest : FlowActivityRequest<OverriddenSettersActivityResponse>
     {
-        [BoundValue]
         public string NonExistentSetterValue { get; set; } = ActivityOverriddenSettersFlowRequest.NonExistentSetterValue;
 
-        [BoundValue]
         public string BoundValueWithDefault { get; set; } = ActivityOverriddenSettersFlowRequest.DefaultBoundValue;
 
-        [BoundValue]
         public string InputValue { get; set; }
    }
 

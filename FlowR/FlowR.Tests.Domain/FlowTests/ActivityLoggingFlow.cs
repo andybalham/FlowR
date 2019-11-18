@@ -37,9 +37,8 @@ namespace FlowR.Tests.Domain.FlowTests
 
     public class LoggedActivityRequest : FlowActivityRequest<LoggedActivityResponse>
     {
-        [BoundValue]
         public Guid PublicInput { get; set; }
-        [BoundValue, SensitiveValue]
+        [SensitiveValue]
         public Guid PrivateInput { get; set; }
     }
 

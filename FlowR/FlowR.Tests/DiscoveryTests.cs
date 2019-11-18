@@ -409,10 +409,8 @@ namespace FlowR.Tests
 
             public string GetText() => null;
 
-            [BoundValue]
             public int InputInt { get; set; }
 
-            [BoundValue]
             public FlowValueDictionary<string> InputStrings { get; set; }
         }
 

@@ -5,7 +5,7 @@ using System.Text;
 namespace FlowR
 {
     [AttributeUsage(AttributeTargets.Property)]
-    public class BoundValueAttribute : Attribute
+    public class DesignTimeValueAttribute : Attribute
     {
     }
 

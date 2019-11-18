@@ -38,7 +38,6 @@ namespace FlowR.Tests.Domain.FlowTests
 
     public class DictionaryInputToOutputMapRequest : FlowActivityRequest<DictionaryInputToOutputMapResponse>
     {
-        [BoundValue]
         public FlowValueDictionary<string> FlowInputs { get; set; }
     }
 

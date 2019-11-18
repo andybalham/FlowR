@@ -9,9 +9,9 @@ namespace FlowR.Tests.DiscoveryTarget
 {
     public class ConfigurableDecisionRequest : NullableFlowValueDecision<string>
     {
+        [DesignTimeValue]
         public string SetValue { get; set; }
 
-        [BoundValue]
         public string BoundValue { get; set; }
     }
 }

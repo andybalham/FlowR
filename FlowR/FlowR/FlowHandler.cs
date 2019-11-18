@@ -403,7 +403,7 @@ namespace FlowR
         private static void PopulateRequestBoundValues(IFlowStepRequest request, 
             FlowObjectType requestType, FlowStep flowStep, FlowValues flowValues)
         {
-            var boundProperties = requestType.Properties.Where(p => p.IsBoundValue);
+            var boundProperties = requestType.Properties.Where(p => !p.IsDesignTimeValue);
             
             foreach (var boundProperty in boundProperties)
             {

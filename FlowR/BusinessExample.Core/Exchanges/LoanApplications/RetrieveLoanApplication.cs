@@ -11,7 +11,7 @@ namespace BusinessExample.Core.Exchanges.LoanApplications
 {
     public class RetrieveLoanApplication : FlowActivityRequest<RetrieveLoanApplication.Response>
     {
-        [BoundValue, NotNullValue]
+        [NotNullValue]
         public string LoanApplicationId { get; set; }
 
         public class Response

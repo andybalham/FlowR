@@ -34,7 +34,6 @@ namespace FlowR.Tests.Domain.FlowTests
 
     public class InputAndOutputActivityRequest : FlowActivityRequest<InputAndOutputActivityResponse>
     {
-        [BoundValue]
         public Guid InputValue { get; set; }
     }
 

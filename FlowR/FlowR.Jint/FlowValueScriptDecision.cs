@@ -9,10 +9,9 @@ namespace FlowR.Jint
 {
     public class FlowValueScriptDecisionRequest<TSwitch> : FlowDecision<TSwitch>
     {
-        [NotNullValue]
+        [DesignTimeValue, NotNullValue]
         public string SwitchValueScript { get; set; }
 
-        [BoundValue]
         public object FlowValue { get; set; }
 
         public override int GetMatchingBranchIndex()

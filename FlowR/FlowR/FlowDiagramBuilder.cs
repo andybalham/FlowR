@@ -267,16 +267,16 @@ namespace FlowR
 
             foreach (var requestProperty in requestType.Properties)
             {
-                if (requestProperty.IsBoundValue)
+                if (requestProperty.IsDesignTimeValue)
+                {
+                    setInputs[requestProperty.PropertyInfo.Name] = requestProperty.PropertyInfo.GetValue(request)?.ToString();
+                }
+                else
                 {
                     var binding = flowStep.Definition.GetInputBinding(requestProperty);
                     var summary = binding.GetSummary(request);
 
                     boundInputs[requestProperty.PropertyInfo.Name] = summary;
-                }
-                else
-                {
-                    setInputs[requestProperty.PropertyInfo.Name] = requestProperty.PropertyInfo.GetValue(request)?.ToString();
                 }
             }
 

@@ -14,11 +14,11 @@ namespace BusinessExample.Core.Exchanges.Checks
         public static FlowActivityDefinition<CheckIdentity, CheckIdentity.Response> NewDefinition() =>
             new FlowActivityDefinition<CheckIdentity, Response>();
 
-        [BoundValue, NotNullValue]
+        [NotNullValue]
         public LoanApplication LoanApplication { get; set; }
 
 
-        [BoundValue, NotNullValue]
+        [NotNullValue]
         public LoanDecision LoanDecision { get; set; }
 
         public class Response

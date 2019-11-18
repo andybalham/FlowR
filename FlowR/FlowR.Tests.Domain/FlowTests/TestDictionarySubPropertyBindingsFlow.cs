@@ -42,10 +42,8 @@ namespace FlowR.Tests.Domain.FlowTests
 
     public class DictionarySubPropertyBindingsMappingRequest : FlowActivityRequest<DictionarySubPropertyBindingsMappingResponse>
     {
-        [BoundValue]
         public FlowValueDictionary<int> NamedFlowInputs { get; set; }
 
-        [BoundValue]
         public FlowValueDictionary<int> RegexFlowInputs { get; set; }
     }
 

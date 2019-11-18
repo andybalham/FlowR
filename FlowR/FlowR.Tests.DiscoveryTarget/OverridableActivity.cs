@@ -4,12 +4,13 @@ namespace FlowR.Tests.DiscoveryTarget
 {
     public class OverridableActivityRequest : FlowActivityRequest<OverridableActivityResponse>
     {
-        [OverridableValue]
+        // TODO: If it is overridable then it must be design-time
+        [DesignTimeValue, OverridableValue]
         public string OverridableInputValue { get; set; }
 
+        [DesignTimeValue]
         public string NonOverridableInputValue { get; set; }
 
-        [BoundValue]
         public string FlowValue { get; set; }
     }
 
