@@ -8,7 +8,7 @@ namespace HelloFlowR
 {
     class Program
     {
-        static async Task Main(string[] args)
+        static void Main(string[] args)
         {
             var serviceProvider =
                 new ServiceCollection()
@@ -17,7 +17,7 @@ namespace HelloFlowR
 
             var mediator = serviceProvider.GetService<IMediator>();
 
-            var response = await mediator.Send(new SayHelloRequest { Name = "FlowR" });
+            var response = mediator.Send(new SayHelloRequest { Name = "FlowR" }).GetAwaiter().GetResult();
 
             Console.WriteLine($"response.Text: {response.OutputtedText}");
             Console.WriteLine($"response.Trace: {response.Trace}");
