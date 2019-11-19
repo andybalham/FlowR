@@ -10,7 +10,6 @@ namespace HelloFlowR
 {
     public class SayGreetingRequest : FlowActivityRequest<SayGreetingResponse>
     {
-        [DesignTimeValue]
         public string Greeting { get; set; }
 
         public string Name { get; set; }

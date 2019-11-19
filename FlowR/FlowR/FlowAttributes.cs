@@ -5,11 +5,6 @@ using System.Text;
 namespace FlowR
 {
     [AttributeUsage(AttributeTargets.Property)]
-    public class DesignTimeValueAttribute : Attribute
-    {
-    }
-
-    [AttributeUsage(AttributeTargets.Property)]
     public class NotNullValueAttribute : Attribute
     {
     }

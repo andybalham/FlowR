@@ -162,12 +162,6 @@ namespace FlowR
                     $"The target for binding name property '{setInputProperty.Name}' could not be found: '{boundValuePropertyName}'");
             }
 
-            if (boundProperty.IsDesignTimeValue)
-            {
-                throw new FlowException(
-                    $"The target for binding name property '{setInputProperty.Name}' is a design-time value: '{boundValuePropertyName}'");
-            }
-
             Inputs.Add(new FlowValueInputBinding(boundProperty)
             {
                 FlowValueSelector = new FlowValuePropertySelector(setInputProperty.Name, setInputProperty.GetValue)

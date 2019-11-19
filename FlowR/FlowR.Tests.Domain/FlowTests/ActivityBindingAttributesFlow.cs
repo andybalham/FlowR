@@ -42,18 +42,16 @@ namespace FlowR.Tests.Domain.FlowTests
 
     public class BindingAttributesActivityRequest : FlowActivityRequest<BindingAttributesActivityResponse>
     {
-        // TODO: All binding names must be design-time
-
-        [DesignTimeValue, InputBindingName]
+        [InputBindingName]
         public string ActivityInput1Name { get; set; }
 
-        [DesignTimeValue, InputBindingName("ActivityInput2")]
+        [InputBindingName("ActivityInput2")]
         public string NamedActivityInputName { get; set; }
 
-        [DesignTimeValue, OutputBindingName]
+        [OutputBindingName]
         public string ActivityOutput1Name { get; set; }
 
-        [DesignTimeValue, OutputBindingName(nameof(BindingAttributesActivityResponse.ActivityOutput2))]
+        [OutputBindingName(nameof(BindingAttributesActivityResponse.ActivityOutput2))]
         public string NamedActivityOutputName { get; set; }
 
         public string ActivityInput1 { get; set; }

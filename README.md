@@ -50,7 +50,6 @@ The activity is defined in a similar way. First we define the request and respon
     {
         public string Greeting { get; set; }
 
-        [BoundValue]
         public string Name { get; set; }
     }
 
@@ -60,7 +59,7 @@ The activity is defined in a similar way. First we define the request and respon
     }
 ```
 
-The `Name` property is annotated with the `BoundValue` attribute to indicate that at this property will be bound at runtime to a value. As this is not a flow, the response does not need to subclass `FlowResponse`
+As this is not a flow, the response does not need to subclass `FlowResponse`
 
 With the request and response defined, we can define the handler:
 

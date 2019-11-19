@@ -29,10 +29,9 @@ namespace FlowR.Tests.Domain.FlowTests
 
     public class MandatoryInputActivityRequest : FlowActivityRequest<MandatoryInputActivityResponse>
     {
-        [DesignTimeValue, NotNullValue]
+        [NotNullValue]
         public string MandatorySetInput { get; set; }
 
-        [DesignTimeValue]
         public string OptionalSetInput { get; set; }
 
         public string OptionalBoundInput { get; set; }

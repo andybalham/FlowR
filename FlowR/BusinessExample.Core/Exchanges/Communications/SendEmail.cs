@@ -14,7 +14,7 @@ namespace BusinessExample.Core.Exchanges.Communications
         public static FlowActivityDefinition<SendEmail, Response> NewDefinition() =>
             new FlowActivityDefinition<SendEmail, Response>();
 
-        [DesignTimeValue, NotNullValue]
+        [NotNullValue]
         public string TemplateName { get; set; }
 
         [NotNullValue, SensitiveValue]

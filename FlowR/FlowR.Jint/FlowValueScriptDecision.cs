@@ -9,7 +9,7 @@ namespace FlowR.Jint
 {
     public class FlowValueScriptDecisionRequest<TSwitch> : FlowDecision<TSwitch>
     {
-        [DesignTimeValue, NotNullValue]
+        [NotNullValue]
         public string SwitchValueScript { get; set; }
 
         public object FlowValue { get; set; }

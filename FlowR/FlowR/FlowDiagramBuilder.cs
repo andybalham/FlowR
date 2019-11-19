@@ -267,7 +267,9 @@ namespace FlowR
 
             foreach (var requestProperty in requestType.Properties)
             {
-                if (requestProperty.IsDesignTimeValue)
+                var isSetInput = flowStep.Definition.Setters.Any(s => s.Item1.Name == requestProperty.Name);
+
+                if (isSetInput)
                 {
                     setInputs[requestProperty.PropertyInfo.Name] = requestProperty.PropertyInfo.GetValue(request)?.ToString();
                 }
