@@ -38,7 +38,7 @@ namespace FlowR.Microsoft.Extensions.Logging
                 criteria);
         }
 
-        public void LogFlowResponse(FlowContext flowContext, FlowResponse flowResponse, long elapsedMilliseconds)
+        public void LogFlowResponse(FlowContext flowContext, object flowResponse, long elapsedMilliseconds)
         {
             _logger.LogDebug(flowContext, "Response({ResponseSummary}) in {FlowMillis}ms",
                 _logger.EvalIfDebug(() => GetPublicPropertySummary(flowResponse)),

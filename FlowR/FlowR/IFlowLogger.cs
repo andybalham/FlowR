@@ -8,7 +8,7 @@ namespace FlowR
     {
         void LogFlowRequest(FlowContext flowContext, IFlowStepRequest flowRequest);
 
-        void LogFlowResponse(FlowContext flowContext, FlowResponse flowResponse, long elapsedMilliseconds);
+        void LogFlowResponse(FlowContext flowContext, object flowResponse, long elapsedMilliseconds);
 
         void LogActivityRequest(FlowContext flowContext, IFlowStepRequest activityRequest);
 

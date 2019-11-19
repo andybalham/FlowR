@@ -13,7 +13,6 @@ namespace FlowR
 {
     public abstract class FlowHandler<TFlowRequest, TFlowResponse> : IFlowHandler, IRequestHandler<TFlowRequest, TFlowResponse>
         where TFlowRequest : FlowActivityRequest<TFlowResponse>
-        where TFlowResponse : FlowResponse
     {
         #region Member declarations
 
@@ -501,10 +500,13 @@ namespace FlowR
                     $"{string.Join(", ", missingMandatoryPropertyNames.ToArray())}");
             }
 
-            flowResponse.CorrelationId = flowContext.CorrelationId;
-            flowResponse.RequestId = flowContext.RequestId;
-            flowResponse.FlowInstanceId = flowContext.FlowInstanceId;
-            flowResponse.Trace = flowTrace;
+            if (flowResponse is FlowResponse baseFlowResponse)
+            {
+                baseFlowResponse.CorrelationId = flowContext.CorrelationId;
+                baseFlowResponse.RequestId = flowContext.RequestId;
+                baseFlowResponse.FlowInstanceId = flowContext.FlowInstanceId;
+                baseFlowResponse.Trace = flowTrace;
+            }
 
             return flowResponse;
         }

@@ -11,7 +11,7 @@ namespace HelloFlowR
         public string Name { get; set; }
     }
 
-    public class SayHelloResponse : FlowResponse
+    public class SayHelloResponse
     {
         public string OutputtedText { get; set; }
     }

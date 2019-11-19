@@ -10,17 +10,17 @@ namespace HelloFlowR
     {
         static void Main(string[] args)
         {
-            var serviceProvider =
+            var mediator =
                 new ServiceCollection()
                     .AddMediatR(typeof(SayHelloRequest).Assembly)
-                    .BuildServiceProvider();
+                    .BuildServiceProvider()
+                    .GetService<IMediator>();
 
-            var mediator = serviceProvider.GetService<IMediator>();
+            var response = 
+                mediator.Send(new SayHelloRequest { Name = "FlowR" })
+                    .GetAwaiter().GetResult();
 
-            var response = mediator.Send(new SayHelloRequest { Name = "FlowR" }).GetAwaiter().GetResult();
-
-            Console.WriteLine($"response.Text: {response.OutputtedText}");
-            Console.WriteLine($"response.Trace: {response.Trace}");
+            Console.WriteLine($"response.OutputtedText: {response.OutputtedText}");
         }
     }
 }
