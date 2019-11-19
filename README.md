@@ -77,7 +77,7 @@ With the request and response defined, we can define the handler:
 
 This builds the text to output, outputs it to the console and then returns a response containing the text that was outputted.
 
-To run the flow, we need to register the MediatR assembly and the request/response/handler assembly with an IoC container. In this example, we use the default Microsoft implementation and a MediatR extension method. Once this is done, we create obtain an `IMediator` implementation, create a `SayHelloRequest` instance and send it via the `IMediator` implementation.
+To run the flow, we need to register the MediatR assembly and the request/response/handler assembly with an IoC container. In this example, we use the default Microsoft implementation and a MediatR extension method. We use the resulting service provider to obtain an `IMediator` implementation, create a `SayHelloRequest` instance and send it via the `IMediator` implementation.
 
 ```csharp
     static void Main(string[] args)
