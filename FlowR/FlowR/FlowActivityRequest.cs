@@ -10,7 +10,5 @@ namespace FlowR
         public FlowContext FlowContext { get; set; }
 
         public virtual string GetText() => null;
-
-        //public virtual bool IsSuppressed { get; set; }
     }
 }

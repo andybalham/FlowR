@@ -13,7 +13,6 @@ namespace FlowR
 {
     public abstract class FlowHandler<TFlowRequest, TFlowResponse> : IFlowHandler, IRequestHandler<TFlowRequest, TFlowResponse>
         where TFlowRequest : FlowActivityRequest<TFlowResponse>
-        where TFlowResponse : FlowResponse
     {
         #region Member declarations
 
@@ -346,9 +345,9 @@ namespace FlowR
 
             var requestType = request.GetType().GetFlowObjectType();
 
-            PopulateRequestSetValues(flowStep, request);
+            var setPropertyNames = PopulateRequestSetValues(flowStep, request);
 
-            PopulateRequestBoundValues(request, requestType, flowStep, flowValues);
+            PopulateRequestBoundValues(request, requestType, flowStep, flowValues, setPropertyNames);
 
             PopulateRequestOverriddenValues(flowContext, request, requestType, flowStep);
 
@@ -357,28 +356,38 @@ namespace FlowR
             return request;
         }
 
-        private static void PopulateRequestSetValues(FlowStep flowStep, IFlowStepRequest request)
+        private static ISet<string> PopulateRequestSetValues(FlowStep flowStep, IFlowStepRequest request)
         {
+            var setPropertyNames = new HashSet<string>();
+
             foreach (var (requestPropertyInfo, requestPropertyValue) in flowStep.Definition.Setters)
             {
                 requestPropertyInfo.SetValue(request, requestPropertyValue);
+
+                setPropertyNames.Add(requestPropertyInfo.Name);
             }
+
+            return setPropertyNames;
         }
 
-        private void PopulateRequestOverriddenValues(FlowContext flowContext,
-            IFlowStepRequest request, FlowObjectType requestType, FlowStep flowStep)
+        private void PopulateRequestOverriddenValues(FlowContext flowContext, IFlowStepRequest request, 
+            FlowObjectType requestType, FlowStep flowStep)
         {
             var overrideKey = flowStep.OverrideKey?.Value;
 
             if ((_overrideProvider == null) || string.IsNullOrEmpty(overrideKey))
+            {
                 return;
+            }
 
             var requestOverrides = _overrideProvider?.GetRequestOverrides(overrideKey)?.ToList();
             var applicableRequestOverrides =
                 _overrideProvider?.GetApplicableRequestOverrides(requestOverrides, request);
 
             if (!(applicableRequestOverrides?.Count > 0))
+            {
                 return;
+            }
 
             var overridableProperties = requestType.Properties.Where(p => p.IsOverridableValue);
 
@@ -389,21 +398,25 @@ namespace FlowR
                 var overridablePropertyName = overridableProperty.PropertyInfo.Name;
 
                 if (!applicableRequestOverrides.TryGetValue(overridablePropertyName, out var overriddenValue))
+                {
                     continue;
+                }
 
                 // TODO: Should we allow for type converters here?
                 overridableProperty.PropertyInfo.SetValue(request, overriddenValue.Value);
-                overrides.Add(new Tuple<string, object, string>(overridablePropertyName, overriddenValue.Value,
-                    overriddenValue.Criteria));
+
+                overrides.Add(
+                    new Tuple<string, object, string>(
+                        overridablePropertyName, overriddenValue.Value, overriddenValue.Criteria));
             }
 
             _logger?.LogRequestOverrides(flowContext, request, overrides);
         }
 
-        private static void PopulateRequestBoundValues(IFlowStepRequest request, 
-            FlowObjectType requestType, FlowStep flowStep, FlowValues flowValues)
+        private static void PopulateRequestBoundValues(IFlowStepRequest request, FlowObjectType requestType, FlowStep flowStep, 
+            FlowValues flowValues, ISet<string> setPropertyNames)
         {
-            var boundProperties = requestType.Properties.Where(p => p.IsBoundValue);
+            var boundProperties = requestType.Properties.Where(p => !setPropertyNames.Contains(p.Name));
             
             foreach (var boundProperty in boundProperties)
             {
@@ -487,10 +500,13 @@ namespace FlowR
                     $"{string.Join(", ", missingMandatoryPropertyNames.ToArray())}");
             }
 
-            flowResponse.CorrelationId = flowContext.CorrelationId;
-            flowResponse.RequestId = flowContext.RequestId;
-            flowResponse.FlowInstanceId = flowContext.FlowInstanceId;
-            flowResponse.Trace = flowTrace;
+            if (flowResponse is FlowResponse baseFlowResponse)
+            {
+                baseFlowResponse.CorrelationId = flowContext.CorrelationId;
+                baseFlowResponse.RequestId = flowContext.RequestId;
+                baseFlowResponse.FlowInstanceId = flowContext.FlowInstanceId;
+                baseFlowResponse.Trace = flowTrace;
+            }
 
             return flowResponse;
         }

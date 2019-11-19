@@ -39,7 +39,6 @@ namespace FlowR
                     PropertyInfo = externalProperty,
                     IsNotNullValue = customAttributes.Any(a => a is NotNullValueAttribute),
                     IsPrivate = customAttributes.Any(a => a is SensitiveValueAttribute),
-                    IsBoundValue = customAttributes.Any(a => a is BoundValueAttribute),
                     IsDictionaryBinding =
                         externalProperty.PropertyType.IsGenericType
                         && externalProperty.PropertyType.GetGenericTypeDefinition() == typeof(FlowValueDictionary<>),

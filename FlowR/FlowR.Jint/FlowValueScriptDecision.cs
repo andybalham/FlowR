@@ -12,7 +12,6 @@ namespace FlowR.Jint
         [NotNullValue]
         public string SwitchValueScript { get; set; }
 
-        [BoundValue]
         public object FlowValue { get; set; }
 
         public override int GetMatchingBranchIndex()

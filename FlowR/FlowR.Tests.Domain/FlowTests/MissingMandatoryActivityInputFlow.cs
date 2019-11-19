@@ -34,13 +34,12 @@ namespace FlowR.Tests.Domain.FlowTests
 
         public string OptionalSetInput { get; set; }
 
-        [BoundValue]
         public string OptionalBoundInput { get; set; }
 
-        [BoundValue, NotNullValue]
+        [NotNullValue]
         public string MandatoryBoundInput { get; set; }
 
-        [BoundValue, NotNullValue]
+        [NotNullValue]
         public string DefaultBoundInput { get; set; } = "DefaultBoundInput";
     }
 

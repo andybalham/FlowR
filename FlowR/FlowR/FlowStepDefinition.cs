@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using MediatR;
 
@@ -100,12 +101,6 @@ namespace FlowR
 
             var flowObjectProperty = typeof(TR).GetFlowObjectType()[propertyInfo.Name];
 
-            if (!flowObjectProperty.IsBoundValue)
-            {
-                throw new FlowException(
-                    $"The property {propertyInfo.Name} is not annotated with {nameof(BoundValueAttribute)}");
-            }
-
             return flowObjectProperty;
         }
 
@@ -165,12 +160,6 @@ namespace FlowR
             {
                 throw new FlowException(
                     $"The target for binding name property '{setInputProperty.Name}' could not be found: '{boundValuePropertyName}'");
-            }
-
-            if (!boundProperty.IsBoundValue)
-            {
-                throw new FlowException(
-                    $"The target for binding name property '{setInputProperty.Name}' is not a bound value: '{boundValuePropertyName}'");
             }
 
             Inputs.Add(new FlowValueInputBinding(boundProperty)

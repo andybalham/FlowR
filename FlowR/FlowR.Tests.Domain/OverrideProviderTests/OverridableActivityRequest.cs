@@ -7,7 +7,6 @@
 
         public string NonOverridableInputValue { get; set; }
 
-        [BoundValue]
         public string FlowValue { get; set; }
     }
 }

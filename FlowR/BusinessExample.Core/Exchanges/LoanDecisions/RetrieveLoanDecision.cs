@@ -12,7 +12,7 @@ namespace BusinessExample.Core.Exchanges.LoanDecisions
 {
     public class RetrieveLoanDecision : FlowActivityRequest<RetrieveLoanDecision.Response>
     {
-        [BoundValue, NotNullValue]
+        [NotNullValue]
         public string LoanDecisionId { get; set; }
 
         public class Response : FlowResponse

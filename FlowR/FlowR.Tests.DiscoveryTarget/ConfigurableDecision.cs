@@ -11,7 +11,6 @@ namespace FlowR.Tests.DiscoveryTarget
     {
         public string SetValue { get; set; }
 
-        [BoundValue]
         public string BoundValue { get; set; }
     }
 }

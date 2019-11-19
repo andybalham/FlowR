@@ -10,7 +10,6 @@ namespace FlowR.Jint
 {
     public class EvaluateBranchScriptDecisionRequest : FlowDecision<string>
     {
-        [BoundValue]
         public object SwitchValue { get; set; }
 
         public override int GetMatchingBranchIndex()

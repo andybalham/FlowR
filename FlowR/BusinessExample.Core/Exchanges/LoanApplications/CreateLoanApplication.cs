@@ -10,7 +10,7 @@ namespace BusinessExample.Core.Exchanges.LoanApplications
 {
     public class CreateLoanApplication : FlowActivityRequest<CreateLoanApplication.Response>
     {
-        [BoundValue, NotNullValue]
+        [NotNullValue]
         public LoanApplication LoanApplication { get; set; }
 
         public class Response

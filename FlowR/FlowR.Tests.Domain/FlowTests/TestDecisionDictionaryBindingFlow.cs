@@ -43,16 +43,12 @@ namespace FlowR.Tests.Domain.FlowTests
 
     public class DictionaryBindingDecisionRequest : FlowDecision<int>
     {
-        [BoundValue]
         public FlowValueDictionary<string> NamedStrings { get; set; }
 
-        [BoundValue]
         public FlowValueDictionary<string> RenamedStrings { get; set; }
 
-        [BoundValue]
         public FlowValueDictionary<int> StringLengths { get; set; }
 
-        [BoundValue]
         public FlowValueDictionary<string> Strings { get; set; }
 
         public override int GetMatchingBranchIndex()

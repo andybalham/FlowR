@@ -52,7 +52,6 @@ namespace FlowR.Tests.Domain.FlowTests
 
     public class SubPropertyBindingsActivityRequest : FlowActivityRequest<SubPropertyBindingsActivityResponse>
     {
-        [BoundValue]
         public int IntValue { get; set; }
     }
 

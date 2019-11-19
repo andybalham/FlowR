@@ -11,10 +11,10 @@ namespace BusinessExample.Core.Exchanges.Checks
         public static FlowActivityDefinition<CheckEligibility, Response> NewDefinition() =>
             new FlowActivityDefinition<CheckEligibility, Response>();
 
-        [BoundValue, NotNullValue]
+        [NotNullValue]
         public LoanApplication LoanApplication { get; set; }
 
-        [BoundValue, NotNullValue]
+        [NotNullValue]
         public LoanDecision LoanDecision { get; set; }
 
         public class Response

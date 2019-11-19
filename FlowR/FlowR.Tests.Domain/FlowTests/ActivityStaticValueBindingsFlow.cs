@@ -36,7 +36,6 @@ namespace FlowR.Tests.Domain.FlowTests
 
     public class StaticBindFlowValuesActivityRequest : FlowActivityRequest<StaticBindFlowValuesActivityResponse>
     {
-        [BoundValue]
         public string ActivityInputValue { get; set; }
     }
 

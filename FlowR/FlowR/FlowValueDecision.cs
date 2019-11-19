@@ -9,7 +9,7 @@ namespace FlowR
 {
     public class FlowValueDecision<TSwitch> : FlowDecision<TSwitch>
     {
-        [BoundValue, NotNullValue]
+        [NotNullValue]
         public virtual TSwitch SwitchValue { get; set; }
 
         public override int GetMatchingBranchIndex()
@@ -26,7 +26,6 @@ namespace FlowR
 
     public class NullableFlowValueDecision<TSwitch> : FlowValueDecision<TSwitch>
     {
-        [BoundValue]
         public override TSwitch SwitchValue { get; set; }
 
         public new static FlowDecisionDefinition<NullableFlowValueDecision<TSwitch>, TSwitch> NewDefinition()

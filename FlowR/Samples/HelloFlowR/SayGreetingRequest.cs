@@ -12,7 +12,6 @@ namespace HelloFlowR
     {
         public string Greeting { get; set; }
 
-        [BoundValue]
         public string Name { get; set; }
     }
 

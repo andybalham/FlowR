@@ -17,13 +17,12 @@ namespace BusinessExample.Core.Exchanges.Communications
         [NotNullValue]
         public string TemplateName { get; set; }
 
-        [BoundValue, NotNullValue, SensitiveValue]
+        [NotNullValue, SensitiveValue]
         public string EmailAddress { get; set; }
 
-        [BoundValue, NotNullValue]
+        [NotNullValue]
         public string ParentId { get; set; }
 
-        [BoundValue]
         public FlowValueDictionary<object> DataObjects { get; set; }
 
         public class Response

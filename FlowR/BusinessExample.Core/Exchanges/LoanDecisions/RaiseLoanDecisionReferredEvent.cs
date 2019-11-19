@@ -13,10 +13,10 @@ namespace BusinessExample.Core.Exchanges.LoanDecisions
         public static FlowActivityDefinition<RaiseLoanDecisionReferredEvent, Response> NewDefinition() =>
             new FlowActivityDefinition<RaiseLoanDecisionReferredEvent, Response>();
 
-        [BoundValue, NotNullValue]
+        [NotNullValue]
         public LoanApplication LoanApplication { get; set; }
 
-        [BoundValue, NotNullValue]
+        [NotNullValue]
         public LoanDecision LoanDecision { get; set; }
 
         public class Response

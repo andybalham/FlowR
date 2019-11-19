@@ -13,7 +13,7 @@ namespace BusinessExample.Core.Exchanges.LoanDecisions
 
         public LoanDecisionResult Result { get; set; }
 
-        [BoundValue, NotNullValue]
+        [NotNullValue]
         public LoanDecision LoanDecision { get; set; }
 
         public class Response

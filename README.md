@@ -9,7 +9,7 @@ FlowR models in-process flows as a sequence of request/response exchanges. It us
 
 A flow in FlowR is modelled as as a request, a response and a handler. The following example implements a flow that is made up of a single activity that outputs 'Hello' plus a name passed in and returns the text that was outputted.
 
-We first define the request response exchange for the flow. The request must subclass `FlowActivityRequest` and the response `FlowResponse`.
+We first define the request response exchange for the flow.
 
 ```csharp
     public class SayHelloRequest : FlowActivityRequest<SayHelloResponse>
@@ -17,7 +17,7 @@ We first define the request response exchange for the flow. The request must sub
         public string Name { get; set; }
     }
 
-    public class SayHelloResponse : FlowResponse
+    public class SayHelloResponse
     {
         public string OutputtedText { get; set; }
     }
@@ -43,14 +43,13 @@ We also provide a `FlowDefinition`. This is where we define the activities in ou
     }
 ```
 
-The activity is defined in a similar way. First we define the request and response
+The activity is defined in a similar way. First we define the request and response:
 
 ```csharp
     public class SayGreetingRequest : FlowActivityRequest<SayGreetingResponse>
     {
         public string Greeting { get; set; }
 
-        [BoundValue]
         public string Name { get; set; }
     }
 
@@ -59,8 +58,6 @@ The activity is defined in a similar way. First we define the request and respon
         public string OutputtedText { get; set; }
     }
 ```
-
-The `Name` property is annotated with the `BoundValue` attribute to indicate that at this property will be bound at runtime to a value. As this is not a flow, the response does not need to subclass `FlowResponse`
 
 With the request and response defined, we can define the handler:
 
@@ -83,28 +80,27 @@ This builds the text to output, outputs it to the console and then returns a res
 To run the flow, we need to register the MediatR assembly and the request/response/handler assembly with an IoC container. In this example, we use the default Microsoft implementation and a MediatR extension method. Once this is done, we create obtain an `IMediator` implementation, create a `SayHelloRequest` instance and send it via the `IMediator` implementation.
 
 ```csharp
-static async Task Main(string[] args)
-{
-    var serviceProvider =
-        new ServiceCollection()
-            .AddMediatR(typeof(SayHelloRequest).Assembly)
-            .BuildServiceProvider();
+    static void Main(string[] args)
+    {
+        var mediator =
+            new ServiceCollection()
+                .AddMediatR(typeof(SayHelloRequest).Assembly)
+                .BuildServiceProvider()
+                .GetService<IMediator>();
 
-    var mediator = serviceProvider.GetService<IMediator>();
+        var response = 
+            mediator.Send(new SayHelloRequest { Name = "FlowR" })
+                .GetAwaiter().GetResult();
 
-    var response = await mediator.Send(new SayHelloRequest { Name = "FlowR" });
-
-    Console.WriteLine($"response.Text: {response.OutputtedText}");
-    Console.WriteLine($"response.Trace: {response.Trace}");
-}
+        Console.WriteLine($"response.OutputtedText: {response.OutputtedText}");
+    }
 ```
 
 The result is as follows:
 
 ```
 Hello FlowR
-response.Text: Hello FlowR
-response.Trace: SayHello
+response.OutputtedText: Hello FlowR
 ```
 
 When the `SayHelloRequest` is handled, the sequence of events is as follows:
@@ -119,5 +115,3 @@ When the `SayHelloRequest` is handled, the sequence of events is as follows:
 1. The flow value 'OutputtedText' is set to the value of the `SayGreetingResponse` `OutputtedText` property, i.e. 'Hello FlowR'
 1. A `SayHelloResponse` instance is created
 1. The `OutputtedText` property is set to the flow value 'OutputtedText', i.e. 'Hello FlowR'
-
-The `response.Trace` is a property of `FlowResponse` and allows a flow to return a summary of the flow executed. In this case, as we only have one activity, it simply returns the name we gave the activity in the `FlowDefinition`.

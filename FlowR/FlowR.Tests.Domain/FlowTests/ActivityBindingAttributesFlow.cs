@@ -54,9 +54,7 @@ namespace FlowR.Tests.Domain.FlowTests
         [OutputBindingName(nameof(BindingAttributesActivityResponse.ActivityOutput2))]
         public string NamedActivityOutputName { get; set; }
 
-        [BoundValue]
         public string ActivityInput1 { get; set; }
-        [BoundValue]
         public string ActivityInput2 { get; set; }
     }
 
