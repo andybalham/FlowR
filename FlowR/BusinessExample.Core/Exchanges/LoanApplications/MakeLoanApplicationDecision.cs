@@ -25,6 +25,10 @@ namespace BusinessExample.Core.Exchanges.LoanApplications
         {
         }
 
+        protected override void OnDebugEvent(string stepName, FlowHandlerDebugEvent debugEvent, FlowValues flowValues)
+        {
+        }
+
         public override FlowDefinition GetFlowDefinition() =>
             new FlowDefinition()
 
