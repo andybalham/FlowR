@@ -89,13 +89,13 @@ namespace FlowR
                         var flowStep = flowDefinition.Steps[flowStepIndex];
                         var stepFlowContext = flowContext.GetStepContext(flowStep.Name);
 
-                        OnDebugEvent(flowStep.Name, FlowHandlerDebugEvent.PreStep, flowValues);
+                        OnDebugEvent(flowStep.Name, FlowDebugEvent.PreStep, flowValues);
 
                         flowStepIndex =
                             await PerformFlowStep(
                                 stepFlowContext, flowDefinition, flowStep, flowStepIndex, flowValues, flowTrace, cancellationToken);
 
-                        OnDebugEvent(flowStep.Name, FlowHandlerDebugEvent.PostStep, flowValues);
+                        OnDebugEvent(flowStep.Name, FlowDebugEvent.PostStep, flowValues);
                     }
 
                     var flowResponse = BuildFlowResponse(flowContext, flowTrace, flowValues);
@@ -117,7 +117,7 @@ namespace FlowR
 
         #region Protected methods
 
-        protected virtual void OnDebugEvent(string stepName, FlowHandlerDebugEvent debugEvent, FlowValues flowValues)
+        protected virtual void OnDebugEvent(string stepName, FlowDebugEvent debugEvent, FlowValues flowValues)
         {
         }
 
@@ -561,7 +561,7 @@ namespace FlowR
         #endregion
     }
 
-    public enum FlowHandlerDebugEvent
+    public enum FlowDebugEvent
     {
         PreStep,
         PostStep

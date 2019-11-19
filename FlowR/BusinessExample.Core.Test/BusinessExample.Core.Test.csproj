@@ -7,6 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\**" />
+    <Compile Remove="Services\**" />
+    <EmbeddedResource Remove="Controllers\**" />
+    <EmbeddedResource Remove="Services\**" />
+    <None Remove="Controllers\**" />
+    <None Remove="Services\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MediatR" Version="7.0.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
@@ -22,11 +31,6 @@
     <ProjectReference Include="..\BusinessExample.Core\BusinessExample.Core.csproj" />
     <ProjectReference Include="..\FlowR.Microsoft.Extensions.Logging\FlowR.Microsoft.Extensions.Logging.csproj" />
     <ProjectReference Include="..\FlowR\FlowR.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>
