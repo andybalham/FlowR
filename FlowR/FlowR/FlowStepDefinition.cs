@@ -101,12 +101,6 @@ namespace FlowR
 
             var flowObjectProperty = typeof(TR).GetFlowObjectType()[propertyInfo.Name];
 
-            if (flowObjectProperty.IsDesignTimeValue)
-            {
-                throw new FlowException(
-                    $"The property {propertyInfo.Name} is annotated with {nameof(DesignTimeValueAttribute)}");
-            }
-
             return flowObjectProperty;
         }
 
