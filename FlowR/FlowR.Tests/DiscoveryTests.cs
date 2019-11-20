@@ -686,10 +686,10 @@ namespace FlowR.Tests
 
             if (overrideProvider != null)
             {
-                serviceCollection.AddSingleton<IFlowOverrideProvider>(overrideProvider);
+                serviceCollection.AddSingleton(overrideProvider);
             }
 
-            serviceCollection.BuildServiceProvider(this, out var mediator, out var _);
+            serviceCollection.BuildServiceProvider(this, out var mediator, out _);
             return mediator;
         }
 
