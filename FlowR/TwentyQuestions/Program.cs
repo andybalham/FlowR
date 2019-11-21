@@ -28,14 +28,32 @@ namespace TwentyQuestions
             {
                 var mediator = serviceProvider.GetService<IMediator>();
 
-                var response =
-                    mediator.Send(new TwentyQuestionsRequest())
-                        .GetAwaiter().GetResult();
+                if (args.Length == 0)
+                {
+                    var response =
+                        mediator.Send(new TwentyQuestionsRequest())
+                            .GetAwaiter().GetResult();
 
-                Console.WriteLine("****************************************************");
-                Console.WriteLine($"Summary: {response.Summary}");
-                Console.WriteLine($"Trace: {response.Trace}");
-                Console.WriteLine("****************************************************");
+                    Console.WriteLine("****************************************************");
+                    Console.WriteLine($"Guess: {response.Guess}");
+                    Console.WriteLine($"Trace: {response.Trace}");
+                    Console.WriteLine("****************************************************");
+                }
+                else
+                {
+                    var flowDiscoveryResponse =
+                        mediator.Send(new FlowDiscoveryRequest())
+                            .GetAwaiter().GetResult();
+
+                    var twentyQuestionsFlow =
+                        flowDiscoveryResponse.Flows.First(f => 
+                            f.Request.RequestType == typeof(TwentyQuestionsRequest));
+
+                    Console.WriteLine("****************************************************");
+                    Console.WriteLine(twentyQuestionsFlow.GetDotNotation());
+                    Console.WriteLine("****************************************************");
+
+                }
             }
         }
     }

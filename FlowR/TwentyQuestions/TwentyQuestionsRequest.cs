@@ -10,7 +10,7 @@ namespace TwentyQuestions
 
     public class TwentyQuestionsResponse : FlowResponse
     {
-        public string Summary { get; set; }
+        public string Guess { get; set; }
     }
 
     public class TwentyQuestionsHandler : FlowHandler<TwentyQuestionsRequest, TwentyQuestionsResponse>
@@ -26,23 +26,6 @@ namespace TwentyQuestions
         public override FlowDefinition GetFlowDefinition()
         {
             return new FlowDefinition()
-
-                .Do("AskQuestionsOrDiagram", QuestionRequest.NewDefinition()
-                    .SetValue(req => req.Question, "Questions or diagram")
-                    .SetValue(req => req.Answers, new[] { "[Q]uestions", "[D]iagram" })
-                    .BindOutput(res => res.Answer, "QuestionsOrDiagram"))
-
-                .Check("QuestionsOrDiagram", "Questions or diagram?", FlowValueDecision<string>.NewDefinition()
-                    .BindInput(req => req.SwitchValue, "QuestionsOrDiagram"))
-                .When("Q").Goto("Questions")
-                .When("D").Goto("OutputDiagram")
-                .Else().Exception()
-
-                .Do("OutputDiagram", DotNotationRequest.NewDefinition()
-                    .SetValue(req => req.TargetRequestType, typeof(TwentyQuestionsRequest)))
-                .End()
-
-                .Label("Questions")
 
                 .Do("AskHasLegs", QuestionRequest.NewDefinition()
                     .SetValue(req => req.Question, "Does it have legs")
@@ -101,30 +84,26 @@ namespace TwentyQuestions
 
                 .Do("GuessDuck", GuessRequest.NewDefinition()
                     .SetValue(req => req.Guess, "Duck"))
-                .Goto("BuildSummary")
+                .End()
 
                 .Do("GuessFarmer", GuessRequest.NewDefinition()
                     .SetValue(req => req.Guess, "Farmer"))
-                .Goto("BuildSummary")
+                .End()
 
                 .Do("GuessHorse", GuessRequest.NewDefinition()
                     .SetValue(req => req.Guess, "Horse"))
-                .Goto("BuildSummary")
+                .End()
 
                 .Do("GuessCat", GuessRequest.NewDefinition()
                     .SetValue(req => req.Guess, "Cat"))
-                .Goto("BuildSummary")
+                .End()
 
                 .Do("GuessSnake", GuessRequest.NewDefinition()
                     .SetValue(req => req.Guess, "Snake"))
-                .Goto("BuildSummary")
+                .End()
 
                 .Do("GuessWorm", GuessRequest.NewDefinition()
                     .SetValue(req => req.Guess, "Worm"))
-                .Goto("BuildSummary")
-
-                .Do("BuildSummary", BuildSummaryRequest.NewDefinition()
-                    .BindInputs(req => req.Values, "HasLegs", "LegCount", "CanFly", "HasScales", "EatsHay", "Guess"))
                 .End();
         }
     }
