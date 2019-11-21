@@ -19,8 +19,8 @@
   <ItemGroup>
     <ProjectReference Include="..\BusinessExample.Core\BusinessExample.Core.csproj" />
     <ProjectReference Include="..\BusinessExample.Infrastructure\BusinessExample.Infrastructure.csproj" />
-    <ProjectReference Include="..\FlowR.Microsoft.Extensions.Logging\FlowR.Microsoft.Extensions.Logging.csproj" />
-    <ProjectReference Include="..\FlowR\FlowR.csproj" />
+    <ProjectReference Include="..\..\..\FlowR.Microsoft.Extensions.Logging\FlowR.Microsoft.Extensions.Logging.csproj" />
+    <ProjectReference Include="..\..\..\FlowR\FlowR.csproj" />
   </ItemGroup>
 
 </Project>

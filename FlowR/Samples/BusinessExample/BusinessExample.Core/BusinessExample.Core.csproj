@@ -9,8 +9,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FlowR.StepLibrary\FlowR.StepLibrary.csproj" />
-    <ProjectReference Include="..\FlowR\FlowR.csproj" />
+    <ProjectReference Include="..\..\..\FlowR.StepLibrary\FlowR.StepLibrary.csproj" />
+    <ProjectReference Include="..\..\..\FlowR\FlowR.csproj" />
   </ItemGroup>
 
 </Project>

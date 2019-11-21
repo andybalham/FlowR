@@ -52,7 +52,6 @@ namespace TwentyQuestions
                     Console.WriteLine("****************************************************");
                     Console.WriteLine(twentyQuestionsFlow.GetDotNotation());
                     Console.WriteLine("****************************************************");
-
                 }
             }
         }
