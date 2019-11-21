@@ -18,7 +18,8 @@ namespace TwentyQuestions
                     .AddMediatR(typeof(FlowDiscoveryRequest).Assembly)
                     .AddLogging(builder => { builder.AddConsole(); })
                     .Configure<LoggerFilterOptions>(options => options.MinLevel = LogLevel.Debug)
-                    .AddTransient(typeof(IFlowLogger<>), typeof(CoreFlowLogger<>));
+                    .AddTransient(typeof(IFlowLogger<>), typeof(CoreFlowLogger<>))
+                    .AddSingleton<IConsoleService>(new ConsoleService());
 
             FlowDiscovery.RegisterFlowTypes(typeof(TwentyQuestionsRequest).Assembly,
                 (intType, impType) => serviceCollection.AddSingleton(intType, impType));
@@ -32,6 +33,7 @@ namespace TwentyQuestions
                         .GetAwaiter().GetResult();
 
                 Console.WriteLine("****************************************************");
+                Console.WriteLine($"Summary: {response.Summary}");
                 Console.WriteLine($"Trace: {response.Trace}");
                 Console.WriteLine("****************************************************");
             }

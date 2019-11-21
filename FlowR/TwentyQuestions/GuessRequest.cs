@@ -20,17 +20,25 @@ namespace TwentyQuestions
 
     public class GuessResponse
     {
+        public string Guess { get; set; }
     }
 
     public class GuessHandler : IRequestHandler<GuessRequest, GuessResponse>
     {
+        private readonly IConsoleService _console;
+
+        public GuessHandler(IConsoleService console)
+        {
+            _console = console ?? throw new ArgumentNullException(nameof(console));
+        }
+
         public Task<GuessResponse> Handle(GuessRequest request, CancellationToken cancellationToken)
         {
-            Console.WriteLine("****************************************************");
-            Console.WriteLine($"Is it a {request.Guess}?");
-            Console.WriteLine("****************************************************");
+            _console.WriteLine("****************************************************");
+            _console.WriteLine($"Is it a {request.Guess}?");
+            _console.WriteLine("****************************************************");
 
-            return Task.FromResult(new GuessResponse());
+            return Task.FromResult(new GuessResponse { Guess = request.Guess });
         }
     }
 }

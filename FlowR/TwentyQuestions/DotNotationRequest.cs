@@ -14,7 +14,7 @@ namespace TwentyQuestions
         public static FlowActivityDefinition<DotNotationRequest, DotNotationResponse> NewDefinition() =>
             new FlowActivityDefinition<DotNotationRequest, DotNotationResponse>();
 
-        public override string GetText() => $"Output DotNotation for {this.TargetRequestType.Name}";
+        public override string GetText() => $"Output DotNotation for\r\n{this.TargetRequestType.Name}";
 
         [NotNullValue]
         public Type TargetRequestType { get; set; }
@@ -27,10 +27,12 @@ namespace TwentyQuestions
     public class DotNotationHandler : IRequestHandler<DotNotationRequest, DotNotationResponse>
     {
         private readonly IMediator _mediator;
+        private readonly IConsoleService _console;
 
-        public DotNotationHandler(IMediator mediator)
+        public DotNotationHandler(IMediator mediator, IConsoleService console)
         {
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            _console = console ?? throw new ArgumentNullException(nameof(console));
         }
 
         public Task<DotNotationResponse> Handle(DotNotationRequest request, CancellationToken cancellationToken)
@@ -39,12 +41,12 @@ namespace TwentyQuestions
                 _mediator.Send(new FlowDiscoveryRequest(), cancellationToken)
                     .GetAwaiter().GetResult();
 
-            var twentyQuestionsFlow =
+            var targetFlow = 
                 flowDiscoveryResponse.Flows.First(f => f.Request.RequestType == request.TargetRequestType);
 
-            Console.WriteLine("****************************************************");
-            Console.WriteLine(twentyQuestionsFlow.GetDotNotation());
-            Console.WriteLine("****************************************************");
+            _console.WriteLine("****************************************************");
+            _console.WriteLine(targetFlow.GetDotNotation());
+            _console.WriteLine("****************************************************");
 
             return Task.FromResult(new DotNotationResponse());
         }

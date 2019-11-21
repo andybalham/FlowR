@@ -15,7 +15,7 @@ namespace TwentyQuestions
         public static FlowActivityDefinition<QuestionRequest, QuestionResponse> NewDefinition() => 
             new FlowActivityDefinition<QuestionRequest, QuestionResponse>();
 
-        public override string GetText() => $"Ask '{Question}'";
+        public override string GetText() => $"Ask '{Question}'?";
 
         [NotNullValue]
         public string Question { get; set; }
@@ -31,26 +31,33 @@ namespace TwentyQuestions
 
     public class QuestionHandler : IRequestHandler<QuestionRequest, QuestionResponse>
     {
+        private readonly IConsoleService _console;
+
+        public QuestionHandler(IConsoleService console)
+        {
+            _console = console ?? throw new ArgumentNullException(nameof(console));
+        }
+
         public Task<QuestionResponse> Handle(QuestionRequest request, CancellationToken cancellationToken)
         {
-            Console.WriteLine("****************************************************");
-            Console.WriteLine(request.Question);
-            Console.WriteLine(string.Join(", ", request.Answers));
+            _console.WriteLine("****************************************************");
+            _console.WriteLine($"{request.Question}?");
+            _console.WriteLine(string.Join(", ", request.Answers));
 
             var options =
                 request.Answers.Select(a =>
                         Regex.Match(a, "\\[(?<answer>[^]])\\]").Groups["answer"].Value.ToUpper())
                     .ToHashSet();
 
-            var answer = Console.ReadLine()?.ToUpper();
+            var answer = _console.ReadLine()?.ToUpper();
 
             while (!options.Contains(answer))
             {
-                Console.WriteLine(string.Join(", ", request.Answers));
-                answer = Console.ReadLine()?.ToUpper();
+                _console.WriteLine(string.Join(", ", request.Answers));
+                answer = _console.ReadLine()?.ToUpper();
             }
 
-            Console.WriteLine("****************************************************");
+            _console.WriteLine("****************************************************");
 
             return Task.FromResult(new QuestionResponse { Answer = answer });
         }
