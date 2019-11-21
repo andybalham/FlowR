@@ -144,7 +144,7 @@ namespace FlowR.Tests
             var decisionNode = flow.Nodes.First(n => n.Name == "Decision_1");
             Assert.NotNull(decisionNode);
 
-            Assert.Equal(decisionNode.Name, decisionNode.Text);
+            Assert.Equal($"{decisionNode.Name}?", decisionNode.Text);
 
             Assert.NotNull(decisionNode.InputSetters);
             Assert.True(decisionNode.InputSetters.ContainsKey(nameof(ConfigurableActivityRequest.SetValue)));
@@ -182,7 +182,7 @@ namespace FlowR.Tests
 
             var decision1Node = flow.Nodes.First(n => n.Name == "Decision_1");
             Assert.NotNull(decision1Node);
-            Assert.Equal(decision1Node.Name, decision1Node.Text);
+            Assert.Equal($"{decision1Node.Name}?", decision1Node.Text);
 
             var decision2Node = flow.Nodes.First(n => n.Name == "Decision_2");
             Assert.NotNull(decision2Node);
@@ -686,10 +686,10 @@ namespace FlowR.Tests
 
             if (overrideProvider != null)
             {
-                serviceCollection.AddSingleton<IFlowOverrideProvider>(overrideProvider);
+                serviceCollection.AddSingleton(overrideProvider);
             }
 
-            serviceCollection.BuildServiceProvider(this, out var mediator, out var _);
+            serviceCollection.BuildServiceProvider(this, out var mediator, out _);
             return mediator;
         }
 

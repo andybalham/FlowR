@@ -254,7 +254,12 @@ namespace FlowR
 
         private static string GetFlowDiagramNodeText(FlowStep flowStep, IFlowStepRequest flowStepRequest)
         {
-            return flowStep.Text ?? flowStepRequest.GetText() ?? flowStep.Name;
+            var diagramNodeText = 
+                flowStep.Text 
+                ?? flowStepRequest.GetText() 
+                ?? flowStep.Name + ((flowStep is DecisionFlowStepBase) ? "?" : null);
+
+            return diagramNodeText;
         }
 
         private void SetFlowDiagramNodeInputSummaries(FlowStep flowStep, IFlowStepRequest request, FlowDiagramNode node)
