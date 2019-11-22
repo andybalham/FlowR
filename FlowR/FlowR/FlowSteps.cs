@@ -42,7 +42,7 @@ namespace FlowR
             public IEnumerable<object> Targets { get; set; }
             public string NextStepName { get; set; }
             public bool IsEnd { get; set; }
-            public bool IsException { get; set; }
+            public bool IsUnhandled { get; set; }
         }
 
         internal List<Branch> Branches { get; } = new List<Branch>();
@@ -123,9 +123,9 @@ namespace FlowR
                 return _flowDefinition;
             }
 
-            public FlowDefinition Exception()
+            public FlowDefinition Unhandled()
             {
-                _branches.Add(new Branch { IsException = true });
+                _branches.Add(new Branch { IsUnhandled = true });
                 return _flowDefinition;
             }
         }

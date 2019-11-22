@@ -41,7 +41,7 @@ namespace BusinessExample.Core.Exchanges.LoanApplications
                     .BindInput(rq => rq.SwitchValue, nameof(CheckEligibility.Response.IsEligible)))
                 .When(false).Goto("SetResultToDecline")
                 .When(true).Goto("CheckAffordability")
-                .Else().Exception()
+                .Else().Unhandled()
 
                 // ------------------------------------------------------------------------------------------------
 
@@ -51,7 +51,7 @@ namespace BusinessExample.Core.Exchanges.LoanApplications
                 .When(AffordabilityRating.Fair).Goto("SetResultToRefer")
                 .When(AffordabilityRating.Poor).Goto("SetResultToDecline")
                 .When(AffordabilityRating.Good).Goto("CheckIdentity")
-                .Else().Exception()
+                .Else().Unhandled()
 
                 // ------------------------------------------------------------------------------------------------
 
@@ -61,7 +61,7 @@ namespace BusinessExample.Core.Exchanges.LoanApplications
                 .When(IdentityCheckResult.ServiceUnavailable).Goto("SetResultToRefer")
                 .When(IdentityCheckResult.IdentityNotFound).Goto("SetResultToDecline")
                 .When(IdentityCheckResult.IdentityFound).Goto("SetResultToAccept")
-                .Else().Exception()
+                .Else().Unhandled()
 
                 // ------------------------------------------------------------------------------------------------
 
@@ -86,7 +86,7 @@ namespace BusinessExample.Core.Exchanges.LoanApplications
                 .When(LoanDecisionResult.Decline).Goto("PostDeclineActions")
                 .When(LoanDecisionResult.Refer).Goto("PostReferActions")
                 .When(LoanDecisionResult.Accept).Goto("PostAcceptActions")
-                .Else().Exception()
+                .Else().Unhandled()
 
                 // ------------------------------------------------------------------------------------------------
 

@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using FlowR;
 using MediatR;
 
-namespace TwentyQuestions
+namespace TwentyQuestions.Core
 {
     public class GuessRequest : FlowActivityRequest<GuessResponse>
     {

@@ -14,9 +14,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\FlowR.Discovery\FlowR.Discovery.csproj" />
-    <ProjectReference Include="..\..\FlowR.Microsoft.Extensions.Logging\FlowR.Microsoft.Extensions.Logging.csproj" />
-    <ProjectReference Include="..\..\FlowR\FlowR.csproj" />
+    <ProjectReference Include="..\..\..\FlowR.Discovery\FlowR.Discovery.csproj" />
+    <ProjectReference Include="..\..\..\FlowR.Microsoft.Extensions.Logging\FlowR.Microsoft.Extensions.Logging.csproj" />
+    <ProjectReference Include="..\..\..\FlowR\FlowR.csproj" />
+    <ProjectReference Include="..\TwentyQuestionsCore\TwentyQuestions.Core.csproj" />
   </ItemGroup>
 
 </Project>

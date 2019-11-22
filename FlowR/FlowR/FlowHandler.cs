@@ -306,7 +306,7 @@ namespace FlowR
                 return int.MaxValue;
             }
 
-            if (branch.IsException)
+            if (branch.IsUnhandled)
             {
                 throw new FlowUnhandledElseException($"Unhandled ELSE for decision '{decisionFlowStep.Name}'");
             }
