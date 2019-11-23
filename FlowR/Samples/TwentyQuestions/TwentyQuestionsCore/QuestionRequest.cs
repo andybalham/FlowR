@@ -63,8 +63,8 @@ namespace TwentyQuestions.Core
 
     public static class QuestionRequestMocks
     {
-        public static FlowContext MockQuestionActivity(this FlowContext flowContext, IDictionary<string, string> answers) =>
-            flowContext.MockActivity<QuestionRequest, QuestionResponse>(req => 
-                new QuestionResponse { Answer = answers[req.FlowContext.FlowStepName] });
+        public static FlowContext MockQuestionActivity(this FlowContext flowContext, string stepName, string answer) =>
+            flowContext.MockActivity<QuestionRequest, QuestionResponse>(stepName, req => 
+                new QuestionResponse { Answer = answer });
     }
 }

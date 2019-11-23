@@ -17,7 +17,9 @@ namespace TwentyQuestions.Test
         [InlineData("Y", "2", "", "Y", "", "Duck")]
         [InlineData("N", "", "", "", "Y", "Snake")]
         [InlineData("N", "", "", "", "N", "Worm")]
-        public void RunFlow(string hasLegs, string legCount, string eatsHay, string canFly, string hasScales, string expectedGuess)
+        public void RunFlow(
+            string hasLegsAnswer, string legCountAnswer, string eatsHayAnswer, string canFlyAnswer, string hasScalesAnswer, 
+            string expectedGuess)
         {
             var serviceCollection =
                 new ServiceCollection()
@@ -26,14 +28,11 @@ namespace TwentyQuestions.Test
             using (var serviceProvider = serviceCollection.BuildServiceProvider())
             {
                 var flowContext = new FlowContext()
-                    .MockQuestionActivity(new Dictionary<string, string>
-                    {
-                        { "AskHasLegs", hasLegs },
-                        { "AskLegCount", legCount },
-                        { "AskEatsHay", eatsHay },
-                        { "AskCanFly", canFly },
-                        { "AskHasScales", hasScales },
-                    })
+                    .MockQuestionActivity("AskHasLegs", hasLegsAnswer)
+                    .MockQuestionActivity("AskLegCount", legCountAnswer)
+                    .MockQuestionActivity("AskEatsHay", eatsHayAnswer)
+                    .MockQuestionActivity("AskCanFly", canFlyAnswer)
+                    .MockQuestionActivity("AskHasScales", hasScalesAnswer)
                     .MockGuessActivity();
 
                 var mediator = serviceProvider.GetService<IMediator>();

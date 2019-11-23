@@ -255,7 +255,7 @@ namespace FlowR
         {
             var mockHandler = 
                 stepFlowContext.GetMockActivityHandler(
-                    flowStep.Definition.RequestType, flowStep.OverrideKey?.Value);
+                    flowStep.Definition.RequestType, flowStep.Name);
 
             dynamic activityResponse;
             if (mockHandler == null)
