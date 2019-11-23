@@ -15,6 +15,10 @@ namespace TwentyQuestions.Core
 
     public class TwentyQuestionsHandler : FlowHandler<TwentyQuestionsRequest, TwentyQuestionsResponse>
     {
+        public TwentyQuestionsHandler(IMediator mediator) : base(mediator)
+        {
+        }
+
         public TwentyQuestionsHandler(IMediator mediator, IFlowLogger<TwentyQuestionsHandler> logger) : base(mediator, logger)
         {
         }

@@ -60,4 +60,11 @@ namespace TwentyQuestions.Core
             return Task.FromResult(new QuestionResponse { Answer = answer });
         }
     }
+
+    public static class QuestionRequestMocks
+    {
+        public static FlowContext MockQuestionActivity(this FlowContext flowContext, IDictionary<string, string> answers) =>
+            flowContext.MockActivity<QuestionRequest, QuestionResponse>(req => 
+                new QuestionResponse { Answer = answers[req.FlowContext.FlowStepName] });
+    }
 }

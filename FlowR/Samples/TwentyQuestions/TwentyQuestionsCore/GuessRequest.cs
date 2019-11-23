@@ -39,4 +39,10 @@ namespace TwentyQuestions.Core
             return Task.FromResult(new GuessResponse { Guess = request.Guess });
         }
     }
+
+    public static class GuessRequestMocks 
+    {
+        public static FlowContext MockGuessActivity(this FlowContext flowContext) =>
+            flowContext.MockActivity<GuessRequest, GuessResponse>(req => new GuessResponse { Guess = req.Guess });
+    }
 }
