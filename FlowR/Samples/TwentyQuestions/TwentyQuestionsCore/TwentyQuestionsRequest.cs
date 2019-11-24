@@ -1,7 +1,7 @@
 ﻿using FlowR;
 using MediatR;
 
-namespace TwentyQuestions
+namespace TwentyQuestions.Core
 {
     public class TwentyQuestionsRequest : FlowActivityRequest<TwentyQuestionsResponse>
     {
@@ -15,6 +15,10 @@ namespace TwentyQuestions
 
     public class TwentyQuestionsHandler : FlowHandler<TwentyQuestionsRequest, TwentyQuestionsResponse>
     {
+        public TwentyQuestionsHandler(IMediator mediator) : base(mediator)
+        {
+        }
+
         public TwentyQuestionsHandler(IMediator mediator, IFlowLogger<TwentyQuestionsHandler> logger) : base(mediator, logger)
         {
         }
@@ -36,7 +40,7 @@ namespace TwentyQuestions
                     .BindInput(req => req.SwitchValue, "HasLegs"))
                 .When("Y").Goto("AskLegCount")
                 .When("N").Goto("AskHasScales")
-                .Else().Exception()
+                .Else().Unhandled()
 
                 .Do("AskLegCount", QuestionRequest.NewDefinition()
                     .SetValue(req => req.Question, "How many legs does it have")
@@ -47,7 +51,7 @@ namespace TwentyQuestions
                     .BindInput(req => req.SwitchValue, "LegCount"))
                 .When("2").Goto("AskCanFly")
                 .When("4").Goto("AskEatsHay")
-                .Else().Exception()
+                .Else().Unhandled()
 
                 .Do("AskCanFly", QuestionRequest.NewDefinition()
                     .SetValue(req => req.Question, "Can it fly")
@@ -58,7 +62,7 @@ namespace TwentyQuestions
                     .BindInput(req => req.SwitchValue, "CanFly"))
                 .When("Y").Goto("GuessDuck")
                 .When("N").Goto("GuessFarmer")
-                .Else().Exception()
+                .Else().Unhandled()
 
                 .Do("AskEatsHay", QuestionRequest.NewDefinition()
                     .SetValue(req => req.Question, "Does it eat hay")
@@ -69,7 +73,7 @@ namespace TwentyQuestions
                     .BindInput(req => req.SwitchValue, "EatsHay"))
                 .When("Y").Goto("GuessHorse")
                 .When("N").Goto("GuessCat")
-                .Else().Exception()
+                .Else().Unhandled()
 
                 .Do("AskHasScales", QuestionRequest.NewDefinition()
                     .SetValue(req => req.Question, "Does it have scales")
@@ -80,7 +84,7 @@ namespace TwentyQuestions
                     .BindInput(req => req.SwitchValue, "HasScales"))
                 .When("Y").Goto("GuessSnake")
                 .When("N").Goto("GuessWorm")
-                .Else().Exception()
+                .Else().Unhandled()
 
                 .Do("GuessDuck", GuessRequest.NewDefinition()
                     .SetValue(req => req.Guess, "Duck"))

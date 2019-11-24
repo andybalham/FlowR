@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using FlowR;
 using MediatR;
 
-namespace TwentyQuestions
+namespace TwentyQuestions.Core
 {
     public class GuessRequest : FlowActivityRequest<GuessResponse>
     {
@@ -40,5 +38,11 @@ namespace TwentyQuestions
 
             return Task.FromResult(new GuessResponse { Guess = request.Guess });
         }
+    }
+
+    public static class GuessRequestMocks 
+    {
+        public static FlowContext MockGuessActivity(this FlowContext flowContext) =>
+            flowContext.MockActivity<GuessRequest, GuessResponse>(req => new GuessResponse { Guess = req.Guess });
     }
 }

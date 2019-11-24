@@ -562,6 +562,6 @@ namespace FlowR.Tests
                 .Check("UnhandledDecisionName", NullableFlowValueDecision<string>.NewDefinition()
                     .BindInput(rq => rq.SwitchValue, nameof(TestElseThrowRequest.Input)))
                 .When((string)null).End()
-                .Else().Exception();
+                .Else().Unhandled();
     }
 }

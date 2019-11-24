@@ -23,17 +23,17 @@ namespace FlowR.Tests.Domain.FlowrBasedMockingTests
         public override FlowDefinition GetFlowDefinition()
         {
             return new FlowDefinition()
-                .Do("Set_value_1_to_A", new FlowOverrideKey("SetValue1"),
+                .Do("Set_value_1_to_A",
                     new FlowActivityDefinition<SetStringFlowValueRequest, SetStringFlowValueResponse>()
                         .SetValue(r => r.OutputValue, "A")
                         .BindOutput(r => r.Output, "Value1"))
                 
-                .Do("Set_value_2_to_B", new FlowOverrideKey("SetValue2"),
+                .Do("Set_value_2_to_B",
                     new FlowActivityDefinition<SetStringFlowValueRequest, SetStringFlowValueResponse>()
                         .SetValue(r => r.OutputValue, "B")
                         .BindOutput(r => r.Output, "Value2"))
 
-                .Do("Set_value_3_to_C", new FlowOverrideKey("SetValue3"),
+                .Do("Set_value_3_to_C",
                     new FlowActivityDefinition<SetStringFlowValueRequest, SetStringFlowValueResponse>()
                         .SetValue(r => r.OutputValue, "C")
                         .BindOutput(r => r.Output, "Value3"));

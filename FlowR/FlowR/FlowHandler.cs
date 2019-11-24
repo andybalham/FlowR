@@ -255,7 +255,7 @@ namespace FlowR
         {
             var mockHandler = 
                 stepFlowContext.GetMockActivityHandler(
-                    flowStep.Definition.RequestType, flowStep.OverrideKey?.Value);
+                    flowStep.Definition.RequestType, flowStep.Name);
 
             dynamic activityResponse;
             if (mockHandler == null)
@@ -306,7 +306,7 @@ namespace FlowR
                 return int.MaxValue;
             }
 
-            if (branch.IsException)
+            if (branch.IsUnhandled)
             {
                 throw new FlowUnhandledElseException($"Unhandled ELSE for decision '{decisionFlowStep.Name}'");
             }

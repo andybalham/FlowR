@@ -145,7 +145,7 @@ namespace FlowR
 
             foreach (var branch in decisionFlowStep.Branches)
             {
-                if (branch.IsException)
+                if (branch.IsUnhandled)
                 {
                     continue;
                 }

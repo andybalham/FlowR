@@ -48,8 +48,7 @@ namespace FlowR
             CorrelationId = flowContext.CorrelationId;
             RequestId = flowContext.RequestId;
             FlowInstanceId = flowContext.FlowInstanceId;
-            FlowInstanceId = flowContext.FlowInstanceId;
-            MockActivityHandlers = flowContext.MockActivityHandlers;
+            MockActivityHandlers = flowContext?.MockActivityHandlers ?? MockActivityHandlers;
         }
 
         #endregion
@@ -81,10 +80,10 @@ namespace FlowR
             return MockActivity(null, mockHandler);
         }
 
-        public FlowContext MockActivity<TReq, TRes>(string overrideKey, Func<TReq, TRes> mockHandler)
+        public FlowContext MockActivity<TReq, TRes>(string stepName, Func<TReq, TRes> mockHandler)
             where TReq : FlowActivityRequest<TRes>
         {
-            MockActivityHandlers.Add((typeof(TReq), overrideKey), request => mockHandler((TReq)request));
+            MockActivityHandlers.Add((typeof(TReq), stepName), request => mockHandler((TReq)request));
             return this;
         }
 
@@ -97,9 +96,14 @@ namespace FlowR
             return new FlowContext(this, stepName);
         }
 
-        internal Func<IFlowStepRequest, object> GetMockActivityHandler(Type requestType, string overrideKey)
+        internal Func<IFlowStepRequest, object> GetMockActivityHandler(Type requestType, string stepName)
         {
-            if (MockActivityHandlers.TryGetValue((requestType, overrideKey), out var instanceMockHandler))
+            if (!this.IsRootFlow)
+            {
+                return null;
+            }
+
+            if (MockActivityHandlers.TryGetValue((requestType, stepName), out var instanceMockHandler))
             {
                 return instanceMockHandler;
             }
