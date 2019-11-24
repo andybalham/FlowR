@@ -84,8 +84,8 @@ namespace FlowR.Tests
             if (isMocked)
             {
                 flowContext
-                    .MockActivity<CanMockOnlyRootFlowRequest, CanMockOnlyRootFlowResponse>(
-                        request => new CanMockOnlyRootFlowResponse { Value = false } );
+                    .MockActivity<CanMockOnlyRootSetValueRequest, CanMockOnlyRootSetValueResponse>(
+                        request => new CanMockOnlyRootSetValueResponse { Value = false } );
             }
 
             // Act
