@@ -16,9 +16,6 @@ namespace TwentyQuestions
             var serviceCollection =
                 new ServiceCollection()
                     .AddMediatR(typeof(TwentyQuestionsRequest).Assembly)
-                    .AddLogging(builder => { builder.AddConsole(); })
-                    .Configure<LoggerFilterOptions>(options => options.MinLevel = LogLevel.Debug)
-                    .AddTransient(typeof(IFlowLogger<>), typeof(CoreFlowLogger<>))
                     .AddSingleton<IConsoleService>(new ConsoleService());
 
             using (var serviceProvider = serviceCollection.BuildServiceProvider())
@@ -32,7 +29,6 @@ namespace TwentyQuestions
                 Console.WriteLine("****************************************************");
                 Console.WriteLine($"Guess: {response.Guess}");
                 Console.WriteLine($"Trace: {response.Trace}");
-                Console.WriteLine("****************************************************");
             }
         }
     }

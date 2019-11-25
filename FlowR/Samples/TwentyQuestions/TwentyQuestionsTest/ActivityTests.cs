@@ -22,7 +22,7 @@ namespace TwentyQuestions.Test
 
             var request = new QuestionRequest
             {
-                Answers = new[] { "[Y]es", "[N]o" }
+                Answers = new[] { "[Y]es", "[n]o" }
             };
 
             var consoleServiceMock = new Mock<IConsoleService>();

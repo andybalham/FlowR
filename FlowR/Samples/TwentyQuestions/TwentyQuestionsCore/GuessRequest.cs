@@ -32,9 +32,7 @@ namespace TwentyQuestions.Core
 
         public Task<GuessResponse> Handle(GuessRequest request, CancellationToken cancellationToken)
         {
-            _console.WriteLine("****************************************************");
             _console.WriteLine($"Is it a {request.Guess}?");
-            _console.WriteLine("****************************************************");
 
             return Task.FromResult(new GuessResponse { Guess = request.Guess });
         }
