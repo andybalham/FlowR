@@ -39,7 +39,6 @@ namespace TwentyQuestions.Core
 
         public Task<QuestionResponse> Handle(QuestionRequest request, CancellationToken cancellationToken)
         {
-            _console.WriteLine("****************************************************");
             _console.WriteLine($"{request.Question}?");
             _console.WriteLine(string.Join(", ", request.Answers));
 
@@ -54,8 +53,6 @@ namespace TwentyQuestions.Core
                 _console.WriteLine(string.Join(", ", request.Answers));
                 answer = _console.ReadLine()?.ToUpper();
             }
-
-            _console.WriteLine("****************************************************");
 
             return Task.FromResult(new QuestionResponse { Answer = answer });
         }

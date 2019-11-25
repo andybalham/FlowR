@@ -10,6 +10,24 @@ namespace TwentyQuestions.Test
 {
     public class FlowTests
     {
+        [Fact]
+        public void TwentyQuestionsRequest_is_valid_flow()
+        {
+            var serviceCollection =
+                new ServiceCollection()
+                    .AddMediatR(typeof(TwentyQuestionsHandler).Assembly);
+
+            using (var serviceProvider = serviceCollection.BuildServiceProvider())
+            {
+                var mediator = serviceProvider.GetService<IMediator>();
+
+                var errorMessages =
+                    new TwentyQuestionsHandler(mediator).GetFlowDefinition().Validate();
+
+                Assert.Empty(errorMessages);
+            }
+        }
+
         [Theory]
         [InlineData("Y", "4", "Y", "", "", "Horse")]
         [InlineData("Y", "4", "N", "", "", "Cat")]
@@ -17,7 +35,7 @@ namespace TwentyQuestions.Test
         [InlineData("Y", "2", "", "Y", "", "Duck")]
         [InlineData("N", "", "", "", "Y", "Snake")]
         [InlineData("N", "", "", "", "N", "Worm")]
-        public void RunFlow(
+        public void TwentyQuestions_returns_expected_guess(
             string hasLegsAnswer, string legCountAnswer, string eatsHayAnswer, string canFlyAnswer, string hasScalesAnswer, 
             string expectedGuess)
         {

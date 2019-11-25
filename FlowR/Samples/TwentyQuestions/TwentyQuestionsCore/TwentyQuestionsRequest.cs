@@ -19,10 +19,6 @@ namespace TwentyQuestions.Core
         {
         }
 
-        public TwentyQuestionsHandler(IMediator mediator, IFlowLogger<TwentyQuestionsHandler> logger) : base(mediator, logger)
-        {
-        }
-
         protected override void OnDebugEvent(string stepName, FlowDebugEvent debugEvent, FlowValues flowValues)
         {
         }
