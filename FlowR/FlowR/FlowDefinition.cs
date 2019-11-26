@@ -202,14 +202,44 @@ namespace FlowR
                 return;
             }
 
+            ValidateStepGotoTargets(validationMessages);
+
+            if (validationMessages.Count > 0)
+            {
+                return;
+            }
+
             ValidateStepCoverage(validationMessages);
 
             ValidateStepPath(validationMessages);
         }
 
+        private void ValidateStepGotoTargets(List<string> validationMessages)
+        {
+            foreach (var flowStep in this.Steps)
+            {
+                switch (flowStep)
+                {
+                    case DecisionFlowStepBase decisionFlowStep:
+                        validationMessages.AddRange(
+                            from branch in decisionFlowStep.Branches 
+                            where !string.IsNullOrEmpty(branch.NextStepName) && !this.StepNames.Contains(branch.NextStepName) 
+                            select $"Step '{decisionFlowStep.Name}' branch target '{branch.NextStepName}' does not exist");
+                        break;
+
+                    case GotoFlowStep gotoFlowStep:
+                        if (!this.StepNames.Contains(gotoFlowStep.NextStepName))
+                        {
+                            validationMessages.Add($"Goto target '{gotoFlowStep.NextStepName}' does not exist");
+                        }
+                        break;
+                }
+            }
+        }
+
         private void ValidateStepPath(ICollection<string> validationMessages)
         {
-            for (int stepIndex = 0; stepIndex < this.Steps.Count; stepIndex++)
+            for (var stepIndex = 0; stepIndex < this.Steps.Count; stepIndex++)
             {
                 if (CanGetToEnd(stepIndex, new HashSet<string>()))
                 {

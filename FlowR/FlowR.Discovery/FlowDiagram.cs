@@ -14,6 +14,7 @@ namespace FlowR.Discovery
         public const string RequestOverrideColor = "red";
 
         #endregion
+
         #region Public properties
 
         public string Criteria { get; }
@@ -48,10 +49,10 @@ namespace FlowR.Discovery
             return node;
         }
 
-        public string GetDotNotation()
+        public string GetDotDiagram()
         {
-            var formatNotationBuilder = new StringBuilder();
-            var flowNotationBuilder = new StringBuilder();
+            var formatBuilder = new StringBuilder();
+            var flowDiagramBuilder = new StringBuilder();
 
             foreach (var node in this.Nodes)
             {
@@ -86,18 +87,18 @@ namespace FlowR.Discovery
                     nodeFormat += $",color={FlowDiagram.RequestOverrideColor}";
                 }
 
-                formatNotationBuilder.AppendLine($"    {node.Name} [{nodeFormat}];");
+                formatBuilder.AppendLine($"    {node.Name} [{nodeFormat}];");
 
                 foreach (var link in node.Links ?? new FlowDiagramLink[] { })
                 {
                     if ((link.Criteria?.Any()).GetValueOrDefault())
                     {
                         var criteria = string.Join(" or ", link.Criteria.ToArray());
-                        flowNotationBuilder.AppendLine($"    {node.Name} -> {link.TargetNodeName} [label=\"{criteria}\"];");
+                        flowDiagramBuilder.AppendLine($"    {node.Name} -> {link.TargetNodeName} [label=\"{criteria}\"];");
                     }
                     else
                     {
-                        flowNotationBuilder.AppendLine($"    {node.Name} -> {link.TargetNodeName};");
+                        flowDiagramBuilder.AppendLine($"    {node.Name} -> {link.TargetNodeName};");
                     }
                 }
             }
@@ -106,9 +107,9 @@ namespace FlowR.Discovery
 
             notationBuilder.AppendLine("digraph Flow {");
             notationBuilder.AppendLine("");
-            notationBuilder.Append(formatNotationBuilder);
+            notationBuilder.Append(formatBuilder);
             notationBuilder.AppendLine("");
-            notationBuilder.Append(flowNotationBuilder);
+            notationBuilder.Append(flowDiagramBuilder);
             notationBuilder.AppendLine("}");
 
             return notationBuilder.ToString();

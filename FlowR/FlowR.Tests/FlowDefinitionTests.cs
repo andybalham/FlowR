@@ -4,12 +4,35 @@ using System.Linq;
 using System.Text;
 using FlowR.StepLibrary.Activities;
 using FlowR.Tests.Domain.FlowTests;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
+using EmptyFlow = FlowR.Tests.DiscoveryTarget.EmptyFlow;
 
 namespace FlowR.Tests
 {
     public class FlowDefinitionTests
     {
+        #region Facts and theories
+
+        [Fact]
+        public void Can_validate_unknown_steps()
+        {
+            var flowDefinition = new FlowDefinition()
+                .Check("Check", FlowValueDecision<int?>.NewDefinition())
+                .When(444).Goto("UnknownActivity1")
+                .Else().Goto("UnknownActivity2")
+                .Goto("UnknownActivity3");
+
+            var validationMessages = flowDefinition.Validate().ToList();
+
+            Assert.Equal(3, validationMessages.Count);
+
+            Assert.Contains(validationMessages, m => m.Contains("UnknownActivity1"));
+            Assert.Contains(validationMessages, m => m.Contains("UnknownActivity2"));
+            Assert.Contains(validationMessages, m => m.Contains("UnknownActivity3"));
+        }
+
         [Fact]
         public void Can_validate_closed_loops()
         {
@@ -146,9 +169,41 @@ namespace FlowR.Tests
             Assert.Contains(validationMessages, m => m.Contains("property SwitchValue"));
         }
 
-        // TODO: Implement Can_validate_all_flow_definitions_in_an_assembly
-        public void Can_validate_all_flow_definitions_in_an_assembly()
+        [Fact]
+        public async void Can_validate_all_flow_definitions_in_an_assembly()
         {
+            var mediator = GetMediator();
+
+            var response = await mediator.Send(new FlowValidationRequest());
+
+            Assert.NotNull(response.Errors);
+            Assert.Single(response.Errors);
+            
+            Assert.True(false, "Need to exercise the code to pick up overrides");
         }
+
+        #endregion
+
+        #region Private methods
+
+        private static IMediator GetMediator(IFlowOverrideProvider overrideProvider = null)
+        {
+            var serviceCollection =
+                new ServiceCollection()
+                    .AddMediatR(typeof(IFlowHandler).Assembly);
+
+            typeof(EmptyFlow).Assembly.RegisterFlowTypes(
+                (intType, impType) => serviceCollection.AddSingleton(intType, impType));
+
+            if (overrideProvider != null)
+            {
+                serviceCollection.AddSingleton(overrideProvider);
+            }
+
+            var mediator = serviceCollection.BuildServiceProvider().GetService<IMediator>();
+            return mediator;
+        }
+
+        #endregion
     }
 }

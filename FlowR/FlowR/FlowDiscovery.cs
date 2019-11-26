@@ -8,19 +8,6 @@ using MediatR;
 
 namespace FlowR
 {
-    public static class FlowDiscovery
-    {
-        public static void RegisterFlowTypes(Assembly assembly, Action<Type, Type> registerFlowType)
-        {
-            var flowTypes = assembly.GetExportedTypes().Where(t => typeof(IFlowHandler).IsAssignableFrom(t));
-
-            foreach (var flowType in flowTypes)
-            {
-                registerFlowType(typeof(IFlowHandler), flowType);
-            }
-        }
-    }
-
     public class FlowDiscoveryRequest : IRequest<FlowDiscoveryResponse>
     {
     }
