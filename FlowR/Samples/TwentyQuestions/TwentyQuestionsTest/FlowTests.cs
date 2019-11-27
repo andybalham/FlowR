@@ -11,20 +11,20 @@ namespace TwentyQuestions.Test
     public class FlowTests
     {
         [Fact]
-        public void TwentyQuestionsRequest_is_valid_flow()
+        public async void TwentyQuestionsRequest_is_valid_flow()
         {
             var serviceCollection =
                 new ServiceCollection()
+                    .AddMediatR(typeof(FlowValidationRequest).Assembly)
                     .AddMediatR(typeof(TwentyQuestionsHandler).Assembly);
 
             using (var serviceProvider = serviceCollection.BuildServiceProvider())
             {
                 var mediator = serviceProvider.GetService<IMediator>();
 
-                var errorMessages =
-                    new TwentyQuestionsHandler(mediator).GetFlowDefinition().Validate();
+                var response = await mediator.Send(new FlowValidationRequest());
 
-                Assert.Empty(errorMessages);
+                Assert.Empty(response.Errors);
             }
         }
 

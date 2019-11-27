@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using FlowR.StepLibrary.Activities;
+using FlowR.Tests.DiscoveryTarget;
 using FlowR.Tests.Domain.FlowTests;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -172,25 +173,52 @@ namespace FlowR.Tests
         [Fact]
         public async void Can_validate_all_flow_definitions_in_an_assembly()
         {
-            var mediator = GetMediator();
+            var mediator = GetMediator(new TestOverrideProvider());
 
             var response = await mediator.Send(new FlowValidationRequest());
 
-            Assert.NotNull(response.Errors);
-            Assert.Single(response.Errors);
-            
-            Assert.True(false, "Need to exercise the code to pick up overrides");
+            Assert.True(
+                response.Errors.ContainsKey(typeof(InvalidFlowRequest).FullName), 
+                $"response.Errors.ContainsKey({typeof(InvalidFlowRequest).FullName})");
+
+            Assert.True(
+                response.Errors.ContainsKey($"{typeof(InvalidFlowRequest).FullName}[OverrideCriteria]"),
+                $"response.Errors.ContainsKey({typeof(InvalidFlowRequest).FullName}[OverrideCriteria])");
         }
 
         #endregion
 
-        #region Private methods
+        #region Private methods and classes
+
+        private class TestOverrideProvider : TestOverrideProviderBase
+        {
+            public override IEnumerable<FlowDefinition> GetFlowDefinitionOverrides(Type requestType)
+            {
+                return requestType == typeof(InvalidFlowRequest) 
+                    ? new []
+                    {
+                        new FlowDefinition("OverrideCriteria")
+                            .Goto("NonExistentStep")
+                    } 
+                    : null;
+            }
+
+            public override FlowDefinition GetApplicableFlowDefinitionOverride(IList<FlowDefinition> overrides, IFlowStepRequest request)
+            {
+                return overrides.FirstOrDefault();
+            }
+        }
 
         private static IMediator GetMediator(IFlowOverrideProvider overrideProvider = null)
         {
             var serviceCollection =
                 new ServiceCollection()
                     .AddMediatR(typeof(IFlowHandler).Assembly);
+
+            if (overrideProvider != null)
+            {
+                serviceCollection.AddSingleton(overrideProvider);
+            }
 
             typeof(EmptyFlow).Assembly.RegisterFlowTypes(
                 (intType, impType) => serviceCollection.AddSingleton(intType, impType));
