@@ -21,7 +21,7 @@ namespace TwentyQuestions.Test
                 new ServiceCollection()
                     .AddMediatR(typeof(FlowDiscoveryRequest).Assembly);
 
-            FlowDiscovery.RegisterFlowTypes(typeof(TwentyQuestionsRequest).Assembly,
+            typeof(TwentyQuestionsRequest).Assembly.RegisterFlowTypes(
                 (intType, impType) => serviceCollection.AddSingleton(intType, impType));
 
             using (var serviceProvider = serviceCollection.BuildServiceProvider())
@@ -34,7 +34,7 @@ namespace TwentyQuestions.Test
 
                 foreach (var flow in response.Flows)
                 {
-                    File.WriteAllText($"{flow.Request.RequestType.Name}.dot", flow.GetDotNotation());
+                    File.WriteAllText($"{flow.Request.RequestType.Name}.dot", flow.GetDotDiagram());
                 }
             }
         }

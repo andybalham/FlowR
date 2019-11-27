@@ -3,13 +3,37 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using FlowR.StepLibrary.Activities;
+using FlowR.Tests.DiscoveryTarget;
 using FlowR.Tests.Domain.FlowTests;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
+using EmptyFlow = FlowR.Tests.DiscoveryTarget.EmptyFlow;
 
 namespace FlowR.Tests
 {
     public class FlowDefinitionTests
     {
+        #region Facts and theories
+
+        [Fact]
+        public void Can_validate_unknown_steps()
+        {
+            var flowDefinition = new FlowDefinition()
+                .Check("Check", FlowValueDecision<int?>.NewDefinition())
+                .When(444).Goto("UnknownActivity1")
+                .Else().Goto("UnknownActivity2")
+                .Goto("UnknownActivity3");
+
+            var validationMessages = flowDefinition.Validate().ToList();
+
+            Assert.Equal(3, validationMessages.Count);
+
+            Assert.Contains(validationMessages, m => m.Contains("UnknownActivity1"));
+            Assert.Contains(validationMessages, m => m.Contains("UnknownActivity2"));
+            Assert.Contains(validationMessages, m => m.Contains("UnknownActivity3"));
+        }
+
         [Fact]
         public void Can_validate_closed_loops()
         {
@@ -146,9 +170,68 @@ namespace FlowR.Tests
             Assert.Contains(validationMessages, m => m.Contains("property SwitchValue"));
         }
 
-        // TODO: Implement Can_validate_all_flow_definitions_in_an_assembly
-        public void Can_validate_all_flow_definitions_in_an_assembly()
+        [Fact]
+        public async void Can_validate_all_flow_definitions_in_an_assembly()
         {
+            var mediator = GetMediator(new TestOverrideProvider());
+
+            var response = await mediator.Send(new FlowValidationRequest());
+
+            Assert.True(
+                response.Errors.ContainsKey(typeof(InvalidFlowRequest).FullName), 
+                $"response.Errors.ContainsKey({typeof(InvalidFlowRequest).FullName})");
+
+            Assert.True(
+                response.Errors.ContainsKey($"{typeof(InvalidFlowRequest).FullName}[OverrideCriteria]"),
+                $"response.Errors.ContainsKey({typeof(InvalidFlowRequest).FullName}[OverrideCriteria])");
         }
+
+        #endregion
+
+        #region Private methods and classes
+
+        private class TestOverrideProvider : TestOverrideProviderBase
+        {
+            public override IEnumerable<FlowDefinition> GetFlowDefinitionOverrides(Type requestType)
+            {
+                return requestType == typeof(InvalidFlowRequest) 
+                    ? new []
+                    {
+                        new FlowDefinition("OverrideCriteria")
+                            .Goto("NonExistentStep")
+                    } 
+                    : null;
+            }
+
+            public override FlowDefinition GetApplicableFlowDefinitionOverride(IList<FlowDefinition> overrides, IFlowStepRequest request)
+            {
+                return overrides.FirstOrDefault();
+            }
+        }
+
+        private static IMediator GetMediator(IFlowOverrideProvider overrideProvider = null)
+        {
+            var serviceCollection =
+                new ServiceCollection()
+                    .AddMediatR(typeof(IFlowHandler).Assembly);
+
+            if (overrideProvider != null)
+            {
+                serviceCollection.AddSingleton(overrideProvider);
+            }
+
+            typeof(EmptyFlow).Assembly.RegisterFlowTypes(
+                (intType, impType) => serviceCollection.AddSingleton(intType, impType));
+
+            if (overrideProvider != null)
+            {
+                serviceCollection.AddSingleton(overrideProvider);
+            }
+
+            var mediator = serviceCollection.BuildServiceProvider().GetService<IMediator>();
+            return mediator;
+        }
+
+        #endregion
     }
 }
