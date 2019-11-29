@@ -25,9 +25,9 @@ namespace FlowR.Tests.Domain.FlowTests
         {
         }
 
-        public override FlowDefinition GetFlowDefinition()
+        protected override void ConfigureDefinition(FlowDefinition flowDefinition)
         {
-            return new FlowDefinition()
+            flowDefinition
                 .Do("MapValues", 
                     new FlowActivityDefinition<DictionaryInputToOutputMapRequest, DictionaryInputToOutputMapResponse>()
                         .BindInputs(rq => rq.FlowInputs, 

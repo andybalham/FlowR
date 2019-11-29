@@ -24,7 +24,7 @@ namespace FlowR.Tests.Domain.FlowTests
         {
         }
 
-        public override FlowDefinition GetFlowDefinition()
+        protected override void ConfigureDefinition(FlowDefinition flowDefinition)
         {
             #region Definitions
 
@@ -33,7 +33,7 @@ namespace FlowR.Tests.Domain.FlowTests
 
             #endregion
 
-            return new FlowDefinition()
+            flowDefinition
                 .Check("Int_value", intValueDecision)
                 .When(1).End()
                 .When(1, 2, 3).End()

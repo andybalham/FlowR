@@ -25,7 +25,7 @@ namespace FlowR.Tests.Domain.FlowTests
         {
         }
 
-        public override FlowDefinition GetFlowDefinition()
+        protected override void ConfigureDefinition(FlowDefinition flowDefinition)
         {
             var intValue = FlowValueDecision<int?>.NewDefinition()
                 .BindInput(rq => rq.SwitchValue, nameof(MockedDecisionFlowRequest.IntValue));
@@ -42,7 +42,7 @@ namespace FlowR.Tests.Domain.FlowTests
                 .SetValue(rq => rq.OutputValue, "Z")
                 .BindOutput(rs => rs.Output, nameof(MockedDecisionFlowResponse.BranchValue));
 
-            return new FlowDefinition()
+            flowDefinition
                 .Check("Int_value", intValue)
                 .When(1).Goto("Set_output_to_X")
                 .When(2).Goto("Set_output_to_Y")

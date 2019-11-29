@@ -557,11 +557,13 @@ namespace FlowR.Tests
         {
         }
 
-        public override FlowDefinition GetFlowDefinition() =>
-            new FlowDefinition()
+        protected override void ConfigureDefinition(FlowDefinition flowDefinition)
+        {
+            flowDefinition
                 .Check("UnhandledDecisionName", NullableFlowValueDecision<string>.NewDefinition()
                     .BindInput(rq => rq.SwitchValue, nameof(TestElseThrowRequest.Input)))
                 .When((string)null).End()
                 .Else().Unhandled();
+        }
     }
 }

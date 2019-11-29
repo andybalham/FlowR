@@ -26,7 +26,7 @@ namespace FlowR.Tests.Domain.FlowTests
         {
         }
 
-        public override FlowDefinition GetFlowDefinition()
+        protected override void ConfigureDefinition(FlowDefinition flowDefinition)
         {
             var isDecisionValueTrue = new FlowDecisionDefinition<BindingAttributesDecision, bool>()
                 .SetValue(r => r.DecisionInput1Name, nameof(DecisionBindingAttributesFlowRequest.FlowInput1))
@@ -40,7 +40,7 @@ namespace FlowR.Tests.Domain.FlowTests
                 .SetValue(r => r.OutputValue, true)
                 .BindOutput(r => r.Output, nameof(DecisionBindingAttributesFlowResponse.FlowOutput));
 
-            return new FlowDefinition()
+            flowDefinition
                 .Check("Is_decision_value_true", isDecisionValueTrue)
                 .When(true).Goto("Set_flow_output_to_true")
                 .Else().Continue()

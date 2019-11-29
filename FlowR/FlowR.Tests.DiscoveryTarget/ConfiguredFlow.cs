@@ -20,9 +20,9 @@ namespace FlowR.Tests.DiscoveryTarget
         {
         }
 
-        public override FlowDefinition GetFlowDefinition()
+        protected override void ConfigureDefinition(FlowDefinition flowDefinition)
         {
-            return new FlowDefinition()
+            flowDefinition
                 .Do("Activity_1",
                     new FlowActivityDefinition<ConfigurableActivityRequest, ConfigurableActivityResponse>()
                         .SetValue(r => r.SetValue, "SetValue")

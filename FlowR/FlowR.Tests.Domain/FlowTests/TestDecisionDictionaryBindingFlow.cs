@@ -24,9 +24,9 @@ namespace FlowR.Tests.Domain.FlowTests
         {
         }
 
-        public override FlowDefinition GetFlowDefinition()
+        protected override void ConfigureDefinition(FlowDefinition flowDefinition)
         {
-            return new FlowDefinition()
+            flowDefinition
                 .Check("Decision", new FlowDecisionDefinition<DictionaryBindingDecisionRequest, int>()
                     .BindInputs(rq => rq.Strings, new FlowValueTypeSelector(typeof(string)))
                     .BindInputs(rq => rq.NamedStrings, "String2")

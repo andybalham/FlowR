@@ -23,9 +23,23 @@ namespace TwentyQuestions.Core
         {
         }
 
-        public override FlowDefinition GetFlowDefinition()
+        // TODO: What about overrides? Should we just be able to override the definition or the initializers/finalizers too?
+
+        protected override void ConfigureInitializer(FlowInitializer<TwentyQuestionsRequest> initializer)
         {
-            return new FlowDefinition()
+            initializer
+                .BindValue(req => req.FlowContext, "HasLegs");
+        }
+
+        protected override void ConfigureFinalizer(FlowFinalizer<TwentyQuestionsResponse> finalizer)
+        {
+            finalizer
+                .BindValue(res => res.Guess, "Guess");
+        }
+
+        protected override void ConfigureDefinition(FlowDefinition flowDefinition)
+        {
+            flowDefinition
 
                 .Do("AskHasLegs", QuestionRequest.NewDefinition()
                     .SetValue(req => req.Question, "Does it have legs")

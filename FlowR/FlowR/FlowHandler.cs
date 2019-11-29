@@ -55,7 +55,12 @@ namespace FlowR
 
         public Type ResponseType => typeof(TFlowResponse);
 
-        public abstract FlowDefinition GetFlowDefinition();
+        public FlowDefinition GetFlowDefinition()
+        {
+            var flowDefinition = new FlowDefinition();
+            ConfigureDefinition(flowDefinition);
+            return flowDefinition;
+        }
 
         #endregion
 
@@ -117,7 +122,20 @@ namespace FlowR
 
         #region Protected methods
 
+        protected virtual void ConfigureDefinition(FlowDefinition flowDefinition)
+        {
+        }
+
         protected virtual void OnDebugEvent(string stepName, FlowDebugEvent debugEvent, FlowValues flowValues)
+        {
+        }
+
+        // TODO: Replace these
+        protected virtual void ConfigureInitializer(FlowInitializer<TFlowRequest> initializer)
+        {
+        }
+
+        protected virtual void ConfigureFinalizer(FlowFinalizer<TFlowResponse> finalizer)
         {
         }
 
@@ -559,6 +577,22 @@ namespace FlowR
         }
 
         #endregion
+    }
+
+    public class FlowFinalizer<T>
+    {
+        public FlowFinalizer<T> BindValue(Func<T, object> func, string valueName)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class FlowInitializer<T>
+    {
+        public FlowInitializer<T> BindValue(Func<T, object> func, string valueName)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public enum FlowDebugEvent

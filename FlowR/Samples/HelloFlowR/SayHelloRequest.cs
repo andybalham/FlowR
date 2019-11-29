@@ -22,9 +22,9 @@ namespace HelloFlowR
         {
         }
 
-        public override FlowDefinition GetFlowDefinition()
+        protected override void ConfigureDefinition(FlowDefinition flowDefinition)
         {
-            return new FlowDefinition()
+            flowDefinition
                 .Do("SayHello", new FlowActivityDefinition<SayGreetingRequest, SayGreetingResponse>()
                     .SetValue(req => req.Greeting, "Hello"));
         }

@@ -20,9 +20,9 @@ namespace FlowR.Tests.Domain.FlowTests
         {
         }
 
-        public override FlowDefinition GetFlowDefinition()
+        protected override void ConfigureDefinition(FlowDefinition flowDefinition)
         {
-            return new FlowDefinition()
+            flowDefinition
                 .Do("DoNothing", new FlowActivityDefinition<DoNothingRequest, DoNothingResponse>());
         }
     }
