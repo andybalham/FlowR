@@ -22,7 +22,7 @@ namespace FlowR.Tests.Domain.FlowrBasedMockingTests
         {
         }
 
-        protected override void ConfigureDefinition(FlowDefinition flowDefinition)
+        protected override void ConfigureDefinition(FlowDefinition<CanMockOnlyRootFlowRequest, CanMockOnlyRootFlowResponse> flowDefinition)
         {
             flowDefinition
                 .Do("CallSubFlow", 
@@ -45,7 +45,7 @@ namespace FlowR.Tests.Domain.FlowrBasedMockingTests
         {
         }
 
-        protected override void ConfigureDefinition(FlowDefinition flowDefinition)
+        protected override void ConfigureDefinition(FlowDefinition<CanMockOnlyRootSubFlowRequest, CanMockOnlyRootSubFlowResponse> flowDefinition)
         {
             flowDefinition
                 .Do("SetValue", 

@@ -25,7 +25,7 @@ namespace FlowR.Tests.Domain.FlowTests
         {
         }
 
-        protected override void ConfigureDefinition(FlowDefinition flowDefinition)
+        protected override void ConfigureDefinition(FlowDefinition<MockedDecisionFlowRequest, MockedDecisionFlowResponse> flowDefinition)
         {
             var intValue = FlowValueDecision<int?>.NewDefinition()
                 .BindInput(rq => rq.SwitchValue, nameof(MockedDecisionFlowRequest.IntValue));

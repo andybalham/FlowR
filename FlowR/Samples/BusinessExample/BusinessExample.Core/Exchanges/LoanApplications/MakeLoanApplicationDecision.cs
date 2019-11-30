@@ -31,7 +31,7 @@ namespace BusinessExample.Core.Exchanges.LoanApplications
         {
         }
 
-        protected override void ConfigureDefinition(FlowDefinition flowDefinition)
+        protected override void ConfigureDefinition(FlowDefinition<MakeLoanApplicationDecision, MakeLoanApplicationDecision.Response> flowDefinition)
         {
             flowDefinition
 

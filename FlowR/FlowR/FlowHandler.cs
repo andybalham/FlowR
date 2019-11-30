@@ -55,12 +55,7 @@ namespace FlowR
 
         public Type ResponseType => typeof(TFlowResponse);
 
-        public FlowDefinition GetFlowDefinition()
-        {
-            var flowDefinition = new FlowDefinition();
-            ConfigureDefinition(flowDefinition);
-            return flowDefinition;
-        }
+        public IFlowDefinition GetFlowDefinition() => GetFlowDefinitionInternal();
 
         #endregion
 
@@ -122,7 +117,8 @@ namespace FlowR
 
         #region Protected methods
 
-        protected virtual void ConfigureDefinition(FlowDefinition flowDefinition)
+        // TODO: Change this to ConfigureFlow?
+        protected virtual void ConfigureDefinition(FlowDefinition<TFlowRequest, TFlowResponse> flowDefinition)
         {
         }
 
@@ -143,7 +139,14 @@ namespace FlowR
 
         #region Private methods
 
-        private FlowDefinition ResolveFlowDefinition(TFlowRequest flowRequest, FlowContext flowContext)
+        private FlowDefinition<TFlowRequest, TFlowResponse> GetFlowDefinitionInternal()
+        {
+            var flowDefinition = new FlowDefinition<TFlowRequest, TFlowResponse>();
+            ConfigureDefinition(flowDefinition);
+            return flowDefinition;
+        }
+
+        private FlowDefinition<TFlowRequest, TFlowResponse> ResolveFlowDefinition(TFlowRequest flowRequest, FlowContext flowContext)
         {
             var flowDefinitionOverrides =
                 _overrideProvider?.GetFlowDefinitionOverrides(typeof(TFlowRequest))?.ToList();
@@ -151,15 +154,15 @@ namespace FlowR
             var applicableFlowDefinitionOverride =
                 _overrideProvider?.GetApplicableFlowDefinitionOverride(flowDefinitionOverrides, flowRequest);
 
-            FlowDefinition flowDefinition;
+            FlowDefinition<TFlowRequest, TFlowResponse> flowDefinition;
 
             if (applicableFlowDefinitionOverride == null)
             {
-                flowDefinition = GetFlowDefinition();
+                flowDefinition = GetFlowDefinitionInternal();
             }
             else
             {
-                flowDefinition = applicableFlowDefinitionOverride;
+                flowDefinition = (FlowDefinition<TFlowRequest, TFlowResponse>)applicableFlowDefinitionOverride;
 
                 _logger?.LogFlowOverride(flowContext, flowRequest, applicableFlowDefinitionOverride.Criteria);
             }
@@ -167,7 +170,7 @@ namespace FlowR
             return flowDefinition;
         }
 
-        private async Task<int> PerformFlowStep(FlowContext stepFlowContext, FlowDefinition flowDefinition, FlowStep flowStep,
+        private async Task<int> PerformFlowStep(FlowContext stepFlowContext, FlowDefinition<TFlowRequest, TFlowResponse> flowDefinition, FlowStep flowStep,
             int flowStepIndex, FlowValues flowValues, FlowTrace flowTrace, CancellationToken cancellationToken)
         {
             int nextFlowStepIndex;
@@ -293,7 +296,7 @@ namespace FlowR
             return activityResponse;
         }
 
-        private int CheckDecision(int flowStepIndex, DecisionFlowStepBase decisionFlowStep, FlowDefinition flowDefinition, 
+        private int CheckDecision(int flowStepIndex, DecisionFlowStepBase decisionFlowStep, FlowDefinition<TFlowRequest, TFlowResponse> flowDefinition, 
             FlowContext stepFlowContext, FlowValues flowValues, FlowTrace flowTrace)
         {
             var decisionRequest = (FlowDecisionBase)CreateRequest(stepFlowContext, decisionFlowStep, flowValues);
@@ -577,27 +580,5 @@ namespace FlowR
         }
 
         #endregion
-    }
-
-    public class FlowFinalizer<T>
-    {
-        public FlowFinalizer<T> BindValue(Func<T, object> func, string valueName)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class FlowInitializer<T>
-    {
-        public FlowInitializer<T> BindValue(Func<T, object> func, string valueName)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public enum FlowDebugEvent
-    {
-        PreStep,
-        PostStep
     }
 }

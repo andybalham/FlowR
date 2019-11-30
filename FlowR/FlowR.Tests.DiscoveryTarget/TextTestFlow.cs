@@ -25,7 +25,7 @@ namespace FlowR.Tests.DiscoveryTarget
         {
         }
 
-        protected override void ConfigureDefinition(FlowDefinition flowDefinition)
+        protected override void ConfigureDefinition(FlowDefinition<TextTestFlowRequest, TextTestFlowResponse> flowDefinition)
         {
             flowDefinition
 

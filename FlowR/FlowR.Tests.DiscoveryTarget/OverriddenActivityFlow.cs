@@ -24,7 +24,7 @@ namespace FlowR.Tests.DiscoveryTarget
         {
         }
 
-        protected override void ConfigureDefinition(FlowDefinition flowDefinition)
+        protected override void ConfigureDefinition(FlowDefinition<OverriddenActivityFlowRequest, OverriddenActivityFlowResponse> flowDefinition)
         {
             flowDefinition
                 .Do("Activity", new FlowOverrideKey(OverriddenActivityFlowRequest.ActivityOverrideKey),

@@ -20,9 +20,5 @@ namespace FlowR.Tests.Domain.FlowTests
         public InputAndOutputFlow(IMediator mediator) : base(mediator)
         {
         }
-
-        protected override void ConfigureDefinition(FlowDefinition flowDefinition)
-        {
-        }
     }
 }

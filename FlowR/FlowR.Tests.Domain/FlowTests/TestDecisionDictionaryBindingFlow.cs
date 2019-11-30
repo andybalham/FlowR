@@ -24,7 +24,7 @@ namespace FlowR.Tests.Domain.FlowTests
         {
         }
 
-        protected override void ConfigureDefinition(FlowDefinition flowDefinition)
+        protected override void ConfigureDefinition(FlowDefinition<TestDecisionDictionaryBindingRequest, TestDecisionDictionaryBindingResponse> flowDefinition)
         {
             flowDefinition
                 .Check("Decision", new FlowDecisionDefinition<DictionaryBindingDecisionRequest, int>()

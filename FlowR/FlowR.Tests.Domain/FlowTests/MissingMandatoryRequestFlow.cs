@@ -25,9 +25,5 @@ namespace FlowR.Tests.Domain.FlowTests
         public MissingMandatoryRequestFlow(IMediator mediator, IFlowLogger<MissingMandatoryRequestFlow> logger) : base(mediator, logger)
         {
         }
-
-        protected override void ConfigureDefinition(FlowDefinition flowDefinition)
-        {
-        }
     }
 }

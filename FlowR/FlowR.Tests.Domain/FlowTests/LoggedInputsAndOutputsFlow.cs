@@ -27,9 +27,5 @@ namespace FlowR.Tests.Domain.FlowTests
             : base(mediator, logger)
         {
         }
-
-        protected override void ConfigureDefinition(FlowDefinition flowDefinition)
-        {
-        }
     }
 }

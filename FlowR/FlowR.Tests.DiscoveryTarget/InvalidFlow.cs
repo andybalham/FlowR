@@ -19,7 +19,7 @@ namespace FlowR.Tests.DiscoveryTarget
         {
         }
 
-        protected override void ConfigureDefinition(FlowDefinition flowDefinition)
+        protected override void ConfigureDefinition(FlowDefinition<InvalidFlowRequest, InvalidFlowResponse> flowDefinition)
         {
             flowDefinition
                 .Goto("NonExistentStep");

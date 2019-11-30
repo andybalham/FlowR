@@ -23,7 +23,7 @@ namespace FlowR.Tests.Domain.FlowTests
         {
         }
 
-        protected override void ConfigureDefinition(FlowDefinition flowDefinition)
+        protected override void ConfigureDefinition(FlowDefinition<ActivityOutputFlowRequest, ActivityOutputFlowResponse> flowDefinition)
         {
             flowDefinition
                 .Do("SingleOutput", new FlowActivityDefinition<SingleOutputActivityRequest, SingleOutputActivityResponse>());

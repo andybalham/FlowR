@@ -281,9 +281,12 @@ namespace FlowR.Tests
         {
             public const string FlowCriteria = "FlowCriteria";
 
-            public override IEnumerable<FlowDefinition> GetFlowDefinitionOverrides(Type requestType)
+            public override IEnumerable<IFlowDefinition> GetFlowDefinitionOverrides(Type requestType)
             {
-                return requestType == typeof(EmptyFlowRequest) ? new[] { new FlowDefinition(FlowCriteria) } : null;
+                return requestType == 
+                    typeof(EmptyFlowRequest) 
+                        ? new IFlowDefinition[] { new FlowDefinition<EmptyFlowRequest, EmptyFlowResponse>(FlowCriteria) } 
+                        : null;
             }
         }
 
@@ -307,8 +310,8 @@ namespace FlowR.Tests
 
         private class EmptyFlowRequestDefaultOverrideProvider : TestOverrideProviderBase
         {
-            public override IEnumerable<FlowDefinition> GetFlowDefinitionOverrides(Type requestType) => 
-                requestType == typeof(EmptyFlowRequest) ? new[] { new FlowDefinition() } : null;
+            public override IEnumerable<IFlowDefinition> GetFlowDefinitionOverrides(Type requestType) => 
+                requestType == typeof(EmptyFlowRequest) ? new[] { new FlowDefinition<EmptyFlowRequest, EmptyFlowResponse>() } : null;
         }
 
         [Fact]

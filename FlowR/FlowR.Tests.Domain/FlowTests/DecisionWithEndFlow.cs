@@ -23,7 +23,7 @@ namespace FlowR.Tests.Domain.FlowTests
         {
         }
 
-        protected override void ConfigureDefinition(FlowDefinition flowDefinition)
+        protected override void ConfigureDefinition(FlowDefinition<DecisionWithEndFlowRequest, DecisionWithEndFlowResponse> flowDefinition)
         {
             var switchValueDecision = FlowValueDecision<string>.NewDefinition()
                 .BindInput(rq => rq.SwitchValue, nameof(DecisionWithEndFlowRequest.StringValue));

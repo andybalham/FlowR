@@ -20,7 +20,7 @@ namespace FlowR.Tests.Domain.FlowrBasedMockingTests
         {
         }
 
-        protected override void ConfigureDefinition(FlowDefinition flowDefinition)
+        protected override void ConfigureDefinition(FlowDefinition<MockActivityViaFlowRFlowRequest, MockActivityViaFlowRFlowResponse> flowDefinition)
         {
             flowDefinition
                 .Do("Set_value_1_to_A",

@@ -9,6 +9,6 @@ namespace FlowR
 
         Type ResponseType { get; }
 
-        FlowDefinition GetFlowDefinition();
+        IFlowDefinition GetFlowDefinition();
     }
 }

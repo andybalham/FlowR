@@ -102,7 +102,7 @@ namespace FlowR.Tests
 
         #region Override providers
 
-        private class BasicStepOverrideProvider : IFlowOverrideProvider
+        private class BasicStepOverrideProvider : TestOverrideProviderBase
         {
             public const string OverriddenValue = "OverriddenValue";
 
@@ -126,30 +126,20 @@ namespace FlowR.Tests
                     }
                 };
 
-            public IEnumerable<FlowRequestOverride> GetRequestOverrides(string overrideKey)
+            public override IEnumerable<FlowRequestOverride> GetRequestOverrides(string overrideKey)
             {
                 return _flowRequestOverridesDictionary.TryGetValue(overrideKey, out var flowRequestOverrides) 
                     ? flowRequestOverrides : null;
             }
 
-            public IDictionary<string, FlowRequestOverride> GetApplicableRequestOverrides(
+            public override IDictionary<string, FlowRequestOverride> GetApplicableRequestOverrides(
                 IList<FlowRequestOverride> overrides, IFlowStepRequest request)
             {
                 return overrides.ToDictionary(@override => @override.Name);
             }
-
-            public IEnumerable<FlowDefinition> GetFlowDefinitionOverrides(Type requestType)
-            {
-                return null;
-            }
-
-            public FlowDefinition GetApplicableFlowDefinitionOverride(IList<FlowDefinition> overrides, IFlowStepRequest request)
-            {
-                return null;
-            }
         }
 
-        private class CriteriaBasedStepOverrideProvider : IFlowOverrideProvider
+        private class CriteriaBasedStepOverrideProvider : TestOverrideProviderBase
         {
             private readonly ClientSettings _clientSettings;
 
@@ -196,13 +186,13 @@ namespace FlowR.Tests
                     }
                 };
 
-            public IEnumerable<FlowRequestOverride> GetRequestOverrides(string overrideKey)
+            public override IEnumerable<FlowRequestOverride> GetRequestOverrides(string overrideKey)
             {
                 return _flowRequestOverridesDictionary.TryGetValue(overrideKey, out var flowRequestOverrides)
                     ? flowRequestOverrides : null;
             }
 
-            public IDictionary<string, FlowRequestOverride> GetApplicableRequestOverrides(
+            public override IDictionary<string, FlowRequestOverride> GetApplicableRequestOverrides(
                 IList<FlowRequestOverride> overrides, IFlowStepRequest request)
             {
                 var clientId = _clientSettings.ClientId;
@@ -258,39 +248,19 @@ namespace FlowR.Tests
 
                 return propertyOverride;
             }
-
-            public IEnumerable<FlowDefinition> GetFlowDefinitionOverrides(Type requestType)
-            {
-                return null;
-            }
-
-            public FlowDefinition GetApplicableFlowDefinitionOverride(IList<FlowDefinition> overrides, IFlowStepRequest request)
-            {
-                return null;
-            }
         }
 
-        private class BasicFlowOverrideProvider : IFlowOverrideProvider
+        private class BasicFlowOverrideProvider : TestOverrideProviderBase
         {
             public const string OverriddenValue = "OverriddenValue";
 
-            public IEnumerable<FlowRequestOverride> GetRequestOverrides(string overrideKey)
-            {
-                return null;
-            }
-
-            public IDictionary<string, FlowRequestOverride> GetApplicableRequestOverrides(IList<FlowRequestOverride> overrides, IFlowStepRequest request)
-            {
-                return null;
-            }
-
-            public IEnumerable<FlowDefinition> GetFlowDefinitionOverrides(Type requestType)
+            public override IEnumerable<IFlowDefinition> GetFlowDefinitionOverrides(Type requestType)
             {
                 if (requestType == typeof(OverriddenFlowRequest))
                 {
                     return new[]
                     {
-                        new FlowDefinition()
+                        new FlowDefinition<OverriddenFlowRequest, OverriddenFlowResponse>()
                             .Do("Activity",
                                 new FlowActivityDefinition<SetStringFlowValueRequest, SetStringFlowValueResponse>()
                                     .SetValue(rq => rq.OutputValue, OverriddenValue)
@@ -301,33 +271,23 @@ namespace FlowR.Tests
                 return null;
             }
 
-            public FlowDefinition GetApplicableFlowDefinitionOverride(IList<FlowDefinition> overrides, IFlowStepRequest request)
+            public override IFlowDefinition GetApplicableFlowDefinitionOverride(IList<IFlowDefinition> overrides, IFlowStepRequest request)
             {
                 return overrides?.First();
             }
         }
 
-        private class CriteriaBasedFlowOverrideProvider : IFlowOverrideProvider
+        private class CriteriaBasedFlowOverrideProvider : TestOverrideProviderBase
         {
             public const string OverriddenValue = "OverriddenValue";
 
-            public IEnumerable<FlowRequestOverride> GetRequestOverrides(string overrideKey)
-            {
-                return null;
-            }
-
-            public IDictionary<string, FlowRequestOverride> GetApplicableRequestOverrides(IList<FlowRequestOverride> overrides, IFlowStepRequest request)
-            {
-                return null;
-            }
-
-            public IEnumerable<FlowDefinition> GetFlowDefinitionOverrides(Type requestType)
+            public override IEnumerable<IFlowDefinition> GetFlowDefinitionOverrides(Type requestType)
             {
                 if (requestType == typeof(OverriddenFlowRequest))
                 {
                     return new[]
                     {
-                        new FlowDefinition("FlowValue=FlowValue1")
+                        new FlowDefinition<OverriddenFlowRequest, OverriddenFlowResponse>("FlowValue=FlowValue1")
                             .Do("Activity",
                                 new FlowActivityDefinition<SetStringFlowValueRequest, SetStringFlowValueResponse>()
                                     .SetValue(rq => rq.OutputValue, OverriddenValue)
@@ -338,7 +298,7 @@ namespace FlowR.Tests
                 return null;
             }
 
-            public FlowDefinition GetApplicableFlowDefinitionOverride(IList<FlowDefinition> overrides, IFlowStepRequest request)
+            public override IFlowDefinition GetApplicableFlowDefinitionOverride(IList<IFlowDefinition> overrides, IFlowStepRequest request)
             {
                 switch (overrides?.Count)
                 {

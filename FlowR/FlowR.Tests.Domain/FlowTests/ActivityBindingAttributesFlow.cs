@@ -26,7 +26,7 @@ namespace FlowR.Tests.Domain.FlowTests
         {
         }
 
-        protected override void ConfigureDefinition(FlowDefinition flowDefinition)
+        protected override void ConfigureDefinition(FlowDefinition<ActivityBindingAttributesFlowRequest, ActivityBindingAttributesFlowResponse> flowDefinition)
         {
             flowDefinition
                 .Do("Bind_inputs_and_outputs", new FlowActivityDefinition<BindingAttributesActivityRequest, BindingAttributesActivityResponse>()

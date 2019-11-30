@@ -26,7 +26,7 @@ namespace FlowR.Tests.Domain.OverrideProviderTests
         {
         }
 
-        protected override void ConfigureDefinition(FlowDefinition flowDefinition)
+        protected override void ConfigureDefinition(FlowDefinition<OverriddenFlowRequest, OverriddenFlowResponse> flowDefinition)
         {
             flowDefinition
                 .Do("Activity", 

@@ -557,7 +557,7 @@ namespace FlowR.Tests
         {
         }
 
-        protected override void ConfigureDefinition(FlowDefinition flowDefinition)
+        protected override void ConfigureDefinition(FlowDefinition<TestElseThrowRequest, TestElseThrowResponse> flowDefinition)
         {
             flowDefinition
                 .Check("UnhandledDecisionName", NullableFlowValueDecision<string>.NewDefinition()

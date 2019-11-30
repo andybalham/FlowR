@@ -19,7 +19,7 @@ namespace FlowR.Tests.Domain.FlowTests
         {
         }
 
-        protected override void ConfigureDefinition(FlowDefinition flowDefinition)
+        protected override void ConfigureDefinition(FlowDefinition<MissingMandatoryActivityInputRequest, MissingMandatoryActivityInputResponse> flowDefinition)
         {
             flowDefinition
                 .Do("MandatoryInputActivity",

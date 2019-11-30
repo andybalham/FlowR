@@ -26,7 +26,7 @@ namespace FlowR.Tests.Domain.FlowTests
         {
         }
 
-        protected override void ConfigureDefinition(FlowDefinition flowDefinition)
+        protected override void ConfigureDefinition(FlowDefinition<TestDictionaryListMapBindingsRequest, TestDictionaryListMapBindingsResponse> flowDefinition)
         {
             flowDefinition
                 .Do("MapValues",

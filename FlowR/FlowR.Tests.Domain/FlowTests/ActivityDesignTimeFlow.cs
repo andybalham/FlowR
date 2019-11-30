@@ -22,7 +22,7 @@ namespace FlowR.Tests.Domain.FlowTests
         {
         }
 
-        protected override void ConfigureDefinition(FlowDefinition flowDefinition)
+        protected override void ConfigureDefinition(FlowDefinition<ActivityDesignTimeFlowRequest, ActivityDesignTimeFlowResponse> flowDefinition)
         {
             flowDefinition
                 .Do("Set_output_from_design_time", new FlowActivityDefinition<DesignTimeActivityRequest, DesignTimeActivityResponse>()

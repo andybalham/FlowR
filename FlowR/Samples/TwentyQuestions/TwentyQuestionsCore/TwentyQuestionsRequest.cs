@@ -37,7 +37,7 @@ namespace TwentyQuestions.Core
                 .BindValue(res => res.Guess, "Guess");
         }
 
-        protected override void ConfigureDefinition(FlowDefinition flowDefinition)
+        protected override void ConfigureDefinition(FlowDefinition<TwentyQuestionsRequest, TwentyQuestionsResponse> flowDefinition)
         {
             flowDefinition
 
