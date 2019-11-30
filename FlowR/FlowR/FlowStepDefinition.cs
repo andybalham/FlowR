@@ -81,23 +81,9 @@ namespace FlowR
             Inputs.Add(binding);
         }
 
-        protected static PropertyInfo GetProperty<TR, TV>(Expression<Func<TR, TV>> propertyExpression)
-        {
-            var propertyExpressionMemberInfo = GetMemberInfo(propertyExpression.Body);
-
-            if (propertyExpressionMemberInfo.MemberType != MemberTypes.Property)
-            {
-                throw new FlowException($"The member {propertyExpressionMemberInfo.Name} on type {typeof(TR).FullName} is not a property as is required.");
-            }
-
-            var propertyInfo = (PropertyInfo)propertyExpressionMemberInfo;
-
-            return propertyInfo;
-        }
-
         protected static FlowObjectProperty GetBoundInputProperty<TR, TV>(Expression<Func<TR, TV>> propertyExpression)
         {
-            var propertyInfo = GetProperty(propertyExpression);
+            var propertyInfo = ReflectionUtils.GetProperty(propertyExpression);
 
             var flowObjectProperty = typeof(TR).GetFlowObjectType()[propertyInfo.Name];
 
@@ -190,36 +176,6 @@ namespace FlowR
             });
         }
 
-        private static MemberInfo GetMemberInfo(Expression expression)
-        {
-            switch (expression)
-            {
-                case null:
-                    throw new ArgumentNullException(nameof(expression));
-
-                // Reference type property or field
-                case MemberExpression memberExpression:
-                    return memberExpression.Member;
-
-                // Property, field of method returning value type
-                case UnaryExpression unaryExpression:
-                    return GetMemberInfo(unaryExpression);
-
-                default:
-                    throw new ArgumentException("Invalid property expression");
-            }
-        }
-
-        private static MemberInfo GetMemberInfo(UnaryExpression unaryExpression)
-        {
-            if (unaryExpression.Operand is MethodCallExpression methodExpression)
-            {
-                return methodExpression.Method;
-            }
-
-            return ((MemberExpression)unaryExpression.Operand).Member;
-        }
-
         #endregion
     }
 
@@ -236,7 +192,7 @@ namespace FlowR
 
         public FlowActivityDefinition<TReq, TRes> SetValue<TVal>(Expression<Func<TReq, TVal>> propertyExpression, TVal value)
         {
-            var requestSetInputProperty = GetProperty(propertyExpression);
+            var requestSetInputProperty = ReflectionUtils.GetProperty(propertyExpression);
             Setters.Add(new Tuple<PropertyInfo, object>(requestSetInputProperty, value));
             AddFlowValueBinding<TReq, TRes>(requestSetInputProperty);
             return this;
@@ -285,14 +241,15 @@ namespace FlowR
         public FlowActivityDefinition<TReq, TRes> BindOutput<TVal>(
             Expression<Func<TRes, TVal>> propertyExpression, string flowValueName, Func<TVal, object> mapValue = null)
         {
-            var propertyInfo = GetProperty(propertyExpression);
+            var propertyInfo = ReflectionUtils.GetProperty(propertyExpression);
 
             var boundOutputProperty = typeof(TRes).GetFlowObjectType()[propertyInfo.Name];
 
-            var binding = new FlowValueOutputBinding(boundOutputProperty)
-            {
-                MapName = (n, r) => flowValueName
-            };
+            var binding =
+                new FlowValueOutputBinding(boundOutputProperty)
+                {
+                    MapName = (n, r) => flowValueName
+                };
 
             if (mapValue != null)
             {
@@ -319,7 +276,7 @@ namespace FlowR
         public FlowActivityDefinition<TReq, TRes> BindOutputs<TVal>(Expression<Func<TRes, FlowValueDictionary<TVal>>> propertyExpression,
             FlowValueSelector flowValueSelector, Func<TVal, object> mapValue = null)
         {
-            var propertyInfo = GetProperty(propertyExpression);
+            var propertyInfo = ReflectionUtils.GetProperty(propertyExpression);
 
             var boundOutputProperty = typeof(TRes).GetFlowObjectType()[propertyInfo.Name];
 
@@ -360,7 +317,7 @@ namespace FlowR
 
         public FlowDecisionDefinition<TReq, TSwitch> SetValue<TVal>(Expression<Func<TReq, TVal>> propertyExpression, TVal value)
         {
-            var requestSetInputProperty = GetProperty(propertyExpression);
+            var requestSetInputProperty = ReflectionUtils.GetProperty(propertyExpression);
 
             Setters.Add(new Tuple<PropertyInfo, object>(requestSetInputProperty, value));
 

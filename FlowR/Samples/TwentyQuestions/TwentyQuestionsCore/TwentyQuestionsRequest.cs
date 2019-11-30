@@ -23,20 +23,6 @@ namespace TwentyQuestions.Core
         {
         }
 
-        // TODO: What about overrides? Should we just be able to override the definition or the initializers/finalizers too?
-
-        protected override void ConfigureInitializer(FlowInitializer<TwentyQuestionsRequest> initializer)
-        {
-            initializer
-                .BindValue(req => req.FlowContext, "HasLegs");
-        }
-
-        protected override void ConfigureFinalizer(FlowFinalizer<TwentyQuestionsResponse> finalizer)
-        {
-            finalizer
-                .BindValue(res => res.Guess, "Guess");
-        }
-
         protected override void ConfigureDefinition(FlowDefinition<TwentyQuestionsRequest, TwentyQuestionsResponse> flowDefinition)
         {
             flowDefinition

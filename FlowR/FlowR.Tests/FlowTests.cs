@@ -540,30 +540,63 @@ namespace FlowR.Tests
                 Assert.Matches("UnhandledDecisionName", e.Message);
             }
         }
-    }
 
-    public class TestElseThrowRequest : FlowActivityRequest<TestElseThrowResponse>
-    {
-        public string Input { get; set; }
-    }
-
-    public class TestElseThrowResponse : FlowResponse
-    {
-    }
-
-    public class TestElseThrowHandler : FlowHandler<TestElseThrowRequest, TestElseThrowResponse>
-    {
-        public TestElseThrowHandler(IMediator mediator) : base(mediator)
+        [Fact]
+        public async void Can_specify_bindings_for_flow_request()
         {
+            // Arrange
+            var (mediator, _) = GetMediator<TestCanSpecifyFlowRequestBindingsRequest>();
+
+            var request =
+                new TestCanSpecifyFlowRequestBindingsRequest
+                {
+                    Default = "Default",
+                    NameMap = "NameMap",
+                    PropertyMap = "1234567890",
+                    DictionaryDefault = new FlowValueDictionary<string>()
+                    {
+                        { "DictionaryDefault1", "DictionaryDefault1" },
+                        { "DictionaryDefault2", "DictionaryDefault2" }
+                    },
+                    DictionaryNameMap = new FlowValueDictionary<string>()
+                    {
+                        { "DictionaryNameMap1", "DictionaryNameMap1" },
+                        { "DictionaryNameMap2", "DictionaryNameMap2" }
+                    },
+                    DictionaryPropertyMap = new FlowValueDictionary<string>()
+                    {
+                        { "DictionaryPropertyMap1", "X" },
+                        { "DictionaryPropertyMap2", "XX" }
+                    }
+                };
+
+            // Act
+
+            var response = await mediator.Send(request, CancellationToken.None);
+
+            // Assert
+
+            Assert.Equal(request.Default, response.Default);
+            Assert.Equal(request.NameMap, response.NameMapped);
+            Assert.Equal(request.PropertyMap.Length, response.PropertyMapped);
+            Assert.Equal("DictionaryDefault1", response.DictionaryDefault1);
+            Assert.Equal("DictionaryDefault2", response.DictionaryDefault2);
+            Assert.Equal("DictionaryNameMap1", response.DictionaryNameMapped1);
+            Assert.Equal("DictionaryNameMap2", response.DictionaryNameMapped2);
+            Assert.Equal(1, response.DictionaryPropertyMapped1);
+            Assert.Equal(2, response.DictionaryPropertyMapped2);
         }
 
-        protected override void ConfigureDefinition(FlowDefinition<TestElseThrowRequest, TestElseThrowResponse> flowDefinition)
+        [Fact]
+        public async void Can_specify_bindings_for_flow_response()
         {
-            flowDefinition
-                .Check("UnhandledDecisionName", NullableFlowValueDecision<string>.NewDefinition()
-                    .BindInput(rq => rq.SwitchValue, nameof(TestElseThrowRequest.Input)))
-                .When((string)null).End()
-                .Else().Unhandled();
+            // Arrange
+
+            // Act
+
+            // Assert
+
+            Assert.True(false, "Finish implementing this");
         }
     }
 }

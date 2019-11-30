@@ -18,6 +18,9 @@ namespace FlowR
 
         #region Properties
 
+        public FlowInitializer<TFlowRequest> Initializer { get; private set; }
+        public FlowFinalizer<TFlowResponse> Finalizer { get; private set; }
+
         public IReadOnlyList<FlowStep> Steps => _steps;
 
         private ISet<string> StepNames { get; } = new HashSet<string>();
@@ -38,6 +41,22 @@ namespace FlowR
         #endregion
 
         #region Builder methods
+
+        public FlowDefinition<TFlowRequest, TFlowResponse> Initialize(Action<FlowInitializer<TFlowRequest>> initializer)
+        {
+            // TODO: Should we throw an exception for multiple initializers or note down for calls to Validate()?
+            this.Initializer = new FlowInitializer<TFlowRequest>();
+            initializer(this.Initializer);
+            return this;
+        }
+
+        public FlowDefinition<TFlowRequest, TFlowResponse> Finalize(Action<FlowFinalizer<TFlowResponse>> finalizer)
+        {
+            // TODO: Should we throw an exception for multiple initializers or note down for calls to Validate()?
+            this.Finalizer = new FlowFinalizer<TFlowResponse>();
+            finalizer(this.Finalizer);
+            return this;
+        }
 
         public DecisionFlowStep<TSwitch, TFlowRequest, TFlowResponse> Check<TReq, TSwitch>(string stepName, FlowDecisionDefinition<TReq, TSwitch> definition)
             where TReq : FlowDecision<TSwitch>

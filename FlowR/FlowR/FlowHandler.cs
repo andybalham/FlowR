@@ -78,7 +78,7 @@ namespace FlowR
 
                     var flowDefinition = ResolveFlowDefinition(flowRequest, flowContext);
 
-                    var flowValues = GetInitialFlowValues(flowRequest);
+                    var flowValues = GetInitialFlowValues(flowDefinition, flowRequest);
 
                     var flowTrace = new FlowTrace();
 
@@ -117,21 +117,11 @@ namespace FlowR
 
         #region Protected methods
 
-        // TODO: Change this to ConfigureFlow?
         protected virtual void ConfigureDefinition(FlowDefinition<TFlowRequest, TFlowResponse> flowDefinition)
         {
         }
 
         protected virtual void OnDebugEvent(string stepName, FlowDebugEvent debugEvent, FlowValues flowValues)
-        {
-        }
-
-        // TODO: Replace these
-        protected virtual void ConfigureInitializer(FlowInitializer<TFlowRequest> initializer)
-        {
-        }
-
-        protected virtual void ConfigureFinalizer(FlowFinalizer<TFlowResponse> finalizer)
         {
         }
 
@@ -487,7 +477,8 @@ namespace FlowR
             return missingMandatoryPropertyNames;
         }
 
-        private static FlowValues GetInitialFlowValues(TFlowRequest flowRequest)
+        private static FlowValues GetInitialFlowValues(FlowDefinition<TFlowRequest, TFlowResponse> flowDefinition,
+            TFlowRequest flowRequest)
         {
             var flowValues = new FlowValues();
 
@@ -499,7 +490,25 @@ namespace FlowR
             foreach (var flowRequestProperty in flowRequestProperties.Properties)
             {
                 CheckMandatoryFlowObjectProperty(flowRequest, flowRequestProperty, missingMandatoryPropertyNames);
-                flowValues.SetValue(flowRequestProperty.PropertyInfo.Name, flowRequestProperty.PropertyInfo.GetValue(flowRequest));
+
+                var binding = flowDefinition.Initializer?.Outputs.Find(b => b.Property.Name == flowRequestProperty.Name);
+
+                var requestValue = flowRequestProperty.PropertyInfo.GetValue(flowRequest);
+
+                if (binding == null)
+                {
+                    flowValues.SetValue(flowRequestProperty.Name, requestValue);
+                }
+                else
+                {
+                    var outputValues = binding.GetOutputValues(requestValue, flowRequest);
+
+                    foreach (var outputValueName in outputValues.Keys)
+                    {
+                        flowValues.SetValue(outputValueName, outputValues[outputValueName]);
+                    }
+                }
+
             }
 
             if (missingMandatoryPropertyNames.Count > 0)
