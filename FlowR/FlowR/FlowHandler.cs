@@ -531,6 +531,7 @@ namespace FlowR
 
             foreach (var flowObjectProperty in flowObjectType.Properties)
             {
+                // TODO: Need to perform any response bindings here
                 SetFlowResponseProperty(flowResponse, flowObjectProperty, flowValues);
                 CheckMandatoryFlowObjectProperty(flowResponse, flowObjectProperty, missingMandatoryPropertyNames);
             }

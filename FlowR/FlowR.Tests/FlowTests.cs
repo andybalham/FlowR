@@ -591,12 +591,95 @@ namespace FlowR.Tests
         public async void Can_specify_bindings_for_flow_response()
         {
             // Arrange
+            var (mediator, _) = GetMediator<TestCanSpecifyFlowResponseBindingsRequest>();
+
+            var request =
+                new TestCanSpecifyFlowResponseBindingsRequest
+                {
+                    Default = "Default",
+                    NameMap = "NameMap",
+                    PropertyMap = "1234567890",
+                    DictionaryDefault1 = "DictionaryDefault1",
+                    DictionaryDefault2 = "DictionaryDefault2",
+                    DictionaryNameMap1 = "DictionaryNameMap1",
+                    DictionaryNameMap2 = "DictionaryNameMap2",
+                    DictionaryPropertyMap1 = "X",
+                    DictionaryPropertyMap2 = "XX",
+                };
 
             // Act
 
+            var response = await mediator.Send(request, CancellationToken.None);
+
             // Assert
 
-            Assert.True(false, "Finish implementing this");
+            Assert.Equal(request.Default, response.Default);
+            Assert.Equal(request.NameMap, response.NameMapped);
+            Assert.Equal(request.PropertyMap.Length, response.PropertyMapped);
+            
+            Assert.Equal(2, response.DictionaryDefault.Count);
+            Assert.Equal(request.DictionaryDefault1, response.DictionaryDefault["DictionaryDefault1"]);
+            Assert.Equal(request.DictionaryDefault2, response.DictionaryDefault["DictionaryDefault2"]);
+
+            Assert.Equal(2, response.DictionaryNameMap.Count);
+            Assert.Equal(request.DictionaryNameMap1, response.DictionaryNameMap["DictionaryNameMapped1"]);
+            Assert.Equal(request.DictionaryNameMap2, response.DictionaryNameMap["DictionaryNameMapped2"]);
+
+            Assert.Equal(2, response.DictionaryPropertyMap.Count);
+            Assert.Equal(request.DictionaryPropertyMap1.Length, response.DictionaryPropertyMap["DictionaryPropertyMapped1"]);
+            Assert.Equal(request.DictionaryPropertyMap2.Length, response.DictionaryPropertyMap["DictionaryPropertyMapped2"]);
+        }
+    }
+
+    public class TestCanSpecifyFlowResponseBindingsRequest : FlowActivityRequest<TestCanSpecifyFlowResponseBindingsResponse>
+    {
+        public string Default { get; set; }
+        public string NameMap { get; set; }
+        public string PropertyMap { get; set; }
+        public string DictionaryDefault1 { get; set; }
+        public string DictionaryDefault2 { get; set; }
+        public string DictionaryNameMap1 { get; set; }
+        public string DictionaryNameMap2 { get; set; }
+        public string DictionaryPropertyMap1 { get; set; }
+        public string DictionaryPropertyMap2 { get; set; }
+    }
+
+    public class TestCanSpecifyFlowResponseBindingsResponse
+    {
+        public string Default { get; set; }
+        public string NameMapped { get; set; }
+        public int PropertyMapped { get; set; }
+        public FlowValueDictionary<string> DictionaryDefault { get; set; }
+        public FlowValueDictionary<string> DictionaryNameMap { get; set; }
+        public FlowValueDictionary<int> DictionaryPropertyMap { get; set; }
+    }
+
+    public class TestCanSpecifyFlowResponseBindingsHandler 
+        : FlowHandler<TestCanSpecifyFlowResponseBindingsRequest, TestCanSpecifyFlowResponseBindingsResponse>
+    {
+        public TestCanSpecifyFlowResponseBindingsHandler(IMediator mediator) : base(mediator)
+        {
+        }
+
+        protected override void ConfigureDefinition(
+            FlowDefinition<TestCanSpecifyFlowResponseBindingsRequest, TestCanSpecifyFlowResponseBindingsResponse> flowDefinition)
+        {
+            flowDefinition
+                .Finalize(final => final
+                    .BindValue(res => res.NameMapped, "NameMap")
+                    //.BindValue(res => res.PropertyMapped, "PropertyMapped", (string s) => s.Length)
+                    //.BindOutputs(res => res.DictionaryDefault, "DictionaryDefault1", "DictionaryDefault2")
+                    //.BindOutputs(res => res.DictionaryNameMap, new Dictionary<string, string>
+                    //{
+                    //    { "DictionaryNameMap1", "DictionaryNameMapped1" },
+                    //    { "DictionaryNameMap2", "DictionaryNameMapped2" }
+                    //})
+                    //.BindOutputs(res => res.DictionaryPropertyMap, new FlowValueListSelector(new Dictionary<string, string>()
+                    //{
+                    //    { "DictionaryPropertyMap1", "DictionaryPropertyMapped1" },
+                    //    { "DictionaryPropertyMap2", "DictionaryPropertyMapped2" }
+                    //}), s => s.Length)
+                );
         }
     }
 }
