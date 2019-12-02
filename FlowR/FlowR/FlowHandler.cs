@@ -55,7 +55,7 @@ namespace FlowR
 
         public Type ResponseType => typeof(TFlowResponse);
 
-        public abstract FlowDefinition GetFlowDefinition();
+        public IFlowDefinition GetFlowDefinition() => GetFlowDefinitionInternal();
 
         #endregion
 
@@ -78,7 +78,7 @@ namespace FlowR
 
                     var flowDefinition = ResolveFlowDefinition(flowRequest, flowContext);
 
-                    var flowValues = GetInitialFlowValues(flowRequest);
+                    var flowValues = GetInitialFlowValues(flowDefinition, flowRequest);
 
                     var flowTrace = new FlowTrace();
 
@@ -98,7 +98,7 @@ namespace FlowR
                         OnDebugEvent(flowStep.Name, FlowDebugEvent.PostStep, flowValues);
                     }
 
-                    var flowResponse = BuildFlowResponse(flowContext, flowTrace, flowValues);
+                    var flowResponse = BuildFlowResponse(flowContext, flowDefinition, flowTrace, flowValues);
 
                     stopWatch.Stop();
 
@@ -117,6 +117,10 @@ namespace FlowR
 
         #region Protected methods
 
+        protected virtual void ConfigureDefinition(FlowDefinition<TFlowRequest, TFlowResponse> flowDefinition)
+        {
+        }
+
         protected virtual void OnDebugEvent(string stepName, FlowDebugEvent debugEvent, FlowValues flowValues)
         {
         }
@@ -125,7 +129,14 @@ namespace FlowR
 
         #region Private methods
 
-        private FlowDefinition ResolveFlowDefinition(TFlowRequest flowRequest, FlowContext flowContext)
+        private FlowDefinition<TFlowRequest, TFlowResponse> GetFlowDefinitionInternal()
+        {
+            var flowDefinition = new FlowDefinition<TFlowRequest, TFlowResponse>();
+            ConfigureDefinition(flowDefinition);
+            return flowDefinition;
+        }
+
+        private FlowDefinition<TFlowRequest, TFlowResponse> ResolveFlowDefinition(TFlowRequest flowRequest, FlowContext flowContext)
         {
             var flowDefinitionOverrides =
                 _overrideProvider?.GetFlowDefinitionOverrides(typeof(TFlowRequest))?.ToList();
@@ -133,15 +144,15 @@ namespace FlowR
             var applicableFlowDefinitionOverride =
                 _overrideProvider?.GetApplicableFlowDefinitionOverride(flowDefinitionOverrides, flowRequest);
 
-            FlowDefinition flowDefinition;
+            FlowDefinition<TFlowRequest, TFlowResponse> flowDefinition;
 
             if (applicableFlowDefinitionOverride == null)
             {
-                flowDefinition = GetFlowDefinition();
+                flowDefinition = GetFlowDefinitionInternal();
             }
             else
             {
-                flowDefinition = applicableFlowDefinitionOverride;
+                flowDefinition = (FlowDefinition<TFlowRequest, TFlowResponse>)applicableFlowDefinitionOverride;
 
                 _logger?.LogFlowOverride(flowContext, flowRequest, applicableFlowDefinitionOverride.Criteria);
             }
@@ -149,7 +160,7 @@ namespace FlowR
             return flowDefinition;
         }
 
-        private async Task<int> PerformFlowStep(FlowContext stepFlowContext, FlowDefinition flowDefinition, FlowStep flowStep,
+        private async Task<int> PerformFlowStep(FlowContext stepFlowContext, FlowDefinition<TFlowRequest, TFlowResponse> flowDefinition, FlowStep flowStep,
             int flowStepIndex, FlowValues flowValues, FlowTrace flowTrace, CancellationToken cancellationToken)
         {
             int nextFlowStepIndex;
@@ -275,7 +286,7 @@ namespace FlowR
             return activityResponse;
         }
 
-        private int CheckDecision(int flowStepIndex, DecisionFlowStepBase decisionFlowStep, FlowDefinition flowDefinition, 
+        private int CheckDecision(int flowStepIndex, DecisionFlowStepBase decisionFlowStep, FlowDefinition<TFlowRequest, TFlowResponse> flowDefinition, 
             FlowContext stepFlowContext, FlowValues flowValues, FlowTrace flowTrace)
         {
             var decisionRequest = (FlowDecisionBase)CreateRequest(stepFlowContext, decisionFlowStep, flowValues);
@@ -466,7 +477,8 @@ namespace FlowR
             return missingMandatoryPropertyNames;
         }
 
-        private static FlowValues GetInitialFlowValues(TFlowRequest flowRequest)
+        private static FlowValues GetInitialFlowValues(FlowDefinition<TFlowRequest, TFlowResponse> flowDefinition,
+            TFlowRequest flowRequest)
         {
             var flowValues = new FlowValues();
 
@@ -477,8 +489,25 @@ namespace FlowR
 
             foreach (var flowRequestProperty in flowRequestProperties.Properties)
             {
+                var binding = flowDefinition.Initializer?.Outputs.Find(b => b.Property.Name == flowRequestProperty.Name);
+
+                var requestValue = flowRequestProperty.PropertyInfo.GetValue(flowRequest);
+
+                if (binding == null)
+                {
+                    flowValues.SetValue(flowRequestProperty.Name, requestValue);
+                }
+                else
+                {
+                    var outputValues = binding.GetOutputValues(requestValue, flowRequest);
+
+                    foreach (var outputValueName in outputValues.Keys)
+                    {
+                        flowValues.SetValue(outputValueName, outputValues[outputValueName]);
+                    }
+                }
+
                 CheckMandatoryFlowObjectProperty(flowRequest, flowRequestProperty, missingMandatoryPropertyNames);
-                flowValues.SetValue(flowRequestProperty.PropertyInfo.Name, flowRequestProperty.PropertyInfo.GetValue(flowRequest));
             }
 
             if (missingMandatoryPropertyNames.Count > 0)
@@ -491,7 +520,8 @@ namespace FlowR
             return flowValues;
         }
 
-        private static TFlowResponse BuildFlowResponse(FlowContext flowContext, FlowTrace flowTrace, FlowValues flowValues)
+        private static TFlowResponse BuildFlowResponse(FlowContext flowContext, FlowDefinition<TFlowRequest, TFlowResponse> flowDefinition, 
+            FlowTrace flowTrace, FlowValues flowValues)
         {
             var flowResponseType = typeof(TFlowResponse);
             var flowResponse = (TFlowResponse)Activator.CreateInstance(flowResponseType);
@@ -501,7 +531,16 @@ namespace FlowR
 
             foreach (var flowObjectProperty in flowObjectType.Properties)
             {
-                SetFlowResponseProperty(flowResponse, flowObjectProperty, flowValues);
+                var binding =
+                    flowDefinition.Finalizer?.Inputs.Find(b => b.Property.Name == flowObjectProperty.Name)
+                    ?? new FlowValueInputBinding(flowObjectProperty)
+                        { FlowValueSelector = new FlowValueSingleSelector(flowObjectProperty.Name) };
+
+                if (binding.TryGetRequestValue(flowValues, flowResponse, out var responseValue))
+                {
+                    flowObjectProperty.PropertyInfo.SetValue(flowResponse, responseValue);
+                }
+
                 CheckMandatoryFlowObjectProperty(flowResponse, flowObjectProperty, missingMandatoryPropertyNames);
             }
 
@@ -559,11 +598,5 @@ namespace FlowR
         }
 
         #endregion
-    }
-
-    public enum FlowDebugEvent
-    {
-        PreStep,
-        PostStep
     }
 }

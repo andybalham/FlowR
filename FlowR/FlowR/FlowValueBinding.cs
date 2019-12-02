@@ -44,7 +44,7 @@ namespace FlowR
         {
         }
 
-        internal bool TryGetRequestValue(FlowValues flowValues, IFlowStepRequest request, out object requestValue)
+        internal bool TryGetRequestValue(FlowValues flowValues, object request, out object requestValue)
         {
             requestValue = (object)null;
 

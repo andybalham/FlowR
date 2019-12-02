@@ -48,11 +48,12 @@ namespace FlowR
         internal List<Branch> Branches { get; } = new List<Branch>();
     }
 
-    public class DecisionFlowStep<TSwitch> : DecisionFlowStepBase
+    public class DecisionFlowStep<TSwitch, TFlowRequest, TFlowResponse> : DecisionFlowStepBase
+        where TFlowRequest : FlowActivityRequest<TFlowResponse>
     {
-        private readonly FlowDefinition _flowDefinition;
+        private readonly FlowDefinition<TFlowRequest, TFlowResponse> _flowDefinition;
 
-        public DecisionFlowStep(FlowDefinition flowDefinition)
+        public DecisionFlowStep(FlowDefinition<TFlowRequest, TFlowResponse> flowDefinition)
         {
             _flowDefinition = flowDefinition;
         }
@@ -66,24 +67,24 @@ namespace FlowR
 
         public class DecisionFlowStepCriteria<T>
         {
-            private readonly DecisionFlowStep<T> _flowStep;
+            private readonly DecisionFlowStep<T, TFlowRequest, TFlowResponse> _flowStep;
             private readonly IList<Branch> _branches;
             private readonly IEnumerable<object> _criteria;
 
-            public DecisionFlowStepCriteria(DecisionFlowStep<T> flowStep, IList<Branch> branches, IEnumerable<object> criteria)
+            public DecisionFlowStepCriteria(DecisionFlowStep<T, TFlowRequest, TFlowResponse> flowStep, IList<Branch> branches, IEnumerable<object> criteria)
             {
                 _flowStep = flowStep;
                 _branches = branches;
                 _criteria = criteria;
             }
 
-            public DecisionFlowStep<T> Goto(string nextStepName)
+            public DecisionFlowStep<T, TFlowRequest, TFlowResponse> Goto(string nextStepName)
             {
                 _branches.Add(new Branch { Targets = _criteria, NextStepName = nextStepName });
                 return _flowStep;
             }
 
-            public DecisionFlowStep<T> End()
+            public DecisionFlowStep<T, TFlowRequest, TFlowResponse> End()
             {
                 _branches.Add(new Branch { Targets = _criteria, IsEnd = true });
                 return _flowStep;
@@ -98,32 +99,32 @@ namespace FlowR
         public class DecisionStepElse
         {
             private readonly IList<Branch> _branches;
-            private readonly FlowDefinition _flowDefinition;
+            private readonly FlowDefinition<TFlowRequest, TFlowResponse> _flowDefinition;
 
-            public DecisionStepElse(IList<Branch> branches, FlowDefinition flowDefinition)
+            public DecisionStepElse(IList<Branch> branches, FlowDefinition<TFlowRequest, TFlowResponse> flowDefinition)
             {
                 _branches = branches;
                 _flowDefinition = flowDefinition;
             }
-            public FlowDefinition Goto(string nextStepName)
+            public FlowDefinition<TFlowRequest, TFlowResponse> Goto(string nextStepName)
             {
                 _branches.Add(new Branch { NextStepName = nextStepName });
                 return _flowDefinition;
             }
 
-            public FlowDefinition Continue()
+            public FlowDefinition<TFlowRequest, TFlowResponse> Continue()
             {
                 _branches.Add(new Branch());
                 return _flowDefinition;
             }
 
-            public FlowDefinition End()
+            public FlowDefinition<TFlowRequest, TFlowResponse> End()
             {
                 _branches.Add(new Branch { IsEnd = true });
                 return _flowDefinition;
             }
 
-            public FlowDefinition Unhandled()
+            public FlowDefinition<TFlowRequest, TFlowResponse> Unhandled()
             {
                 _branches.Add(new Branch { IsUnhandled = true });
                 return _flowDefinition;

@@ -18,9 +18,11 @@ namespace BusinessExample.Core.Exchanges.LoanApplications
         }
     }
 
-    public class MakeLoanApplicationDecisionHandler : BusinessFlowHandler<MakeLoanApplicationDecision, MakeLoanApplicationDecision.Response>
+    public class MakeLoanApplicationDecisionHandler : BusinessFlowHandler<MakeLoanApplicationDecision,
+        MakeLoanApplicationDecision.Response>
     {
-        public MakeLoanApplicationDecisionHandler(IMediator mediator, IFlowLogger<MakeLoanApplicationDecisionHandler> logger) 
+        public MakeLoanApplicationDecisionHandler(IMediator mediator,
+            IFlowLogger<MakeLoanApplicationDecisionHandler> logger)
             : base(mediator, logger)
         {
         }
@@ -29,8 +31,9 @@ namespace BusinessExample.Core.Exchanges.LoanApplications
         {
         }
 
-        public override FlowDefinition GetFlowDefinition() =>
-            new FlowDefinition()
+        protected override void ConfigureDefinition(FlowDefinition<MakeLoanApplicationDecision, MakeLoanApplicationDecision.Response> flowDefinition)
+        {
+            flowDefinition
 
                 .Do("InitialiseNewDecision", InitialiseNewLoanDecision.NewDefinition())
 
@@ -93,11 +96,12 @@ namespace BusinessExample.Core.Exchanges.LoanApplications
                 .Label("PostAcceptActions")
                 .Do("SendAcceptConfirmationEmail", SendEmail.NewDefinition()
                     .SetValue(rq => rq.TemplateName, "AcceptConfirmation")
-                    .BindInput(rq => rq.EmailAddress, 
+                    .BindInput(rq => rq.EmailAddress,
                         nameof(MakeLoanApplicationDecision.LoanApplication), (LoanApplication la) => la.EmailAddress)
                     .BindInputs(rq => rq.DataObjects,
-                        nameof(MakeLoanApplicationDecision.LoanApplication), nameof(InitialiseNewLoanDecision.Response.LoanDecision))
-                    .BindInput(rq => rq.ParentId, 
+                        nameof(MakeLoanApplicationDecision.LoanApplication),
+                        nameof(InitialiseNewLoanDecision.Response.LoanDecision))
+                    .BindInput(rq => rq.ParentId,
                         nameof(InitialiseNewLoanDecision.Response.LoanDecision), (LoanDecision ld) => ld.Id))
                 .End()
 
@@ -106,11 +110,12 @@ namespace BusinessExample.Core.Exchanges.LoanApplications
                 .Label("PostReferActions")
                 .Do("SendReferNotificationEmail", SendEmail.NewDefinition()
                     .SetValue(rq => rq.TemplateName, "ReferNotification")
-                    .BindInput(rq => rq.EmailAddress, 
+                    .BindInput(rq => rq.EmailAddress,
                         nameof(MakeLoanApplicationDecision.LoanApplication), (LoanApplication la) => la.EmailAddress)
-                    .BindInputs(rq => rq.DataObjects, 
-                        nameof(MakeLoanApplicationDecision.LoanApplication), nameof(InitialiseNewLoanDecision.Response.LoanDecision))
-                    .BindInput(rq => rq.ParentId, 
+                    .BindInputs(rq => rq.DataObjects,
+                        nameof(MakeLoanApplicationDecision.LoanApplication),
+                        nameof(InitialiseNewLoanDecision.Response.LoanDecision))
+                    .BindInput(rq => rq.ParentId,
                         nameof(InitialiseNewLoanDecision.Response.LoanDecision), (LoanDecision ld) => ld.Id))
                 .Do("RaiseLoanReferredEvent", RaiseLoanDecisionReferredEvent.NewDefinition())
                 .End()
@@ -120,12 +125,14 @@ namespace BusinessExample.Core.Exchanges.LoanApplications
                 .Label("PostDeclineActions")
                 .Do("SendDeclineConfirmationEmail", SendEmail.NewDefinition()
                     .SetValue(rq => rq.TemplateName, "DeclineConfirmation")
-                    .BindInput(rq => rq.EmailAddress, 
+                    .BindInput(rq => rq.EmailAddress,
                         nameof(MakeLoanApplicationDecision.LoanApplication), (LoanApplication la) => la.EmailAddress)
                     .BindInputs(rq => rq.DataObjects,
-                        nameof(MakeLoanApplicationDecision.LoanApplication), nameof(InitialiseNewLoanDecision.Response.LoanDecision))
-                    .BindInput(rq => rq.ParentId, 
+                        nameof(MakeLoanApplicationDecision.LoanApplication),
+                        nameof(InitialiseNewLoanDecision.Response.LoanDecision))
+                    .BindInput(rq => rq.ParentId,
                         nameof(InitialiseNewLoanDecision.Response.LoanDecision), (LoanDecision ld) => ld.Id))
                 .End();
+        }
     }
 }

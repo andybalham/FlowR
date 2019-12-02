@@ -15,12 +15,12 @@ namespace FlowR.Tests
             return null;
         }
 
-        public virtual IEnumerable<FlowDefinition> GetFlowDefinitionOverrides(Type requestType)
+        public virtual IEnumerable<IFlowDefinition> GetFlowDefinitionOverrides(Type requestType)
         {
             return null;
         }
 
-        public virtual FlowDefinition GetApplicableFlowDefinitionOverride(IList<FlowDefinition> overrides, IFlowStepRequest request)
+        public virtual IFlowDefinition GetApplicableFlowDefinitionOverride(IList<IFlowDefinition> overrides, IFlowStepRequest request)
         {
             return null;
         }

@@ -20,10 +20,5 @@ namespace FlowR.Tests.Domain.FlowTests
         public InputAndOutputFlow(IMediator mediator) : base(mediator)
         {
         }
-
-        public override FlowDefinition GetFlowDefinition()
-        {
-            return new FlowDefinition();
-        }
     }
 }

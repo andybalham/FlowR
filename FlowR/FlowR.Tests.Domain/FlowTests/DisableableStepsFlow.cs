@@ -19,9 +19,9 @@ namespace FlowR.Tests.Domain.FlowTests
         {
         }
 
-        public override FlowDefinition GetFlowDefinition()
+        protected override void ConfigureDefinition(FlowDefinition<DisableableStepsFlowRequest, DisableableStepsFlowResponse> flowDefinition)
         {
-            return new FlowDefinition()
+            flowDefinition
 
                 .Do("Activity_Default",
                     new FlowActivityDefinition<DisableableActivityRequest, DisableableActivityResponse>())

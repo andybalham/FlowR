@@ -5,7 +5,8 @@ using System.Text;
 
 namespace FlowR
 {
-    public class FlowDefinition
+    public class FlowDefinition<TFlowRequest, TFlowResponse> : IFlowDefinition
+        where TFlowRequest : FlowActivityRequest<TFlowResponse>
     {
         public string Criteria { get; }
 
@@ -16,6 +17,9 @@ namespace FlowR
         #endregion
 
         #region Properties
+
+        public FlowInitializer<TFlowRequest> Initializer { get; private set; }
+        public FlowFinalizer<TFlowResponse> Finalizer { get; private set; }
 
         public IReadOnlyList<FlowStep> Steps => _steps;
 
@@ -38,29 +42,45 @@ namespace FlowR
 
         #region Builder methods
 
-        public DecisionFlowStep<TSwitch> Check<TReq, TSwitch>(string stepName, FlowDecisionDefinition<TReq, TSwitch> definition)
+        public FlowDefinition<TFlowRequest, TFlowResponse> Initialize(Action<FlowInitializer<TFlowRequest>> initializer)
+        {
+            // TODO: Should we throw an exception for multiple initializers or note down for calls to Validate()?
+            this.Initializer = new FlowInitializer<TFlowRequest>();
+            initializer(this.Initializer);
+            return this;
+        }
+
+        public FlowDefinition<TFlowRequest, TFlowResponse> Finalize(Action<FlowFinalizer<TFlowResponse>> finalizer)
+        {
+            // TODO: Should we throw an exception for multiple initializers or note down for calls to Validate()?
+            this.Finalizer = new FlowFinalizer<TFlowResponse>();
+            finalizer(this.Finalizer);
+            return this;
+        }
+
+        public DecisionFlowStep<TSwitch, TFlowRequest, TFlowResponse> Check<TReq, TSwitch>(string stepName, FlowDecisionDefinition<TReq, TSwitch> definition)
             where TReq : FlowDecision<TSwitch>
         {
             return Check(stepName, stepText: null, flowOverrideKey: null, definition);
         }
 
-        public DecisionFlowStep<TSwitch> Check<TReq, TSwitch>(string stepName, string stepText, 
+        public DecisionFlowStep<TSwitch, TFlowRequest, TFlowResponse> Check<TReq, TSwitch>(string stepName, string stepText, 
             FlowDecisionDefinition<TReq, TSwitch> definition) where TReq : FlowDecision<TSwitch>
         {
             return Check(stepName, stepText, flowOverrideKey: null, definition);
         }
 
-        public DecisionFlowStep<TSwitch> Check<TReq, TSwitch>(string stepName, FlowOverrideKey flowOverrideKey, 
+        public DecisionFlowStep<TSwitch, TFlowRequest, TFlowResponse> Check<TReq, TSwitch>(string stepName, FlowOverrideKey flowOverrideKey, 
             FlowDecisionDefinition<TReq, TSwitch> definition) where TReq : FlowDecision<TSwitch>
         {
             return Check(stepName, stepText: null, flowOverrideKey, definition);
         }
 
-        public DecisionFlowStep<TSwitch> Check<TReq, TSwitch>(string stepName, string stepText, FlowOverrideKey flowOverrideKey,
+        public DecisionFlowStep<TSwitch, TFlowRequest, TFlowResponse> Check<TReq, TSwitch>(string stepName, string stepText, FlowOverrideKey flowOverrideKey,
             FlowDecisionDefinition<TReq, TSwitch> definition) where TReq : FlowDecision<TSwitch>
         {
             var decisionFlowStep =
-                new DecisionFlowStep<TSwitch>(this)
+                new DecisionFlowStep<TSwitch, TFlowRequest, TFlowResponse>(this)
                 {
                     Name = stepName, Definition = definition, Text = stepText, OverrideKey = flowOverrideKey
                 };
@@ -70,25 +90,25 @@ namespace FlowR
             return decisionFlowStep;
         }
 
-        public FlowDefinition Do<TReq, TRes>(string stepName, FlowActivityDefinition<TReq, TRes> definition)
+        public FlowDefinition<TFlowRequest, TFlowResponse> Do<TReq, TRes>(string stepName, FlowActivityDefinition<TReq, TRes> definition)
             where TReq : FlowActivityRequest<TRes>
         {
             return Do(stepName, stepText: null, flowOverrideKey: null, definition);
         }
 
-        public FlowDefinition Do<TReq, TRes>(string stepName, FlowOverrideKey flowOverrideKey, 
+        public FlowDefinition<TFlowRequest, TFlowResponse> Do<TReq, TRes>(string stepName, FlowOverrideKey flowOverrideKey, 
             FlowActivityDefinition<TReq, TRes> definition) where TReq : FlowActivityRequest<TRes>
         {
             return Do(stepName, stepText: null, flowOverrideKey, definition);
         }
 
-        public FlowDefinition Do<TReq, TRes>(string stepName, string stepText,
+        public FlowDefinition<TFlowRequest, TFlowResponse> Do<TReq, TRes>(string stepName, string stepText,
             FlowActivityDefinition<TReq, TRes> definition) where TReq : FlowActivityRequest<TRes>
         {
             return Do(stepName, stepText, flowOverrideKey: null, definition);
         }
 
-        public FlowDefinition Do<TReq, TRes>(string stepName, string stepText, FlowOverrideKey flowOverrideKey, 
+        public FlowDefinition<TFlowRequest, TFlowResponse> Do<TReq, TRes>(string stepName, string stepText, FlowOverrideKey flowOverrideKey, 
             FlowActivityDefinition<TReq, TRes> definition) where TReq : FlowActivityRequest<TRes>
         {
             AddStep(new ActivityFlowStep
@@ -99,25 +119,25 @@ namespace FlowR
             return this;
         }
 
-        public FlowDefinition End()
+        public FlowDefinition<TFlowRequest, TFlowResponse> End()
         {
             AddStep(new EndFlowStep());
             return this;
         }
 
-        public FlowDefinition Label(string stepName)
+        public FlowDefinition<TFlowRequest, TFlowResponse> Label(string stepName)
         {
             AddStep(new LabelFlowStep { Name = stepName, Index = this.Steps.Count });
             return this;
         }
 
-        public FlowDefinition Label(string stepName, string stepText)
+        public FlowDefinition<TFlowRequest, TFlowResponse> Label(string stepName, string stepText)
         {
             AddStep(new LabelFlowStep { Name = stepName, Text = stepText });
             return this;
         }
 
-        public FlowDefinition Goto(string nextStepName)
+        public FlowDefinition<TFlowRequest, TFlowResponse> Goto(string nextStepName)
         {
             AddStep(new GotoFlowStep { NextStepName = nextStepName });
             return this;

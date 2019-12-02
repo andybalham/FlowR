@@ -21,9 +21,9 @@ namespace FlowR.Tests.Domain.FlowTests
         {
         }
 
-        public override FlowDefinition GetFlowDefinition()
+        protected override void ConfigureDefinition(FlowDefinition<LabelsAndGotosFlowRequest, LabelsAndGotosFlowResponse> flowDefinition)
         {
-            return new FlowDefinition()
+            flowDefinition
                 .Goto("Label_one")
                 .Label("Label_two")
                 .End()

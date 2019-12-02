@@ -25,10 +25,5 @@ namespace FlowR.Tests.Domain.FlowTests
         public MissingMandatoryResponseFlow(IMediator mediator, IFlowLogger<MissingMandatoryResponseFlow> logger) : base(mediator, logger)
         {
         }
-
-        public override FlowDefinition GetFlowDefinition()
-        {
-            return new FlowDefinition();
-        }
     }
 }

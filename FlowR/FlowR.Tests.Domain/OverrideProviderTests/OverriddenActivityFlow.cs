@@ -10,9 +10,9 @@ namespace FlowR.Tests.Domain.OverrideProviderTests
         {
         }
 
-        public override FlowDefinition GetFlowDefinition()
+        protected override void ConfigureDefinition(FlowDefinition<OverriddenActivityFlowRequest, OverriddenActivityFlowResponse> flowDefinition)
         {
-            return new FlowDefinition()
+            flowDefinition
                 .Do("Activity", new FlowOverrideKey(OverriddenActivityFlowRequest.ActivityOverrideKey),
                     new FlowActivityDefinition<OverridableActivityRequest, OverridableActivityResponse>()
                         .SetValue(rq => rq.OverridableInputValue, OverriddenActivityFlowRequest.BaseValue)

@@ -24,9 +24,9 @@ namespace FlowR.Tests.Domain.FlowTests
         {
         }
 
-        public override FlowDefinition GetFlowDefinition()
+        protected override void ConfigureDefinition(FlowDefinition<ActivityInputFlowRequest, ActivityInputFlowResponse> flowDefinition)
         {
-            return new FlowDefinition()
+            flowDefinition
                 .Do("InputAndOutput", new FlowActivityDefinition<InputAndOutputActivityRequest, InputAndOutputActivityResponse>());
         }
     }

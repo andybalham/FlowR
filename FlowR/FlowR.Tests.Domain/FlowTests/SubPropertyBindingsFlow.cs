@@ -23,9 +23,9 @@ namespace FlowR.Tests.Domain.FlowTests
         {
         }
 
-        public override FlowDefinition GetFlowDefinition()
+        protected override void ConfigureDefinition(FlowDefinition<SubPropertyBindingsFlowRequest, SubPropertyBindingsFlowResponse> flowDefinition)
         {
-            return new FlowDefinition()
+            flowDefinition
 
                 .Check("Decision_1", FlowValueDecision<int?>.NewDefinition()
                     .BindInput(rq => rq.SwitchValue, "StringValue1", (string s) => s.Length))

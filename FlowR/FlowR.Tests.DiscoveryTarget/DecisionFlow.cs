@@ -19,9 +19,9 @@ namespace FlowR.Tests.DiscoveryTarget
         {
         }
 
-        public override FlowDefinition GetFlowDefinition()
+        protected override void ConfigureDefinition(FlowDefinition<DecisionFlowRequest, DecisionFlowResponse> flowDefinition)
         {
-            return new FlowDefinition()
+            flowDefinition
                 .Label("Label_1")
 
                 .Check("Decision_1", new FlowDecisionDefinition<BasicDecisionRequest, string>())

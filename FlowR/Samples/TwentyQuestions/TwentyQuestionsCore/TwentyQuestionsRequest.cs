@@ -23,9 +23,9 @@ namespace TwentyQuestions.Core
         {
         }
 
-        public override FlowDefinition GetFlowDefinition()
+        protected override void ConfigureDefinition(FlowDefinition<TwentyQuestionsRequest, TwentyQuestionsResponse> flowDefinition)
         {
-            return new FlowDefinition()
+            flowDefinition
 
                 .Do("AskHasLegs", QuestionRequest.NewDefinition()
                     .SetValue(req => req.Question, "Does it have legs")

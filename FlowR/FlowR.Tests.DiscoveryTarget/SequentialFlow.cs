@@ -19,9 +19,9 @@ namespace FlowR.Tests.DiscoveryTarget
         {
         }
 
-        public override FlowDefinition GetFlowDefinition()
+        protected override void ConfigureDefinition(FlowDefinition<SequentialFlowRequest, SequentialFlowResponse> flowDefinition)
         {
-            return new FlowDefinition()
+            flowDefinition
                 .Label("Label_1")
                 .Do("Activity_1", new FlowActivityDefinition<BasicActivityRequest, BasicActivityResponse>())
                 .Goto("Label_2")

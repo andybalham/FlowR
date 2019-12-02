@@ -27,9 +27,9 @@ namespace FlowR.Tests.Domain.FlowTests
         {
         }
 
-        public override FlowDefinition GetFlowDefinition()
+        protected override void ConfigureDefinition(FlowDefinition<ActivityOverriddenSettersFlowRequest, ActivityOverriddenSettersFlowResponse> flowDefinition)
         {
-            return new FlowDefinition()
+            flowDefinition
                 .Do("SetOutputValues", new FlowActivityDefinition<OverriddenSettersActivityRequest, OverriddenSettersActivityResponse>()
                     .BindInput(rq => rq.NonExistentSetterValue, "NonExistentValue")
                     .BindInput(rq => rq.BoundValueWithDefault, nameof(ActivityOverriddenSettersFlowRequest.FlowNullValue))

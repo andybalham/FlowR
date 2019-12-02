@@ -10,8 +10,8 @@ namespace FlowR
 
         IDictionary<string, FlowRequestOverride> GetApplicableRequestOverrides(IList<FlowRequestOverride> overrides, IFlowStepRequest request);
 
-        IEnumerable<FlowDefinition> GetFlowDefinitionOverrides(Type requestType);
+        IEnumerable<IFlowDefinition> GetFlowDefinitionOverrides(Type requestType);
 
-        FlowDefinition GetApplicableFlowDefinitionOverride(IList<FlowDefinition> overrides, IFlowStepRequest request);
+        IFlowDefinition GetApplicableFlowDefinitionOverride(IList<IFlowDefinition> overrides, IFlowStepRequest request);
     }
 }

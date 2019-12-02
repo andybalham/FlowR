@@ -16,10 +16,5 @@ namespace FlowR.Tests.DiscoveryTarget
         public EmptyFlow(IMediator mediator) : base(mediator)
         {
         }
-
-        public override FlowDefinition GetFlowDefinition()
-        {
-            return new FlowDefinition();
-        }
     }
 }

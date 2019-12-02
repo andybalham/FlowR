@@ -26,9 +26,9 @@ namespace FlowR.Tests.Domain.FlowTests
         {
         }
 
-        public override FlowDefinition GetFlowDefinition()
+        protected override void ConfigureDefinition(FlowDefinition<ActivityBindingAttributesFlowRequest, ActivityBindingAttributesFlowResponse> flowDefinition)
         {
-            return new FlowDefinition()
+            flowDefinition
                 .Do("Bind_inputs_and_outputs", new FlowActivityDefinition<BindingAttributesActivityRequest, BindingAttributesActivityResponse>()
 
                     .SetValue(r => r.ActivityInput1Name, nameof(ActivityBindingAttributesFlowRequest.FlowInput1))

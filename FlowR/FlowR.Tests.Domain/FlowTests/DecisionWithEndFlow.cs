@@ -23,7 +23,7 @@ namespace FlowR.Tests.Domain.FlowTests
         {
         }
 
-        public override FlowDefinition GetFlowDefinition()
+        protected override void ConfigureDefinition(FlowDefinition<DecisionWithEndFlowRequest, DecisionWithEndFlowResponse> flowDefinition)
         {
             var switchValueDecision = FlowValueDecision<string>.NewDefinition()
                 .BindInput(rq => rq.SwitchValue, nameof(DecisionWithEndFlowRequest.StringValue));
@@ -40,7 +40,7 @@ namespace FlowR.Tests.Domain.FlowTests
                 .SetValue(rq => rq.OutputValue, "Z")
                 .BindOutput(rs => rs.Output, nameof(DecisionWithEndFlowResponse.BranchValue));
 
-            return new FlowDefinition()
+            flowDefinition
                 .Do("Set_output_to_X", setOutputToX)
                 
                 .Check("Switch_value_1", switchValueDecision)

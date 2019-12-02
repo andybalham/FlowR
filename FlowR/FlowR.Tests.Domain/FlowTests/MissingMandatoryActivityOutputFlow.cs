@@ -19,9 +19,9 @@ namespace FlowR.Tests.Domain.FlowTests
         {
         }
 
-        public override FlowDefinition GetFlowDefinition()
+        protected override void ConfigureDefinition(FlowDefinition<MissingMandatoryActivityOutputRequest, MissingMandatoryActivityOutputResponse> flowDefinition)
         {
-            return new FlowDefinition()
+            flowDefinition
                 .Do("MandatoryOutputActivity",
                     new FlowActivityDefinition<MandatoryOutputActivityRequest, MandatoryOutputActivityResponse>());
         }

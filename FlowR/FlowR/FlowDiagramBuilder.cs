@@ -27,7 +27,7 @@ namespace FlowR
 
         #region Public methods
 
-        public FlowDiagram BuildDiagram(Type requestType, Type responseType, FlowDefinition flowDefinition, bool isOverride = false)
+        public FlowDiagram BuildDiagram(Type requestType, Type responseType, IFlowDefinition flowDefinition, bool isOverride = false)
         {
             var requestInfo = new FlowRequestInfo
             {
@@ -89,7 +89,7 @@ namespace FlowR
             return flowPropertyInfos;
         }
 
-        private FlowDiagramNode AddFlowDiagramNode(int stepIndex, FlowDefinition flowDefinition,
+        private FlowDiagramNode AddFlowDiagramNode(int stepIndex, IFlowDefinition flowDefinition,
             FlowDiagramNode previousNode, FlowDiagram flowDiagram, ref int endCount)
         {
             var flowStep = flowDefinition.Steps[stepIndex];
@@ -127,7 +127,7 @@ namespace FlowR
             return previousNode;
         }
 
-        private FlowDiagramNode AddFlowDiagramDecisionNode(int stepIndex, FlowDefinition flowDefinition, FlowDiagram flowDiagram,
+        private FlowDiagramNode AddFlowDiagramDecisionNode(int stepIndex, IFlowDefinition flowDefinition, FlowDiagram flowDiagram,
             FlowStep flowStep, DecisionFlowStepBase decisionFlowStep, ref int endCount)
         {
             var decisionRequest = GetFlowStepRequest(flowStep.Definition);
@@ -182,7 +182,7 @@ namespace FlowR
             return decisionNode;
         }
 
-        private FlowDiagramNode AddFlowDiagramLabelNode(int stepIndex, FlowDefinition flowDefinition, FlowDiagram flowDiagram,
+        private FlowDiagramNode AddFlowDiagramLabelNode(int stepIndex, IFlowDefinition flowDefinition, FlowDiagram flowDiagram,
             FlowStep flowStep, ref int endCount)
         {
             var labelNode = flowDiagram.AddNode(new FlowDiagramNode
@@ -196,7 +196,7 @@ namespace FlowR
             return labelNode;
         }
 
-        private FlowDiagramNode AddFlowDiagramActivityNode(int stepIndex, FlowDefinition flowDefinition, FlowDiagram flowDiagram,
+        private FlowDiagramNode AddFlowDiagramActivityNode(int stepIndex, IFlowDefinition flowDefinition, FlowDiagram flowDiagram,
             FlowStep flowStep, ref int endCount)
         {
             var activityRequest = GetFlowStepRequest(flowStep.Definition);
@@ -318,7 +318,7 @@ namespace FlowR
             node.InputOverrides = inputOverrides;
         }
 
-        private int AddFlowDiagramDefaultLink(FlowDiagramNode node, int stepIndex, FlowDefinition flowDefinition,
+        private int AddFlowDiagramDefaultLink(FlowDiagramNode node, int stepIndex, IFlowDefinition flowDefinition,
             FlowDiagram flowDiagram, int endCount)
         {
             if (stepIndex + 1 == flowDefinition.Steps.Count)
