@@ -34,9 +34,10 @@ We also provide a `FlowDefinition`. This is where we define the activities in ou
         {
         }
 
-        public override FlowDefinition GetFlowDefinition()
+        protected override void ConfigureDefinition(
+            FlowDefinition<SayHelloRequest, SayHelloResponse> flowDefinition)
         {
-            return new FlowDefinition()
+            flowDefinition
                 .Do("SayHello", new FlowActivityDefinition<SayGreetingRequest, SayGreetingResponse>()
                     .SetValue(req => req.Greeting, "Hello"));
         }
@@ -97,7 +98,7 @@ To run the flow, we need to register the MediatR assembly and the request/respon
 ```
 
 The result is as follows:
-
+    
 ```
 Hello FlowR
 response.OutputtedText: Hello FlowR
