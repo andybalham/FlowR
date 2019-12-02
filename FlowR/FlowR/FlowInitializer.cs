@@ -30,19 +30,19 @@ namespace FlowR
             return this;
         }
 
-        public FlowInitializer<TReq> BindOutputs<TVal>(Expression<Func<TReq, FlowValueDictionary<TVal>>> propertyExpression,
+        public FlowInitializer<TReq> BindValues<TVal>(Expression<Func<TReq, FlowValueDictionary<TVal>>> propertyExpression,
             params string[] outputValueNames)
         {
-            return BindOutputs(propertyExpression, new FlowValueListSelector(outputValueNames));
+            return BindValues(propertyExpression, new FlowValueListSelector(outputValueNames));
         }
 
-        public FlowInitializer<TReq> BindOutputs<TVal>(Expression<Func<TReq, FlowValueDictionary<TVal>>> propertyExpression,
+        public FlowInitializer<TReq> BindValues<TVal>(Expression<Func<TReq, FlowValueDictionary<TVal>>> propertyExpression,
             IDictionary<string, string> nameMap)
         {
-            return BindOutputs(propertyExpression, new FlowValueListSelector(nameMap));
+            return BindValues(propertyExpression, new FlowValueListSelector(nameMap));
         }
 
-        public FlowInitializer<TReq> BindOutputs<TVal>(Expression<Func<TReq, FlowValueDictionary<TVal>>> propertyExpression,
+        public FlowInitializer<TReq> BindValues<TVal>(Expression<Func<TReq, FlowValueDictionary<TVal>>> propertyExpression,
             FlowValueSelector flowValueSelector, Func<TVal, object> mapValue = null)
         {
             var propertyInfo = ReflectionUtils.GetProperty(propertyExpression);

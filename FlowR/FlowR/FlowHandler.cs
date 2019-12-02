@@ -98,7 +98,7 @@ namespace FlowR
                         OnDebugEvent(flowStep.Name, FlowDebugEvent.PostStep, flowValues);
                     }
 
-                    var flowResponse = BuildFlowResponse(flowContext, flowTrace, flowValues);
+                    var flowResponse = BuildFlowResponse(flowContext, flowDefinition, flowTrace, flowValues);
 
                     stopWatch.Stop();
 
@@ -489,8 +489,6 @@ namespace FlowR
 
             foreach (var flowRequestProperty in flowRequestProperties.Properties)
             {
-                CheckMandatoryFlowObjectProperty(flowRequest, flowRequestProperty, missingMandatoryPropertyNames);
-
                 var binding = flowDefinition.Initializer?.Outputs.Find(b => b.Property.Name == flowRequestProperty.Name);
 
                 var requestValue = flowRequestProperty.PropertyInfo.GetValue(flowRequest);
@@ -509,6 +507,7 @@ namespace FlowR
                     }
                 }
 
+                CheckMandatoryFlowObjectProperty(flowRequest, flowRequestProperty, missingMandatoryPropertyNames);
             }
 
             if (missingMandatoryPropertyNames.Count > 0)
@@ -521,7 +520,8 @@ namespace FlowR
             return flowValues;
         }
 
-        private static TFlowResponse BuildFlowResponse(FlowContext flowContext, FlowTrace flowTrace, FlowValues flowValues)
+        private static TFlowResponse BuildFlowResponse(FlowContext flowContext, FlowDefinition<TFlowRequest, TFlowResponse> flowDefinition, 
+            FlowTrace flowTrace, FlowValues flowValues)
         {
             var flowResponseType = typeof(TFlowResponse);
             var flowResponse = (TFlowResponse)Activator.CreateInstance(flowResponseType);
@@ -531,8 +531,16 @@ namespace FlowR
 
             foreach (var flowObjectProperty in flowObjectType.Properties)
             {
-                // TODO: Need to perform any response bindings here
-                SetFlowResponseProperty(flowResponse, flowObjectProperty, flowValues);
+                var binding =
+                    flowDefinition.Finalizer?.Inputs.Find(b => b.Property.Name == flowObjectProperty.Name)
+                    ?? new FlowValueInputBinding(flowObjectProperty)
+                        { FlowValueSelector = new FlowValueSingleSelector(flowObjectProperty.Name) };
+
+                if (binding.TryGetRequestValue(flowValues, flowResponse, out var responseValue))
+                {
+                    flowObjectProperty.PropertyInfo.SetValue(flowResponse, responseValue);
+                }
+
                 CheckMandatoryFlowObjectProperty(flowResponse, flowObjectProperty, missingMandatoryPropertyNames);
             }
 

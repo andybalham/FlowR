@@ -55,13 +55,13 @@ namespace FlowR.Tests.Domain.FlowTests
                 .Initialize(init => init
                     .BindValue(req => req.NameMap, "NameMapped")
                     .BindValue(req => req.PropertyMap, "PropertyMapped", s => s.Length)
-                    .BindOutputs(req => req.DictionaryDefault, "DictionaryDefault1", "DictionaryDefault2")
-                    .BindOutputs(req => req.DictionaryNameMap, new Dictionary<string, string>
+                    .BindValues(req => req.DictionaryDefault, "DictionaryDefault1", "DictionaryDefault2")
+                    .BindValues(req => req.DictionaryNameMap, new Dictionary<string, string>
                     {
                         { "DictionaryNameMap1", "DictionaryNameMapped1" },
                         { "DictionaryNameMap2", "DictionaryNameMapped2" }
                     })
-                    .BindOutputs(req => req.DictionaryPropertyMap, new FlowValueListSelector(new Dictionary<string, string>()
+                    .BindValues(req => req.DictionaryPropertyMap, new FlowValueListSelector(new Dictionary<string, string>()
                     {
                         { "DictionaryPropertyMap1", "DictionaryPropertyMapped1" },
                         { "DictionaryPropertyMap2", "DictionaryPropertyMapped2" }

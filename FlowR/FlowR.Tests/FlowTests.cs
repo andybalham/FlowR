@@ -667,18 +667,20 @@ namespace FlowR.Tests
             flowDefinition
                 .Finalize(final => final
                     .BindValue(res => res.NameMapped, "NameMap")
-                    //.BindValue(res => res.PropertyMapped, "PropertyMapped", (string s) => s.Length)
-                    //.BindOutputs(res => res.DictionaryDefault, "DictionaryDefault1", "DictionaryDefault2")
-                    //.BindOutputs(res => res.DictionaryNameMap, new Dictionary<string, string>
-                    //{
-                    //    { "DictionaryNameMap1", "DictionaryNameMapped1" },
-                    //    { "DictionaryNameMap2", "DictionaryNameMapped2" }
-                    //})
-                    //.BindOutputs(res => res.DictionaryPropertyMap, new FlowValueListSelector(new Dictionary<string, string>()
-                    //{
-                    //    { "DictionaryPropertyMap1", "DictionaryPropertyMapped1" },
-                    //    { "DictionaryPropertyMap2", "DictionaryPropertyMapped2" }
-                    //}), s => s.Length)
+                    .BindValue(res => res.PropertyMapped, "PropertyMap", (string s) => s.Length)
+                    .BindValues(res => res.DictionaryDefault, "DictionaryDefault1", "DictionaryDefault2")
+                    .BindValues(res => res.DictionaryNameMap,
+                        new Dictionary<string, string>
+                        {
+                            { "DictionaryNameMap1", "DictionaryNameMapped1" },
+                            { "DictionaryNameMap2", "DictionaryNameMapped2" }
+                        })
+                    .BindValues(res => res.DictionaryPropertyMap, new FlowValueListSelector(
+                        new Dictionary<string, string>()
+                        {
+                            { "DictionaryPropertyMap1", "DictionaryPropertyMapped1" },
+                            { "DictionaryPropertyMap2", "DictionaryPropertyMapped2" }
+                        }), (string s) => s.Length)
                 );
         }
     }
