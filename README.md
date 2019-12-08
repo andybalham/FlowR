@@ -1,118 +1,62 @@
 [![Build Status](https://dev.azure.com/andyblackledge/FlowR/_apis/build/status/FlowR-CI?branchName=master)](https://dev.azure.com/andyblackledge/FlowR/_build/latest?definitionId=5&branchName=master)
 
 # Introduction 
-FlowR is a .NET framework for building in-process flows based on a series of decoupled exchanges. It leverages the MediatR framework and dependency injection to enable such flows to be defined in a declarative fashion. The result are process flows that can be tested in a straightfoward manner and produce comprehensive logging as standard.
+FlowR is a .NET Standard 2.0 framework for building in-process flows based on a series of decoupled exchanges. It leverages the MediatR framework and dependency injection to enable flows to be defined declaratively using a fluent API.
 
-# Hello FlowR
+# Fluent API
 
-FlowR models in-process flows as a sequence of request/response exchanges. It uses the [MediatR](https://github.com/jbogard/MediatR) framework to despatch the requests to decoupled handlers.
+The following example gives a flavour of how a flow is defined using the fluent API. 
 
-A flow in FlowR is modelled as as a request, a response and a handler. The following example implements a flow that is made up of a single activity that outputs 'Hello' plus a name passed in and returns the text that was outputted.
-
-We first define the request response exchange for the flow.
+A flow is made up of a sequence of activity and decision steps. Activities perform processing, whilst decisions control the path through the flow.
 
 ```csharp
-    public class SayHelloRequest : FlowActivityRequest<SayHelloResponse>
+    public class MyFlowHandler : FlowHandler<MyFlowRequest, MyFlowResponse>
     {
-        public string Name { get; set; }
-    }
-
-    public class SayHelloResponse
-    {
-        public string OutputtedText { get; set; }
-    }
-```
-
-We then define the handler for the flow by subclassing `FlowHandler`. This requires us to declare a constructor to receive an `IMediator` instance. This instance is used by `FlowHandler` to despatch the requests to the activities in the flow.
-
-We also provide a `FlowDefinition`. This is where we define the activities in our flow and how they are configured. In this case, we have a single activity that handles `SayGreetingRequest` and responds. It has a single configuration option, which is the greeting to use ('Hello' in this case).
-
-```csharp
-    public class SayHelloHandler : FlowHandler<SayHelloRequest, SayHelloResponse>
-    {
-        public SayHelloHandler(IMediator mediator) : base(mediator)
+        public MyFlowHandler(IMediator mediator) : base(mediator)
         {
         }
 
         protected override void ConfigureDefinition(
-            FlowDefinition<SayHelloRequest, SayHelloResponse> flowDefinition)
+            FlowDefinition<MyFlowRequest, MyFlowResponse> flowDefinition)
         {
             flowDefinition
-                .Do("SayHello", new FlowActivityDefinition<SayGreetingRequest, SayGreetingResponse>()
-                    .SetValue(req => req.Greeting, "Hello"));
+
+                .Do("Activity1", 
+                    new FlowActivityDefinition<Activity1Request, Activity1Response>())
+                
+                .Check("FlowValue", 
+                    new FlowDecisionDefinition<FlowValueDecision<string>, string>()
+                        .BindInput(req => req.SwitchValue, "FlowValue"))
+                .When("2").Goto("Activity2")
+                .Else().Goto("Activity3")
+
+                .Do("Activity2", 
+                    new FlowActivityDefinition<Activity2Request, Activity2Response>())
+                .End()
+
+                .Do("Activity3", 
+                    new FlowActivityDefinition<Activity3Request, Activity3Response>());
         }
     }
 ```
 
-The activity is defined in a similar way. First we define the request and response:
+# Visualisation
 
-```csharp
-    public class SayGreetingRequest : FlowActivityRequest<SayGreetingResponse>
-    {
-        public string Greeting { get; set; }
+FlowR can visualise the defined flows in [DOT graph description language](https://en.wikipedia.org/wiki/DOT_(graph_description_language)), which can be rendered by many open source packages. For example, the image below was generated from the Twenty Questions sample:
 
-        public string Name { get; set; }
-    }
+<img src="https://github.com/andybalham/FlowR/blob/master/FlowR/Samples/TwentyQuestions/FlowDiagram.png" width="640">
 
-    public class SayGreetingResponse
-    {
-        public string OutputtedText { get; set; }
-    }
-```
+# Samples
 
-With the request and response defined, we can define the handler:
+There are a number of sample projects that demonstrate the features of FlowR
 
-```csharp
-    public class SayGreetingHandler : IRequestHandler<SayGreetingRequest, SayGreetingResponse>
-    {
-        public Task<SayGreetingResponse> Handle(SayGreetingRequest request, CancellationToken cancellationToken)
-        {
-            var text = $"{request.Greeting} {request.Name}";
+* [Hello FlowR](https://github.com/andybalham/FlowR/wiki/Hello-FlowR-Sample) - A console application that demonstrates a simple flow containing a single activity that combines design-time and run-time values to say hello.
 
-            Console.WriteLine(text);
+* [Twenty Questions](https://github.com/andybalham/FlowR/wiki/Twenty-Questions-Sample) - A console application that demonstrates a multi-branch flow, how it can be tested and how it can be visualised.
 
-            return Task.FromResult(new SayGreetingResponse { OutputtedText = text });
-        }
-    }
-```
+* [Business Example](https://github.com/andybalham/FlowR/tree/master/FlowR/Samples/BusinessExample) is a web API that makes loan decisions based using a process implemented using FlowR. It demonstrates the following features of FlowR:
 
-This builds the text to output, outputs it to the console and then returns a response containing the text that was outputted.
-
-To run the flow, we need to register the MediatR assembly and the request/response/handler assembly with an IoC container. In this example, we use the default Microsoft implementation and a MediatR extension method. We use the resulting service provider to obtain an `IMediator` implementation, create a `SayHelloRequest` instance and send it via the `IMediator` implementation.
-
-```csharp
-    static void Main(string[] args)
-    {
-        var mediator =
-            new ServiceCollection()
-                .AddMediatR(typeof(SayHelloRequest).Assembly)
-                .BuildServiceProvider()
-                .GetService<IMediator>();
-
-        var response = 
-            mediator.Send(new SayHelloRequest { Name = "FlowR" })
-                .GetAwaiter().GetResult();
-
-        Console.WriteLine($"response.OutputtedText: {response.OutputtedText}");
-    }
-```
-
-The result is as follows:
-    
-```
-Hello FlowR
-response.OutputtedText: Hello FlowR
-```
-
-When the `SayHelloRequest` is handled, the sequence of events is as follows:
-
-1. An empty flow values dictionary is created
-1. The flow value 'Name' is set to the value of the `SayHelloRequest` `Name` property, i.e. 'FlowR'
-1. A `SayGreetingRequest` instance is created
-1. The `Greeting` property is set to the design-time value 'Hello'
-1. The `Name` property is bound to the flow value 'Name', i.e. 'FlowR'
-1. The `SayGreetingRequest` is despatched via the `IMediator` instance
-1. The `SayGreetingHandler` is invoked, the console is written to and a `SayGreetingResponse` returned
-1. The flow value 'OutputtedText' is set to the value of the `SayGreetingResponse` `OutputtedText` property, i.e. 'Hello FlowR'
-1. A `SayHelloResponse` instance is created
-1. The `OutputtedText` property is set to the flow value 'OutputtedText', i.e. 'Hello FlowR'
+  * Flow logic can be tested in isolation
+  * Activities can be tested in isolation
+  * Flows can be visualised
+  * Flows have comprehensive logging by default

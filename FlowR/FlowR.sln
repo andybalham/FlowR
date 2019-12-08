@@ -49,6 +49,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwentyQuestions.Core", "Sam
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwentyQuestions.Test", "Samples\TwentyQuestions\TwentyQuestionsTest\TwentyQuestions.Test.csproj", "{05F01B46-A251-4675-8BDF-0935CA9CA5E0}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ReadmeExample", "ReadmeExample", "{B1EBAC39-ADA8-4E9D-9FFC-C37A036FC054}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadmeExampleConsole", "Samples\ReadmeExample\ReadmeExampleConsole\ReadmeExampleConsole.csproj", "{100A3D06-6DE4-4A39-906C-A780E3EB02B5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -127,6 +131,10 @@ Global
 		{05F01B46-A251-4675-8BDF-0935CA9CA5E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{05F01B46-A251-4675-8BDF-0935CA9CA5E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{05F01B46-A251-4675-8BDF-0935CA9CA5E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{100A3D06-6DE4-4A39-906C-A780E3EB02B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{100A3D06-6DE4-4A39-906C-A780E3EB02B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{100A3D06-6DE4-4A39-906C-A780E3EB02B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{100A3D06-6DE4-4A39-906C-A780E3EB02B5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -152,6 +160,8 @@ Global
 		{1FB7E65A-9C86-4165-8ECA-927F578B17A5} = {724D3EC3-DA57-4FE3-8F5E-9FABA4F62256}
 		{3CC839C6-DC5A-48A3-A813-71013222E376} = {724D3EC3-DA57-4FE3-8F5E-9FABA4F62256}
 		{05F01B46-A251-4675-8BDF-0935CA9CA5E0} = {724D3EC3-DA57-4FE3-8F5E-9FABA4F62256}
+		{B1EBAC39-ADA8-4E9D-9FFC-C37A036FC054} = {B67D0564-38E9-4D2B-A4BB-0FEB1EDC6F66}
+		{100A3D06-6DE4-4A39-906C-A780E3EB02B5} = {B1EBAC39-ADA8-4E9D-9FFC-C37A036FC054}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4017C146-2B76-4E88-9DFE-C76828CF98A9}
